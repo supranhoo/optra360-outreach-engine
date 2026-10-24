@@ -1,0 +1,17 @@
+{
+  "name": "optra360-outreach-engine",
+  "version": "1.0.0",
+  "description": "Optra360 & Zoptro Automated Outreach & Opportunity Engine for Google Apps Script",
+  "main": "Code.js",
+  "scripts": {
+    "push": "clasp push",
+    "pull": "clasp pull",
+    "open": "clasp open",
+    "status": "clasp status"
+  },
+  "author": "Ankit Choudhary <supranhoo@users.noreply.github.com>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@google/clasp": "^3.4.1"
+  }
+}

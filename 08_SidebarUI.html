@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #09293D;
+      --ivory: #F4F2EA;
+      --olive: #666D57;
+      --orange: #F65800;
+      --white: #FFFFFF;
+      --gray-bg: #F8F9FA;
+      --border: #E5E7EB;
+      --text: #09293D;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0px !important; /* Optra360 90-degree square corners */
+    }
+    body {
+      font-family: 'Figtree', sans-serif;
+      background-color: var(--ivory);
+      color: var(--text);
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    h1, h2, h3, .heading {
+      font-family: 'Outfit', sans-serif;
+      color: var(--blue);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .header {
+      background-color: var(--blue);
+      color: var(--ivory);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border-bottom: 3px solid var(--orange);
+    }
+    .header h1 {
+      color: var(--ivory);
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .header p {
+      font-size: 11px;
+      color: var(--orange);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .profile-select {
+      width: 100%;
+      padding: 8px 10px;
+      background: var(--white);
+      border: 1px solid var(--blue);
+      font-family: 'Figtree', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+      margin-bottom: 10px;
+      outline: none;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .kpi-box {
+      background: var(--white);
+      border-left: 3px solid var(--orange);
+      padding: 8px 10px;
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .kpi-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--olive);
+      font-weight: 600;
+    }
+    .kpi-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .btn {
+      width: 100%;
+      padding: 10px 14px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      display: block;
+      text-align: center;
+      margin-bottom: 8px;
+      transition: background 0.15s ease;
+    }
+    .btn-primary {
+      background: var(--blue);
+      color: var(--white);
+    }
+    .btn-primary:hover {
+      background: #0f3d59;
+    }
+    .btn-accent {
+      background: var(--orange);
+      color: var(--white);
+    }
+    .btn-accent:hover {
+      background: #db4e00;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--blue);
+      color: var(--blue);
+    }
+    .btn-outline:hover {
+      background: var(--ivory);
+    }
+    .status-msg {
+      padding: 8px 10px;
+      font-size: 11px;
+      margin-top: 6px;
+      display: none;
+    }
+    .status-success {
+      background: #e6f4ea;
+      color: #137333;
+      border: 1px solid #ceead6;
+      display: block;
+    }
+    .status-error {
+      background: #fce8e6;
+      color: #c5221f;
+      border: 1px solid #fad2cf;
+      display: block;
+    }
+    .status-loading {
+      background: #e8f0fe;
+      color: #1a73e8;
+      border: 1px solid #d2e3fc;
+      display: block;
+    }
+    .li-lead-card {
+      background: var(--gray-bg);
+      border-left: 3px solid var(--blue);
+      padding: 10px;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    .li-name {
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .li-company {
+      color: var(--olive);
+      font-size: 11px;
+    }
+    .li-note {
+      background: var(--white);
+      border: 1px dashed var(--border);
+      padding: 6px;
+      margin: 6px 0;
+      font-size: 11px;
+      color: #333;
+    }
+    .input-field {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      font-family: 'Figtree', sans-serif;
+      font-size: 12px;
+      margin-bottom: 8px;
+      outline: none;
+    }
+    details {
+      margin-top: 10px;
+    }
+    summary {
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--olive);
+      padding: 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Optra360 Engine</h1>
+    <p>Prove Before You Promise</p>
+  </div>
+
+  <!-- Active Profile Mode Card -->
+  <div class="card">
+    <div class="card-title">Active Outreach Profile</div>
+    <select id="profileSelector" class="profile-select" onchange="onProfileChange()">
+      <option value="PROF-01">Mode B: Ankit Choudhary (CTO &amp; HR Advisory)</option>
+      <option value="PROF-02">Mode A: Jaspal Bhanker (Operations B2B)</option>
+      <option value="PROF-03">Mode A: Divyanee Gohite (Org Design B2B)</option>
+      <option value="PROF-04">Mode A: Sunehri Yadav (Systems Modernization)</option>
+      <option value="PROF-05">Mode A: Vivek Kumar Dansena (Manufacturing Pilot)</option>
+    </select>
+    <div id="profileDetails" style="font-size: 11px; color: var(--olive);">
+      Loading active profile settings...
+    </div>
+  </div>
+
+  <!-- Live KPI Metrics -->
+  <div class="kpi-grid">
+    <div class="kpi-box">
+      <div class="kpi-label">Targets Sourced</div>
+      <div class="kpi-val" id="kpiTargets">--</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Contacts Verified</div>
+      <div class="kpi-val" id="kpiContacts">--</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Drafts Ready</div>
+      <div class="kpi-val" id="kpiDrafts">--</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Emails Sent</div>
+      <div class="kpi-val" id="kpiSent">--</div>
+    </div>
+  </div>
+
+  <!-- 5-Step Pipeline Actions -->
+  <div class="card">
+    <div class="card-title">Outreach Execution Pipeline</div>
+
+    <button class="btn btn-outline" onclick="runStep('step1')">Step 1: Discover Target Leads</button>
+    <button class="btn btn-outline" onclick="runStep('step2')">Step 2: Enrich &amp; Verify MX</button>
+    <button class="btn btn-outline" onclick="runStep('step3')">Step 3: Run AI Problem Diagnosis</button>
+    <button class="btn btn-primary" onclick="runStep('step4')">Step 4: Generate 2-Tier PDF Decks</button>
+    <button class="btn btn-accent" onclick="runStep('step5')">Step 5: Bundle Gmail Drafts</button>
+
+    <div id="statusBox" class="status-msg"></div>
+  </div>
+
+  <!-- LinkedIn Outreach Action Hub -->
+  <div class="card">
+    <div class="card-title">LinkedIn 1-Click Queue</div>
+    <p style="font-size: 11px; color: var(--olive); margin-bottom: 8px;">Personalized 300-char connection messages ready for dispatched leads:</p>
+    <div id="linkedInQueue">
+      <div style="font-size: 11px; color: #888;">No pending LinkedIn connection notes. Run Step 5 to populate.</div>
+    </div>
+  </div>
+
+  <!-- API Key Credentials Drawer -->
+  <div class="card">
+    <details>
+      <summary>&#9881; API Credentials &amp; Fallbacks</summary>
+      <div style="margin-top: 10px;">
+        <label style="font-size: 11px; font-weight: 600;">Gemini API Key</label>
+        <input type="password" id="geminiKey" class="input-field" placeholder="AIzaSy...">
+
+        <label style="font-size: 11px; font-weight: 600;">Hunter.io Key (Optional)</label>
+        <input type="password" id="hunterKey" class="input-field" placeholder="Leave blank for DNS fallback">
+
+        <label style="font-size: 11px; font-weight: 600;">Apollo Key (Optional)</label>
+        <input type="password" id="apolloKey" class="input-field" placeholder="Leave blank for DNS fallback">
+
+        <button class="btn btn-primary" style="margin-top: 6px;" onclick="saveApiKeys()">Save Credentials</button>
+      </div>
+    </details>
+  </div>
+
+  <script>
+    function showStatus(msg, type) {
+      var box = document.getElementById('statusBox');
+      box.className = 'status-msg ' + (type ? 'status-' + type : 'status-loading');
+      box.innerText = msg;
+    }
+
+    function refreshDashboard() {
+      google.script.run.withSuccessHandler(function(state) {
+        document.getElementById('kpiTargets').innerText = state.totalCompanies;
+        document.getElementById('kpiContacts').innerText = state.verifiedEmails;
+        document.getElementById('kpiDrafts').innerText = state.draftsPrepared;
+        document.getElementById('kpiSent').innerText = state.emailsSent;
+
+        if (state.activeProfile) {
+          document.getElementById('profileSelector').value = state.activeProfile.Profile_ID;
+          document.getElementById('profileDetails').innerHTML = 
+            '<strong>' + state.activeProfile.Name + '</strong> (' + state.activeProfile.Mode + ')<br/>' +
+            state.activeProfile.Title;
+        }
+
+        renderLinkedInQueue(state.recentDrafts || []);
+      }).getSidebarDashboardState();
+    }
+
+    function onProfileChange() {
+      var sel = document.getElementById('profileSelector').value;
+      showStatus('Switching active profile...', 'loading');
+      google.script.run.withSuccessHandler(function() {
+        showStatus('Active profile updated successfully.', 'success');
+        refreshDashboard();
+      }).setActiveProfileMode(sel);
+    }
+
+    function runStep(step) {
+      var map = {
+        step1: { fn: 'runDailyResearch', msg: 'Discovering companies via Google News RSS & triggers...' },
+        step2: { fn: 'enrichProspectContacts', msg: 'Verifying MX records and generating email permutations...' },
+        step3: { fn: 'mapProblemSolutions', msg: 'Diagnosing bottlenecks and mapping Optra360 solutions...' },
+        step4: { fn: 'buildAllPendingPitchDecks', msg: 'Cloning Google Slides and exporting 5 & 12-slide PDFs...' },
+        step5: { fn: 'processOutreachEmailBatch', msg: 'Assembling branded HTML emails & bundling Gmail drafts...' }
+      };
+
+      var s = map[step];
+      showStatus(s.msg, 'loading');
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          showStatus('Execution complete! ' + JSON.stringify(res), 'success');
+          refreshDashboard();
+        })
+        .withFailureHandler(function(err) {
+          showStatus('Error: ' + err.message, 'error');
+        })[s.fn]();
+    }
+
+    function renderLinkedInQueue(items) {
+      var container = document.getElementById('linkedInQueue');
+      if (!items || items.length === 0) {
+        container.innerHTML = '<div style="font-size: 11px; color: #888;">No pending LinkedIn connection notes. Run Step 5 to populate.</div>';
+        return;
+      }
+
+      var html = '';
+      items.forEach(function(item) {
+        html += 
+          '<div class="li-lead-card">' +
+            '<div class="li-name">' + item.Prospect_Name + '</div>' +
+            '<div class="li-company">' + item.Designation + ' at ' + item.Company_Name + '</div>' +
+            '<div class="li-note">' + item.LinkedIn_Note + '</div>' +
+            '<div style="display: flex; gap: 6px;">' +
+              '<button class="btn btn-outline" style="padding: 4px 8px; font-size: 10px; margin: 0;" onclick="copyText(\'' + escape(item.LinkedIn_Note) + '\')">Copy Note</button>' +
+              '<a href="' + item.LinkedIn_URL + '" target="_blank" class="btn btn-primary" style="padding: 4px 8px; font-size: 10px; margin: 0; text-decoration: none;">Open LinkedIn</a>' +
+            '</div>' +
+          '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function copyText(escapedText) {
+      var text = unescape(escapedText);
+      navigator.clipboard.writeText(text).then(function() {
+        showStatus('LinkedIn note copied to clipboard!', 'success');
+      });
+    }
+
+    function saveApiKeys() {
+      var gemini = document.getElementById('geminiKey').value;
+      var hunter = document.getElementById('hunterKey').value;
+      var apollo = document.getElementById('apolloKey').value;
+
+      showStatus('Saving API keys...', 'loading');
+      google.script.run.withSuccessHandler(function() {
+        showStatus('Credentials updated in ScriptProperties.', 'success');
+      }).saveSidebarApiKeys({
+        gemini: gemini,
+        hunter: hunter,
+        apollo: apollo
+      });
+    }
+
+    window.onload = function() {
+      refreshDashboard();
+    };
+  </script>
+</body>
+</html>

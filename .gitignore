@@ -1,0 +1,8 @@
+node_modules/
+.clasprc.json
+*.log
+.system_generated/
+scratch/
+.env
+.DS_Store
+Thumbs.db
