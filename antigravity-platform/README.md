@@ -21,6 +21,26 @@ Antigravity operates as an **independent standalone Google Apps Script Web Appli
 * **Direct Web App URL**: [Open Web App](https://script.google.com/macros/s/AKfycbw3ZJDuex74gJWR1s_brxaDAelpWI_PZVeB4SBsJ9REP_ty8x-cEOyO3ZLm4du57LMkew/exec)
 * **Script Editor**: [Open Script Project](https://script.google.com/d/1b1oJEtAVGcB1FeVFJ7V7tWV-Lo-beGkoQgreIryArcDmD9rSfV6Powqf/edit)
 
+---
+
+## 2. Platform Documentation, Specifications & Governance
+
+| Document | File Path | Scope & Authority |
+|---|---|---|
+| **Product Requirements Document (PRD)** | [`PRD.md`](./PRD.md) | Exhaustive problem statement, candidate personas, user journeys, KPIs, FRs, NFRs, and compliance guardrails. |
+| **Single Source of Truth (SSOT)** | [`SSOT.md`](./SSOT.md) | Authoritative reference for 14-table relational schemas, state machine lifecycles, 100-pt scoring math, and pacing limits. |
+| **Architecture Decision Records (ADRs)** | [`docs/adr/`](./docs/adr/) | 8 technical decision records documenting architectural choices, tradeoffs, and rationale. |
+
+### Architecture Decision Records Index:
+* [ADR-001: Serverless Google Workspace Stack vs Third-Party SaaS Sequencers](./docs/adr/ADR-001-serverless-google-workspace.md)
+* [ADR-002: Google Sheets as a 14-Table Relational CRM Database with In-Memory Hash Joins](./docs/adr/ADR-002-relational-crm-sheets.md)
+* [ADR-003: Quota-Safe Jitter Dispatcher (100/day Ceiling, 15 Quota Buffer, 240s Ceiling)](./docs/adr/ADR-003-quota-safe-dispatch-engine.md)
+* [ADR-004: RFC 2822 In-Reply-To Thread-Locked Follow-Ups via GmailThread API](./docs/adr/ADR-004-thread-locked-followups.md)
+* [ADR-005: Zero-Cost DNS MX Verification via Google Public DNS-over-HTTPS](./docs/adr/ADR-005-dns-mx-verification.md)
+* [ADR-006: Bipartite Tag Intersection Matching Algorithm for Proof-of-Work Injection](./docs/adr/ADR-006-bipartite-matching-algorithm.md)
+* [ADR-007: Gemini 1.5 Pro Structured JSON API Bridge via UrlFetchApp](./docs/adr/ADR-007-gemini-ai-copilot-bridge.md)
+* [ADR-008: Standalone Apps Script Web App Architecture with Dynamic Database Provisioning](./docs/adr/ADR-008-standalone-webapp-ui.md)
+
 ```
 +--------------------------------------------------------------------------------------------------+
 |                        CANDIDATE ASSET & PROOF-OF-WORK LAYER (GOOGLE DRIVE)                       |
