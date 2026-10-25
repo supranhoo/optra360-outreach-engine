@@ -1215,10 +1215,19 @@
           </small>
         </div>
         <div class="form-group">
-          <label style="font-size: 0.75rem; font-weight: 700;">Apollo.io API Key (Optional)</label>
-          <input type="password" id="setting-apollo-key" class="form-control" placeholder="Paste Apollo API key for live search">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0;">Apollo.io API Key (Live Search)</label>
+            <span id="apollo-status-badge" style="font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary);">Checking...</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <input type="password" id="setting-apollo-key" class="form-control" placeholder="Paste Apollo API key (e.g. your key)">
+            <button class="btn sm" type="button" onclick="testApolloKeyFromSettings()" id="btn-test-apollo" style="white-space: nowrap; font-weight: 600;">
+              ⚡ Test Key
+            </button>
+          </div>
+          <div id="apollo-test-result" style="display: none; margin-top: 6px; font-size: 0.75rem; padding: 6px 10px; border-radius: 4px;"></div>
           <small style="display: block; font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px;">
-            Enables live search from the Apollo Lead Engine. If left blank, you can still import leads using CSV.
+            Required for Tab 1 Live Apollo search. Authentication now verified directly with Apollo via <code>X-Api-Key</code> headers.
           </small>
         </div>
         <div class="form-group">
@@ -1823,17 +1832,72 @@
 
     function openSettingsModal() {
       document.getElementById('modal-settings').classList.add('active');
+      const testResultEl = document.getElementById('apollo-test-result');
+      if (testResultEl) testResultEl.style.display = 'none';
       if (typeof google !== 'undefined' && google.script && google.script.run) {
         google.script.run.withSuccessHandler(function(res) {
           if (res && res.success && res.settings) {
             document.getElementById('setting-full-name').value = res.settings.fullName || '';
             document.getElementById('setting-headline').value = res.settings.headline || '';
             document.getElementById('setting-calendar-url').value = res.settings.calendarBookingUrl || '';
-            if (res.settings.maskedApolloKey) {
+            const badgeEl = document.getElementById('apollo-status-badge');
+            if (res.settings.hasApolloKey) {
               document.getElementById('setting-apollo-key').placeholder = 'Configured (' + res.settings.maskedApolloKey + ')';
+              if (badgeEl) badgeEl.innerHTML = '<span style="color: var(--accent-green);">● Active Key Saved</span>';
+            } else {
+              document.getElementById('setting-apollo-key').placeholder = 'Paste Apollo API key (e.g. your key)';
+              if (badgeEl) badgeEl.innerHTML = '<span style="color: var(--text-tertiary);">Not Configured</span>';
             }
           }
         }).apiGetCandidateSettings();
+      }
+    }
+
+    function testApolloKeyFromSettings() {
+      const inputKey = document.getElementById('setting-apollo-key').value.trim();
+      const statusDiv = document.getElementById('apollo-test-result');
+      const testBtn = document.getElementById('btn-test-apollo');
+      const badgeEl = document.getElementById('apollo-status-badge');
+
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = 'var(--bg-card)';
+      statusDiv.style.border = '1px solid var(--border-subtle)';
+      statusDiv.style.color = 'var(--text-secondary)';
+      statusDiv.innerHTML = '<span class="spinner"></span> Verifying authentication with Apollo.io API...';
+      testBtn.disabled = true;
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            testBtn.disabled = false;
+            if (res && res.success) {
+              statusDiv.style.background = 'rgba(16, 185, 129, 0.1)';
+              statusDiv.style.border = '1px solid var(--accent-green)';
+              statusDiv.style.color = 'var(--accent-green)';
+              statusDiv.innerHTML = '✅ <strong>Connected!</strong> ' + (res.message || 'Apollo API key is active.');
+              if (badgeEl) badgeEl.innerHTML = '<span style="color: var(--accent-green);">● Connected</span>';
+            } else {
+              statusDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+              statusDiv.style.border = '1px solid #ef4444';
+              statusDiv.style.color = '#ef4444';
+              statusDiv.innerHTML = '❌ <strong>Authentication Failed:</strong> ' + (res.error || 'Key rejected by Apollo.');
+              if (badgeEl) badgeEl.innerHTML = '<span style="color: #ef4444;">● Inactive</span>';
+            }
+          })
+          .withFailureHandler(function(err) {
+            testBtn.disabled = false;
+            statusDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+            statusDiv.style.border = '1px solid #ef4444';
+            statusDiv.style.color = '#ef4444';
+            statusDiv.innerHTML = '❌ <strong>Request Error:</strong> ' + (err.message || 'Network request failed');
+          })
+          .apiTestApolloConnection(inputKey);
+      } else {
+        testBtn.disabled = false;
+        statusDiv.style.background = 'rgba(16, 185, 129, 0.1)';
+        statusDiv.style.border = '1px solid var(--accent-green)';
+        statusDiv.style.color = 'var(--accent-green)';
+        statusDiv.innerHTML = '✅ Simulated connection successful (Local Dev Mode)';
       }
     }
 

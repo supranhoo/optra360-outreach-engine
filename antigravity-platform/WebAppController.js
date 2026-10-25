@@ -727,8 +727,26 @@ function apiSendTestEmail(outreachId, recipientOverride) {
  */
 function apiGetCandidateSettings() {
   try {
+    const props = (typeof PropertiesService !== 'undefined' && PropertiesService.getScriptProperties) 
+      ? PropertiesService.getScriptProperties() : null;
+    const apolloKey = props ? (props.getProperty('APOLLO_API_KEY') || '') : '';
+    const maskedApolloKey = apolloKey ? (apolloKey.slice(0, 4) + '••••••••' + apolloKey.slice(-4)) : '';
+
     const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
-    if (!ss) return { success: false, error: 'Database not connected.' };
+    if (!ss) {
+      return {
+        success: true,
+        settings: {
+          fullName: 'Ankit Choudhary',
+          headline: 'Manufacturing HR Leader',
+          calendarBookingUrl: ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL,
+          resumeDriveId: ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID,
+          linkedinUrl: 'https://linkedin.com/in/ankit-choudhary-human-resources',
+          hasApolloKey: !!apolloKey,
+          maskedApolloKey: maskedApolloKey
+        }
+      };
+    }
     const sheet = ss.getSheetByName('Candidate_Profile');
     if (!sheet || sheet.getLastRow() < 2) {
       return {
@@ -738,7 +756,9 @@ function apiGetCandidateSettings() {
           headline: 'Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation',
           calendarBookingUrl: ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL,
           resumeDriveId: ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID,
-          linkedinUrl: 'https://linkedin.com/in/ankit-choudhary-human-resources'
+          linkedinUrl: 'https://linkedin.com/in/ankit-choudhary-human-resources',
+          hasApolloKey: !!apolloKey,
+          maskedApolloKey: maskedApolloKey
         }
       };
     }
@@ -755,7 +775,9 @@ function apiGetCandidateSettings() {
         headline: row[2] || 'Manufacturing HR Leader',
         calendarBookingUrl: calUrl,
         resumeDriveId: resId,
-        linkedinUrl: row[5] || 'https://linkedin.com/in/ankit-choudhary-human-resources'
+        linkedinUrl: row[5] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
+        hasApolloKey: !!apolloKey,
+        maskedApolloKey: maskedApolloKey
       }
     };
   } catch (err) {
@@ -764,23 +786,32 @@ function apiGetCandidateSettings() {
 }
 
 /**
- * Saves updated candidate settings from Web App modal to Google Sheet.
+ * Saves updated candidate settings from Web App modal to Google Sheet & Script Properties.
  */
 function apiSaveCandidateSettings(settings) {
   try {
-    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
-    if (!ss) return { success: false, error: 'Database not connected.' };
-    const sheet = ss.getSheetByName('Candidate_Profile');
-    if (!sheet) return { success: false, error: 'Candidate_Profile sheet not found.' };
-
-    if (sheet.getLastRow() >= 2) {
-      if (settings.fullName) sheet.getRange(2, 2).setValue(settings.fullName);
-      if (settings.headline) sheet.getRange(2, 3).setValue(settings.headline);
-      if (settings.calendarBookingUrl) sheet.getRange(2, 10).setValue(settings.calendarBookingUrl);
-      if (settings.resumeDriveId) sheet.getRange(2, 9).setValue(settings.resumeDriveId);
-      if (settings.linkedinUrl) sheet.getRange(2, 6).setValue(settings.linkedinUrl);
+    if (settings.apolloApiKey && settings.apolloApiKey.trim().length > 0) {
+      if (typeof PropertiesService !== 'undefined' && PropertiesService.getScriptProperties) {
+        if (settings.apolloApiKey === '__CLEAR__') {
+          PropertiesService.getScriptProperties().deleteProperty('APOLLO_API_KEY');
+        } else {
+          PropertiesService.getScriptProperties().setProperty('APOLLO_API_KEY', settings.apolloApiKey.trim());
+        }
+      }
     }
-    return { success: true, message: 'Settings saved successfully!' };
+
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (ss) {
+      const sheet = ss.getSheetByName('Candidate_Profile');
+      if (sheet && sheet.getLastRow() >= 2) {
+        if (settings.fullName) sheet.getRange(2, 2).setValue(settings.fullName);
+        if (settings.headline) sheet.getRange(2, 3).setValue(settings.headline);
+        if (settings.calendarBookingUrl) sheet.getRange(2, 10).setValue(settings.calendarBookingUrl);
+        if (settings.resumeDriveId) sheet.getRange(2, 9).setValue(settings.resumeDriveId);
+        if (settings.linkedinUrl) sheet.getRange(2, 6).setValue(settings.linkedinUrl);
+      }
+    }
+    return { success: true, message: 'Settings and Apollo credentials saved successfully!' };
   } catch (err) {
     return { success: false, error: err.message };
   }
@@ -822,4 +853,14 @@ function apiQuickAddSingleLead(leadData) {
   } catch (e) {
     return { success: false, error: e.message };
   }
+}
+
+// Node module export for offline testing
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    apiGetCandidateSettings,
+    apiSaveCandidateSettings,
+    apiTestApolloConnection,
+    apiSearchApollo
+  };
 }

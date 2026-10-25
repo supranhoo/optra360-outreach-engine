@@ -465,6 +465,68 @@ runTest('HR_LEADERSHIP segment targets 0-to-1 PMS rollout and IR governance', ()
 });
 
 // -------------------------------------------------------------
+// Test Suite 12: Apollo Authentication Headers & Key Persistence
+// -------------------------------------------------------------
+console.log('\n--- Suite 12: Apollo Authentication Headers & Key Persistence ---');
+
+const mockProps = {};
+global.PropertiesService = {
+  getScriptProperties: () => ({
+    getProperty: (k) => mockProps[k] || null,
+    setProperty: (k, v) => { mockProps[k] = v; },
+    deleteProperty: (k) => { delete mockProps[k]; }
+  })
+};
+
+let interceptedRequest = null;
+global.UrlFetchApp = {
+  fetch: (url, options) => {
+    interceptedRequest = { url, options };
+    return {
+      getResponseCode: () => 200,
+      getContentText: () => JSON.stringify({
+        people: [{ id: 'p1', name: 'Test Lead', title: 'Managing Director' }],
+        pagination: { page: 1, per_page: 1, total_entries: 1 }
+      })
+    };
+  }
+};
+
+const { apiGetCandidateSettings, apiSaveCandidateSettings, apiTestApolloConnection } = require('../WebAppController.js');
+
+runTest('Apollo testConnection passes X-Api-Key and Cache-Control headers', () => {
+  const result = ANTIGRAVITY_APOLLO.testConnection('test_api_key_header_xyz');
+  assert.strictEqual(result.success, true);
+  assert.ok(interceptedRequest);
+  assert.strictEqual(interceptedRequest.options.headers['X-Api-Key'], 'test_api_key_header_xyz');
+  assert.strictEqual(interceptedRequest.options.headers['Cache-Control'], 'no-cache');
+  assert.strictEqual(interceptedRequest.options.headers['Content-Type'], 'application/json');
+});
+
+runTest('Apollo searchPeople passes X-Api-Key in headers', () => {
+  mockProps['APOLLO_API_KEY'] = 'persisted_apollo_key_999';
+  const result = ANTIGRAVITY_APOLLO.searchPeople({ titles: ['Plant Head'] });
+  assert.strictEqual(result.success, true);
+  assert.strictEqual(interceptedRequest.options.headers['X-Api-Key'], 'persisted_apollo_key_999');
+});
+
+runTest('apiSaveCandidateSettings properly stores Apollo API key into Script Properties', () => {
+  apiSaveCandidateSettings({
+    fullName: 'Ankit Choudhary',
+    apolloApiKey: 'ap_live_new_secure_key_12345'
+  });
+  assert.strictEqual(mockProps['APOLLO_API_KEY'], 'ap_live_new_secure_key_12345');
+});
+
+runTest('apiGetCandidateSettings returns masked Apollo key and active flag', () => {
+  mockProps['APOLLO_API_KEY'] = 'ap_live_new_secure_key_12345';
+  const res = apiGetCandidateSettings();
+  assert.strictEqual(res.success, true);
+  assert.strictEqual(res.settings.hasApolloKey, true);
+  assert.strictEqual(res.settings.maskedApolloKey, 'ap_l••••••••2345');
+});
+
+// -------------------------------------------------------------
 // Test Summary
 // -------------------------------------------------------------
 console.log('\n======================================================');

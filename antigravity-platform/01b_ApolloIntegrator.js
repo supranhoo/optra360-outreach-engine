@@ -83,6 +83,11 @@ var ANTIGRAVITY_APOLLO = {
       const options = {
         method: 'post',
         contentType: 'application/json',
+        headers: {
+          'X-Api-Key': key,
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        },
         payload: JSON.stringify(payload),
         muteHttpExceptions: true
       };
@@ -98,7 +103,7 @@ var ANTIGRAVITY_APOLLO = {
           totalEntries: body.pagination ? body.pagination.total_entries : undefined
         };
       } else {
-        const errMsg = body.error || body.message || ('Apollo API returned HTTP ' + code);
+        const errMsg = (body.error_details && body.error_details.message) || body.error || body.message || ('Apollo API returned HTTP ' + code);
         return { success: false, error: errMsg };
       }
     } catch (e) {
@@ -177,6 +182,11 @@ var ANTIGRAVITY_APOLLO = {
       const options = {
         method: 'post',
         contentType: 'application/json',
+        headers: {
+          'X-Api-Key': key,
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        },
         payload: JSON.stringify(payload),
         muteHttpExceptions: true
       };
@@ -186,7 +196,8 @@ var ANTIGRAVITY_APOLLO = {
       const body = JSON.parse(resp.getContentText() || '{}');
 
       if (code !== 200) {
-        return { success: false, error: body.error || body.message || ('Apollo error ' + code) };
+        const errMsg = (body.error_details && body.error_details.message) || body.error || body.message || ('Apollo error ' + code);
+        return { success: false, error: errMsg };
       }
 
       const rawPeople = body.people || [];
@@ -247,12 +258,22 @@ var ANTIGRAVITY_APOLLO = {
       const options = {
         method: 'post',
         contentType: 'application/json',
+        headers: {
+          'X-Api-Key': key,
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        },
         payload: JSON.stringify(payload),
         muteHttpExceptions: true
       };
 
       const resp = UrlFetchApp.fetch(url, options);
+      const code = resp.getResponseCode();
       const body = JSON.parse(resp.getContentText() || '{}');
+      if (code !== 200) {
+        const errMsg = (body.error_details && body.error_details.message) || body.error || body.message || ('Apollo error ' + code);
+        return { success: false, error: errMsg };
+      }
       if (body.person && body.person.email) {
         return {
           success: true,
