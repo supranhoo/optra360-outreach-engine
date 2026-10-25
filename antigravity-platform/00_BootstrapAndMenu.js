@@ -284,8 +284,8 @@ function seedBlueprintSampleData_(ss, forceOverwrite = true) {
       'https://linkedin.com/in/ankit-choudhary-human-resources',
       'https://linkedin.com/in/ankit-choudhary-human-resources',
       'https://linkedin.com/in/ankit-choudhary-human-resources',
-      '1AnkitChoudhary_Resume_DriveID',
-      'https://calendly.com/ankitchoudharymba/hr-leadership-discussion',
+      '1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb',
+      'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary&body=Hi%20Ankit,%0D%0A%0D%0AI%20reviewed%20your%20profile%20and%20would%20like%20to%20schedule%20a%2015-minute%20discussion.%20Here%20are%20a%20few%20times%20that%20work%20for%20me:...',
       100
     ]];
     if (forceOverwrite || candSheet.getLastRow() <= 1) {

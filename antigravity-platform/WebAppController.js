@@ -352,8 +352,12 @@ function apiReRenderDraftWithTemplate(outreachId, newArchetype) {
       github_profile_url: profile[6] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
       portfolio_base_url: profile[5] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
       portfolio_video_url: (profile[5] && profile[5].length > 10) ? appendUtm_(profile[5], comp[1], contactId) : 'https://linkedin.com/in/ankit-choudhary-human-resources',
-      resume_drive_url: profile[8] ? ('https://drive.google.com/file/d/' + profile[8] + '/view') : 'https://linkedin.com/in/ankit-choudhary-human-resources',
-      calendar_booking_url: profile[9] || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion'
+      resume_drive_url: (profile[8] && profile[8].length > 10 && !profile[8].includes('1AnkitChoudhary_Resume_DriveID'))
+        ? ('https://drive.google.com/file/d/' + profile[8] + '/view')
+        : (ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL || 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view'),
+      calendar_booking_url: (profile[9] && profile[9].length > 5 && !profile[9].includes('ankitchoudharymba/hr-leadership-discussion'))
+        ? profile[9]
+        : (ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL || 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary')
     };
 
     const rendered = renderPersonaTemplate_(contactRow[7], tokenPayload, newArchetype);
@@ -524,33 +528,129 @@ function apiSendTestEmail(outreachId, recipientOverride) {
 
     const plainText = testBody.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
+    // Fetch and prepare physical CV PDF attachment from Google Drive
+    let attachments = [];
+    let attachedName = '';
+    let resumeDriveId = ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID;
+    const candSheet = ss.getSheetByName('Candidate_Profile');
+    if (candSheet && candSheet.getLastRow() >= 2) {
+      const p = candSheet.getRange(2, 1, 1, 10).getValues()[0];
+      if (p[8] && p[8].length > 10 && !p[8].includes('1AnkitChoudhary_Resume_DriveID')) {
+        resumeDriveId = p[8];
+      }
+    }
+
+    if (resumeDriveId && typeof DriveApp !== 'undefined') {
+      try {
+        const cvFile = DriveApp.getFileById(resumeDriveId);
+        const fileName = ANTIGRAVITY_CONFIG.DEFAULT_RESUME_FILE_NAME || 'Ankit_Choudhary_Executive_HR_CV.pdf';
+        attachments.push(cvFile.getAs('application/pdf').setName(fileName));
+        attachedName = fileName;
+      } catch (attErr) {
+        console.warn('Could not attach CV from Drive: ' + attErr.message);
+      }
+    }
+
+    const emailOptions = {
+      htmlBody: testBody,
+      attachments: attachments
+    };
+
     try {
       if (typeof GmailApp !== 'undefined' && GmailApp.sendEmail) {
-        GmailApp.sendEmail(targetEmail, testSubject, plainText, {
-          htmlBody: testBody
-        });
+        GmailApp.sendEmail(targetEmail, testSubject, plainText, emailOptions);
       } else {
         MailApp.sendEmail({
           to: targetEmail,
           subject: testSubject,
-          htmlBody: testBody
+          htmlBody: testBody,
+          body: plainText,
+          attachments: attachments
         });
       }
     } catch (e1) {
       MailApp.sendEmail({
         to: targetEmail,
         subject: testSubject,
-        htmlBody: testBody
+        htmlBody: testBody,
+        body: plainText,
+        attachments: attachments
       });
     }
 
     return {
       success: true,
-      message: 'Test draft delivered to ' + targetEmail + '! Check your inbox.',
-      targetEmail: targetEmail
+      message: 'Test draft delivered to ' + targetEmail + (attachedName ? ' with ' + attachedName + ' attached!' : '!'),
+      targetEmail: targetEmail,
+      attached: attachments.length > 0,
+      fileName: attachedName
     };
   } catch (e) {
     return { success: false, error: 'Failed sending test email: ' + e.message };
+  }
+}
+
+/**
+ * Returns user settings for Web App configuration modal.
+ */
+function apiGetCandidateSettings() {
+  try {
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return { success: false, error: 'Database not connected.' };
+    const sheet = ss.getSheetByName('Candidate_Profile');
+    if (!sheet || sheet.getLastRow() < 2) {
+      return {
+        success: true,
+        settings: {
+          fullName: 'Ankit Choudhary',
+          headline: 'Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation',
+          calendarBookingUrl: ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL,
+          resumeDriveId: ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID,
+          linkedinUrl: 'https://linkedin.com/in/ankit-choudhary-human-resources'
+        }
+      };
+    }
+    const row = sheet.getRange(2, 1, 1, 11).getValues()[0];
+    const calUrl = (row[9] && row[9].length > 5 && !row[9].includes('ankitchoudharymba/hr-leadership-discussion'))
+      ? row[9] : ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL;
+    const resId = (row[8] && row[8].length > 10 && !row[8].includes('1AnkitChoudhary_Resume_DriveID'))
+      ? row[8] : ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID;
+
+    return {
+      success: true,
+      settings: {
+        fullName: row[1] || 'Ankit Choudhary',
+        headline: row[2] || 'Manufacturing HR Leader',
+        calendarBookingUrl: calUrl,
+        resumeDriveId: resId,
+        linkedinUrl: row[5] || 'https://linkedin.com/in/ankit-choudhary-human-resources'
+      }
+    };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Saves updated candidate settings from Web App modal to Google Sheet.
+ */
+function apiSaveCandidateSettings(settings) {
+  try {
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return { success: false, error: 'Database not connected.' };
+    const sheet = ss.getSheetByName('Candidate_Profile');
+    if (!sheet) return { success: false, error: 'Candidate_Profile sheet not found.' };
+
+    if (sheet.getLastRow() >= 2) {
+      if (settings.fullName) sheet.getRange(2, 2).setValue(settings.fullName);
+      if (settings.headline) sheet.getRange(2, 3).setValue(settings.headline);
+      if (settings.calendarBookingUrl) sheet.getRange(2, 10).setValue(settings.calendarBookingUrl);
+      if (settings.resumeDriveId) sheet.getRange(2, 9).setValue(settings.resumeDriveId);
+      if (settings.linkedinUrl) sheet.getRange(2, 6).setValue(settings.linkedinUrl);
+    }
+    return { success: true, message: 'Settings saved successfully!' };
+  } catch (err) {
+    return { success: false, error: err.message };
   }
 }
 

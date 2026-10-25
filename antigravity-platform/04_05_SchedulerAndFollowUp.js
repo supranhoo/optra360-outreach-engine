@@ -60,6 +60,25 @@ function runQuotaSafeMailDispatcher() {
     const now = new Date();
     let batchCount = 0;
 
+    // Fetch and prepare physical CV PDF attachment for campaign dispatches
+    let attachments = [];
+    let resumeDriveId = ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID;
+    const candSheet = ss.getSheetByName('Candidate_Profile');
+    if (candSheet && candSheet.getLastRow() >= 2) {
+      const p = candSheet.getRange(2, 1, 1, 10).getValues()[0];
+      if (p[8] && p[8].length > 10 && !p[8].includes('1AnkitChoudhary_Resume_DriveID')) {
+        resumeDriveId = p[8];
+      }
+    }
+    if (resumeDriveId && typeof DriveApp !== 'undefined') {
+      try {
+        const cvFile = DriveApp.getFileById(resumeDriveId);
+        attachments.push(cvFile.getAs('application/pdf').setName(ANTIGRAVITY_CONFIG.DEFAULT_RESUME_FILE_NAME || 'Ankit_Choudhary_Executive_HR_CV.pdf'));
+      } catch (attErr) {
+        console.warn('Could not load CV attachment for campaign dispatch: ' + attErr.message);
+      }
+    }
+
     for (let i = 1; i < outreachData.length; i++) {
       // Execution ceiling & batch throttle
       if (Date.now() - startTime > ANTIGRAVITY_CONFIG.MAX_EXECUTION_MS) break;
@@ -90,7 +109,7 @@ function runQuotaSafeMailDispatcher() {
       const plainBody = htmlBody.replace(/<[^>]+>/g, '');
 
       try {
-        GmailApp.sendEmail(recipientEmail, subject, plainBody, { htmlBody: htmlBody });
+        GmailApp.sendEmail(recipientEmail, subject, plainBody, { htmlBody: htmlBody, attachments: attachments });
       } catch (err) {
         console.error('Failed to send email to ' + recipientEmail + ': ' + err.message);
         outreachSheet.getRange(i + 1, 12).setValue('FAILED');

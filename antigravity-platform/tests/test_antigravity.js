@@ -393,6 +393,43 @@ runTest('ULTRA_HUMAN renders clean unboxed text email with inline hyperlinks', (
 });
 
 // -------------------------------------------------------------
+// Test Suite 10: Executive CV Attachment & Calendar Booking Engine
+// -------------------------------------------------------------
+console.log('\n--- Suite 10: Executive CV Attachment & Calendar Booking Engine ---');
+
+runTest('Resolves master CV Google Drive ID and PDF attachment filename', () => {
+  assert.strictEqual(ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID, '1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb');
+  assert.strictEqual(ANTIGRAVITY_CONFIG.DEFAULT_RESUME_FILE_NAME, 'Ankit_Choudhary_Executive_HR_CV.pdf');
+  assert.ok(ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL.includes('1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb'));
+});
+
+runTest('Replaces broken 404 Calendly URL with working booking link or fallback', () => {
+  assert.ok(!ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL.includes('ankitchoudharymba/hr-leadership-discussion'));
+  assert.ok(ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL.includes('ankitchoudharymba@gmail.com') || ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL.startsWith('http'));
+});
+
+runTest('All 4 archetypes contain explicit physical CV attachment notice', () => {
+  const t1 = renderPersonaTemplate_('FOUNDER', sampleTokenPayload, 'CLASSIC_LETTER');
+  const t2 = renderPersonaTemplate_('TECH_LEAD', sampleTokenPayload, 'MODERN_BRIEF');
+  const t3 = renderPersonaTemplate_('HIRING_MGR', sampleTokenPayload, 'VIDEO_SPOTLIGHT');
+  const t4 = renderPersonaTemplate_('RECRUITER', sampleTokenPayload, 'ULTRA_HUMAN');
+
+  assert.ok(t1.htmlBody.includes('Executive CV Attached') || t1.htmlBody.includes('CV Attached'));
+  assert.ok(t2.htmlBody.includes('Executive CV Attached') || t2.htmlBody.includes('CV Attached'));
+  assert.ok(t3.htmlBody.includes('Executive CV Attached') || t3.htmlBody.includes('CV Attached'));
+  assert.ok(t4.htmlBody.includes('Executive CV Attached') || t4.htmlBody.includes('CV Attached'));
+});
+
+runTest('Calendar scheduling link in templates is free of 404 errors', () => {
+  const stalePayload = Object.assign({}, sampleTokenPayload, {
+    calendar_booking_url: 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion'
+  });
+  const tpl = renderPersonaTemplate_('FOUNDER', stalePayload, 'CLASSIC_LETTER');
+  assert.ok(!tpl.htmlBody.includes('ankitchoudharymba/hr-leadership-discussion'));
+  assert.ok(tpl.htmlBody.includes('Schedule 15-Min Discussion'));
+});
+
+// -------------------------------------------------------------
 // Test Summary
 // -------------------------------------------------------------
 console.log('\n======================================================');

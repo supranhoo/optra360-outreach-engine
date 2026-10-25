@@ -35,8 +35,10 @@ var ANTIGRAVITY_CONFIG = {
 
   // Default Portfolio, Video & CV URLs
   DEFAULT_PORTFOLIO_VIDEO_URL: 'https://linkedin.com/in/ankit-choudhary-human-resources',
-  DEFAULT_RESUME_URL: 'https://linkedin.com/in/ankit-choudhary-human-resources',
-  DEFAULT_CALENDLY_URL: 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion',
+  DEFAULT_RESUME_DRIVE_ID: '1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb',
+  DEFAULT_RESUME_FILE_NAME: 'Ankit_Choudhary_Executive_HR_CV.pdf',
+  DEFAULT_RESUME_URL: 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view',
+  DEFAULT_CALENDLY_URL: 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary&body=Hi%20Ankit,%0D%0A%0D%0AI%20reviewed%20your%20profile%20and%20would%20like%20to%20schedule%20a%2015-minute%20discussion.%20Here%20are%20a%20few%20times%20that%20work%20for%20me:...',
 
   // Dynamic Relational Spreadsheet Resolution (Standalone Apps Script Compatible)
   DEFAULT_SPREADSHEET_ID: '1KEJfOBK8PobuGQ6TI-91AKebXehOphDD3LwQw_zaXwU',

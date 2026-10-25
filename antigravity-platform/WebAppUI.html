@@ -632,6 +632,11 @@
         + Add Decision Maker
       </button>
 
+      <!-- Profile & Calendar Settings -->
+      <button class="btn sm" onclick="openSettingsModal()" id="btn-settings" title="Profile, Calendar & CV Settings">
+        ⚙️ Settings
+      </button>
+
       <!-- Theme Toggle -->
       <button class="btn sm" onclick="toggleTheme()" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
         🌙
@@ -669,7 +674,12 @@
       <!-- Inspector Header -->
       <div class="inspector-header">
         <div class="inspector-target-info">
-          <h2 id="inspector-name">Select a Decision Maker</h2>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <h2 id="inspector-name">Select a Decision Maker</h2>
+            <span id="cv-attachment-pill" class="pill-badge pill-green" style="display: none; font-size: 0.7rem; font-weight: 600;">
+              📎 CV Attached (PDF)
+            </span>
+          </div>
           <p id="inspector-company-meta">Choose any contact from the left roster to inspect their customized email pitch.</p>
         </div>
 
@@ -697,16 +707,28 @@
         </div>
       </div>
 
-      <!-- Subject Line Bar -->
-      <div class="subject-bar">
-        <span class="subject-label">Subject:</span>
-        <input type="text" id="draft-subject-input" placeholder="Subject line will appear here..." class="subject-input">
+      <!-- Subject Line & Mode Bar -->
+      <div class="subject-bar" style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+          <span class="subject-label">Subject:</span>
+          <input type="text" id="draft-subject-input" placeholder="Subject line will appear here..." class="subject-input">
+        </div>
+        
+        <!-- Interactive Preview vs Direct Edit Mode -->
+        <div class="viewport-toggle" style="margin-left: auto;">
+          <button type="button" id="mode-preview-btn" class="viewport-btn active" onclick="setEmailMode('preview')" title="Click links to test calendar booking, video, and CV">
+            👁️ Clickable Preview
+          </button>
+          <button type="button" id="mode-edit-btn" class="viewport-btn" onclick="setEmailMode('edit')" title="Click anywhere inside the email to type edits">
+            ✏️ Direct Edit
+          </button>
+        </div>
       </div>
 
       <!-- Center Preview Stage -->
       <div class="email-stage">
         <div id="email-canvas-wrapper" class="email-canvas-wrapper">
-          <div class="email-render-box" id="email-render-box" contenteditable="true">
+          <div class="email-render-box" id="email-render-box" contenteditable="false">
             <div style="text-align: center; color: var(--text-tertiary); padding: 4rem 1rem;">
               👈 Click on any executive on the left to preview their hyper-personalized pitch here.
             </div>
@@ -769,6 +791,53 @@
     </div>
   </div>
 
+  <!-- Profile, Calendar & CV Settings Modal -->
+  <div id="modal-settings" class="modal-overlay" onclick="closeSettingsModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 style="font-size: 1rem; font-weight: 700;">⚙️ Profile, Calendar & CV Settings</h3>
+        <button style="background: none; border: none; font-size: 1.25rem; color: var(--text-tertiary); cursor: pointer;" onclick="closeSettingsModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="setting-full-name" class="form-control" placeholder="Ankit Choudhary">
+        </div>
+        <div class="form-group">
+          <label>Headline / Executive Title</label>
+          <input type="text" id="setting-headline" class="form-control" placeholder="Manufacturing HR Leader">
+        </div>
+        <div class="form-group">
+          <label>Calendar Booking URL (Calendly, Google Calendar, or mailto) *</label>
+          <input type="text" id="setting-calendar-url" class="form-control" placeholder="https://calendly.com/... or mailto:...">
+          <small style="display: block; font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px;">
+            Powers the <code>[📅 Schedule 15-Min Discussion]</code> CTA. Use your Calendly link, Google Calendar appointment schedule, or direct mailto.
+          </small>
+        </div>
+        <div class="form-group">
+          <label>Attached Executive CV</label>
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 10px 12px; font-size: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-weight: 600; color: var(--text-primary);">📄 Ankit_Choudhary_Executive_HR_CV.pdf (212 KB)</div>
+              <div style="font-size: 0.72rem; color: var(--accent-emerald);">✔ Verified in Google Drive • Physically attached to all outbound emails</div>
+            </div>
+            <a href="https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view" target="_blank" class="btn sm" style="text-decoration: none;">
+              👁️ View PDF
+            </a>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>LinkedIn Profile URL</label>
+          <input type="text" id="setting-linkedin-url" class="form-control" placeholder="https://linkedin.com/in/...">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+          <button class="btn" onclick="closeSettingsModal()">Cancel</button>
+          <button class="btn primary" onclick="saveCandidateSettings()">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toast"></div>
 
@@ -779,6 +848,7 @@
     let selectedDraftIndex = -1;
     let currentTheme = 'light';
     let currentViewport = 'desktop';
+    let currentEmailMode = 'preview';
 
     // UI Helper: Toast Notifications
     function showToast(html, duration = 4000) {
@@ -814,6 +884,83 @@
         wrapper.classList.remove('mobile-mode');
         btnDesk.classList.add('active');
         btnMob.classList.remove('active');
+      }
+    }
+
+    // Email Mode Switcher (Clickable Preview vs Direct Edit)
+    function setEmailMode(mode) {
+      currentEmailMode = mode;
+      const renderBox = document.getElementById('email-render-box');
+      const btnPrev = document.getElementById('mode-preview-btn');
+      const btnEdit = document.getElementById('mode-edit-btn');
+
+      if (!renderBox) return;
+
+      if (mode === 'preview') {
+        renderBox.setAttribute('contenteditable', 'false');
+        if (btnPrev) btnPrev.classList.add('active');
+        if (btnEdit) btnEdit.classList.remove('active');
+
+        // Make all links inside preview active and open in new tab
+        const links = renderBox.querySelectorAll('a');
+        links.forEach(a => {
+          a.setAttribute('target', '_blank');
+          a.style.pointerEvents = 'auto';
+          a.style.cursor = 'pointer';
+        });
+      } else {
+        renderBox.setAttribute('contenteditable', 'true');
+        if (btnEdit) btnEdit.classList.add('active');
+        if (btnPrev) btnPrev.classList.remove('active');
+      }
+    }
+
+    // Candidate Profile & Settings Modal Handlers
+    function openSettingsModal() {
+      document.getElementById('modal-settings').classList.add('active');
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(function(res) {
+          if (res && res.success && res.settings) {
+            document.getElementById('setting-full-name').value = res.settings.fullName || '';
+            document.getElementById('setting-headline').value = res.settings.headline || '';
+            document.getElementById('setting-calendar-url').value = res.settings.calendarBookingUrl || '';
+            document.getElementById('setting-linkedin-url').value = res.settings.linkedinUrl || '';
+          }
+        }).apiGetCandidateSettings();
+      }
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('modal-settings').classList.remove('active');
+    }
+
+    function saveCandidateSettings() {
+      const settings = {
+        fullName: document.getElementById('setting-full-name').value.trim(),
+        headline: document.getElementById('setting-headline').value.trim(),
+        calendarBookingUrl: document.getElementById('setting-calendar-url').value.trim(),
+        linkedinUrl: document.getElementById('setting-linkedin-url').value.trim()
+      };
+      showToast('<span class="spinner"></span> Saving settings...');
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            if (res && res.success) {
+              showToast('✅ ' + (res.message || 'Settings saved successfully!'));
+              closeSettingsModal();
+              // Re-render active draft to update calendar links
+              if (selectedDraftIndex >= 0) {
+                changeDraftStyle(document.getElementById('draft-archetype-select').value);
+              }
+            } else {
+              showToast('⚠️ Error saving settings: ' + (res.error || 'Unknown error'));
+            }
+          })
+          .withFailureHandler(onError)
+          .apiSaveCandidateSettings(settings);
+      } else {
+        showToast('Settings saved locally (offline mode).');
+        closeSettingsModal();
       }
     }
 
@@ -934,6 +1081,11 @@
         if (idx === index) c.classList.add('active');
         else c.classList.remove('active');
       });
+
+      // Show CV Attachment Pill & apply active email mode
+      const cvPill = document.getElementById('cv-attachment-pill');
+      if (cvPill) cvPill.style.display = 'inline-flex';
+      setEmailMode(currentEmailMode);
     }
 
     // Filter Left Roster

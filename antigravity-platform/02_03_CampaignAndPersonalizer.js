@@ -127,8 +127,12 @@ function generateCampaignOutreachDrafts(campaignId, templateArchetype) {
       github_profile_url: profile[6] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
       portfolio_base_url: profile[5] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
       portfolio_video_url: (profile[5] && profile[5].length > 10) ? appendUtm_(profile[5], comp[1], c[0]) : 'https://linkedin.com/in/ankit-choudhary-human-resources',
-      resume_drive_url: profile[8] ? ('https://drive.google.com/file/d/' + profile[8] + '/view') : 'https://linkedin.com/in/ankit-choudhary-human-resources',
-      calendar_booking_url: profile[9] || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion'
+      resume_drive_url: (profile[8] && profile[8].length > 10 && !profile[8].includes('1AnkitChoudhary_Resume_DriveID'))
+        ? ('https://drive.google.com/file/d/' + profile[8] + '/view')
+        : (ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL || 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view'),
+      calendar_booking_url: (profile[9] && profile[9].length > 5 && !profile[9].includes('ankitchoudharymba/hr-leadership-discussion'))
+        ? profile[9]
+        : (ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL || 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary')
     };
 
     const rendered = renderPersonaTemplate_(c[7], tokenPayload, selectedArchetype);
@@ -205,8 +209,10 @@ function getResponsiveEmailStyles_() {
  */
 function buildClassicLetterEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
-  const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
-  const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
+  const cvUrl = t.resume_drive_url || (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL : 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view');
+  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion'))
+    ? t.calendar_booking_url
+    : (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL : 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary');
 
   return getResponsiveEmailStyles_() +
     '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; color: #1e293b; line-height: 1.6; box-sizing: border-box;">' +
@@ -219,7 +225,7 @@ function buildClassicLetterEmail_(cfg, t) {
               '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
             '</td>' +
             '<td align="right" style="vertical-align: middle;">' +
-              '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 4px; text-decoration: none;">📄 View CV (PDF)</a>' +
+              '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 4px; text-decoration: none;">📄 Attached CV (PDF)</a>' +
             '</td>' +
           '</tr>' +
         '</table>' +
@@ -269,12 +275,18 @@ function buildClassicLetterEmail_(cfg, t) {
         '<div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">' +
           'How I Can Support ' + t.company_name + ':' +
         '</div>' +
-        '<ul style="padding-left: 20px; margin: 0 0 20px 0; font-size: 13.5px; color: #334155; line-height: 1.6;">' +
+        '<ul style="padding-left: 20px; margin: 0 0 16px 0; font-size: 13.5px; color: #334155; line-height: 1.6;">' +
           cfg.playbookBullets.map(function(b) { return '<li style="margin-bottom: 6px;">' + b + '</li>'; }).join('') +
         '</ul>' +
 
+        '<!-- Attachment Callout -->' +
+        '<div style="font-size: 12.5px; color: #334155; margin: 14px 0 16px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #059669; padding: 10px 14px; border-radius: 4px;">' +
+          '📎 <strong>Executive CV Attached:</strong> My complete 15-year credentials and plant workforce track record are attached as a PDF to this email.' +
+        '</div>' +
+
         '<!-- Dual Action Buttons (Fluid-Hybrid Full Width on Mobile) -->' +
-        '<div style="margin: 22px 0 16px 0; text-align: left;">' +
+        <!-- Dual Action Buttons (Fluid-Hybrid Full Width on Mobile) -->' +
+        '<div style="margin: 18px 0 16px 0; text-align: left;">' +
           '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 600; font-size: 12px; padding: 11px 18px; border-radius: 5px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
             '📄 View Full Executive CV (PDF) →' +
           '</a>' +
@@ -307,8 +319,10 @@ function buildClassicLetterEmail_(cfg, t) {
  */
 function buildModernBriefEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
-  const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
-  const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
+  const cvUrl = t.resume_drive_url || (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL : 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view');
+  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion'))
+    ? t.calendar_booking_url
+    : (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL : 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary');
 
   return getResponsiveEmailStyles_() +
     '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; color: #0f172a; line-height: 1.6; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-sizing: border-box;">' +
@@ -352,12 +366,20 @@ function buildModernBriefEmail_(cfg, t) {
           'I summarized the operational playbook we used at Bihar Foundry & Castings Ltd into a concise 3-minute video portfolio and documented case study:' +
         '</p>' +
 
+        '<!-- Attachment Notice -->' +
+        '<div style="font-size: 12.5px; color: #334155; margin: 12px 0 16px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #0284c7; padding: 10px 14px; border-radius: 4px;">' +
+          '📎 <strong>Executive CV Attached:</strong> My full credentials and verified plant track record are attached as a PDF to this email.' +
+        '</div>' +
+
         '<div style="margin: 14px 0 20px 0;">' +
           '<a href="' + videoUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
             '▶ Watch Video Walkthrough (3 Mins)' +
           '</a>' +
-          '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+          '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
             '📄 Download CV (PDF)' +
+          '</a>' +
+          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0284c7; color: #ffffff; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+            '📅 Schedule Discussion' +
           '</a>' +
         '</div>' +
 
@@ -383,8 +405,10 @@ function buildModernBriefEmail_(cfg, t) {
  */
 function buildVideoSpotlightEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
-  const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
-  const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
+  const cvUrl = t.resume_drive_url || (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL : 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view');
+  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion'))
+    ? t.calendar_booking_url
+    : (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL : 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary');
 
   return getResponsiveEmailStyles_() +
     '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; color: #1e293b; line-height: 1.6; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-sizing: border-box;">' +
@@ -432,12 +456,17 @@ function buildVideoSpotlightEmail_(cfg, t) {
           '</div>' +
         '</div>' +
 
+        '<!-- Attachment Callout -->' +
+        '<div style="font-size: 12.5px; color: #334155; margin: 12px 0 16px 0; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #059669; padding: 10px 14px; border-radius: 4px;">' +
+          '📎 <strong>Executive CV Attached:</strong> My full credentials and verified plant track record are attached as a PDF to this email.' +
+        '</div>' +
+
         '<!-- Direct CV and Booking Action -->' +
         '<div style="margin: 16px 0 20px 0;">' +
           '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
-            '📄 Download Executive CV (PDF) →' +
+            '📄 Open Attached CV (PDF) →' +
           '</a>' +
-          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; font-weight: 600; font-size: 12px; padding: 9px 16px; border-radius: 5px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
             '📅 Schedule 15-Min Intro Call' +
           '</a>' +
         '</div>' +
@@ -465,8 +494,10 @@ function buildVideoSpotlightEmail_(cfg, t) {
  */
 function buildUltraHumanEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
-  const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
-  const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
+  const cvUrl = t.resume_drive_url || (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL : 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view');
+  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion'))
+    ? t.calendar_booking_url
+    : (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL : 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary');
 
   return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; width: 100%; margin: 0 auto; background: #ffffff; color: #222222; line-height: 1.65; padding: 12px 6px; box-sizing: border-box;">' +
     '<p style="font-size: 15px; margin-top: 0;">Hi <strong>' + t.first_name + '</strong>,</p>' +
@@ -484,11 +515,13 @@ function buildUltraHumanEmail_(cfg, t) {
       cfg.playbookBullets.map(function(b) { return '<li style="margin-bottom: 6px;">' + b + '</li>'; }).join('') +
     '</ul>' +
     '<p style="font-size: 14px; margin-bottom: 16px;">' +
-      'You can also view my complete credentials and verified track record directly:<br>' +
-      '📄 <strong><a href="' + cvUrl + '" style="color: #0066cc; text-decoration: underline;">View Full Executive CV (PDF)</a></strong>' +
+      '📎 <strong>Executive CV Attached:</strong> I have attached my complete CV (PDF) to this email for your offline review (and you can also view it online here: 📄 <a href="' + cvUrl + '" style="color: #0066cc; text-decoration: underline;">View Full Executive CV (PDF)</a>).' +
     '</p>' +
     '<p style="font-size: 14px; margin-bottom: 18px;">' +
       cfg.closingAsk +
+    '</p>' +
+    '<p style="font-size: 14px; margin-bottom: 18px;">' +
+      '📅 If you are open to a brief introductory conversation, feel free to reply with a time that works for you or schedule directly here: <strong><a href="' + calendarUrl + '" style="color: #0066cc; text-decoration: underline;">Schedule 15-Min Discussion</a></strong>' +
     '</p>' +
     '<p style="font-size: 14px; margin-bottom: 24px;">' +
       'Best regards,' +
