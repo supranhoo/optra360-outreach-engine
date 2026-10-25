@@ -365,7 +365,7 @@ var ANTIGRAVITY_APOLLO = {
         oppId,
         compId,
         roleTitle,
-        'EXECUTIVE_OUTREACH',
+        'UNPOSTED_EXPANSION',
         lead.linkedinUrl || ('https://linkedin.com/company/' + compName.toLowerCase().replace(/[^a-z0-9]/g, '')),
         'Leading workforce governance, plant IR compliance, and workforce productivity across multi-shift plant operations.',
         '["Shopfloor absenteeism and contract labour compliance", "Digital PMS adoption and supervisory competency", "IR harmony and statutory governance"]',
@@ -377,6 +377,8 @@ var ANTIGRAVITY_APOLLO = {
       // 3. Create Contact
       const contactId = 'CNT-' + (++nextContactNum);
       const persona = lead.persona || this.classifyPersonaFromTitle(roleTitle);
+      const isEmailValid = (typeof validateEmailAndMx_ === 'function') ? validateEmailAndMx_(email) : true;
+      const verStatus = isEmailValid ? 'VERIFIED_VALID' : 'INVALID';
 
       newContactRows.push([
         contactId,
@@ -385,7 +387,7 @@ var ANTIGRAVITY_APOLLO = {
         lead.firstName || lead.fullName || 'Executive',
         lead.lastName || '',
         email,
-        'UNVERIFIED',
+        verStatus,
         persona,
         roleTitle,
         lead.linkedinUrl || '',
