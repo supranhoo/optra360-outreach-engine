@@ -27,7 +27,16 @@ global.Session = {
 const ANTIGRAVITY_CONFIG = require('../00_Config.js');
 global.ANTIGRAVITY_CONFIG = ANTIGRAVITY_CONFIG;
 const { validateEmailAndMx_, matchBestProject_, calculateLeadScore_ } = require('../01_ContactManager.js');
-const { renderPersonaTemplate_, appendUtm_, computeNextSendSlot_ } = require('../02_03_CampaignAndPersonalizer.js');
+const { 
+  renderPersonaTemplate_, 
+  buildExecutiveHtmlEmail_, 
+  buildClassicLetterEmail_, 
+  buildModernBriefEmail_, 
+  buildVideoSpotlightEmail_, 
+  buildUltraHumanEmail_, 
+  appendUtm_, 
+  computeNextSendSlot_ 
+} = require('../02_03_CampaignAndPersonalizer.js');
 const { addBusinessDays_ } = require('../04_05_SchedulerAndFollowUp.js');
 const { classifyReplySentiment_ } = require('../06_07_08_ResponseAndKPIEngine.js');
 const { ANTIGRAVITY_APOLLO } = require('../01b_ApolloIntegrator.js');
@@ -335,13 +344,52 @@ runTest('Validates Quick Add Lead required fields', () => {
 });
 
 runTest('Validates Executive HTML email architecture components', () => {
-  const tpl = renderPersonaTemplate_('FOUNDER', sampleTokenPayload);
+  const tpl = renderPersonaTemplate_('FOUNDER', sampleTokenPayload, 'CLASSIC_LETTER');
   assert.ok(tpl.htmlBody.includes(sampleTokenPayload.candidate_full_name));
   assert.ok(tpl.htmlBody.includes('Video Portfolio & Systems Case Study Walkthrough'));
   assert.ok(tpl.htmlBody.includes('3,850'));
   assert.ok(tpl.htmlBody.includes('View Full Executive CV (PDF)'));
   assert.ok(tpl.htmlBody.includes('Schedule 15-Min Discussion'));
   assert.ok(!tpl.htmlBody.includes('undefined'));
+});
+
+// -------------------------------------------------------------
+// Test Suite 9: Fluid-Hybrid Responsive Markup & Multi-Archetypes
+// -------------------------------------------------------------
+console.log('\n--- Suite 9: Fluid-Hybrid Responsive Markup & Multi-Archetypes ---');
+
+runTest('CLASSIC_LETTER contains mobile media query, stack-col, and mobile-full-btn', () => {
+  const classic = renderPersonaTemplate_('FOUNDER', sampleTokenPayload, 'CLASSIC_LETTER');
+  assert.ok(classic.htmlBody.includes('@media only screen and (max-width: 600px)'));
+  assert.ok(classic.htmlBody.includes('stack-col'));
+  assert.ok(classic.htmlBody.includes('mobile-full-btn'));
+  assert.ok(classic.htmlBody.includes('fluid-container'));
+});
+
+runTest('MODERN_BRIEF renders confidential briefing layout with responsive metrics', () => {
+  const brief = renderPersonaTemplate_('TECH_LEAD', sampleTokenPayload, 'MODERN_BRIEF');
+  assert.ok(brief.htmlBody.includes('Operations & Workforce Briefing'));
+  assert.ok(brief.htmlBody.includes('CONFIDENTIAL'));
+  assert.ok(brief.htmlBody.includes('stack-col'));
+  assert.ok(brief.htmlBody.includes('Download CV (PDF)'));
+  assert.ok(!brief.htmlBody.includes('undefined'));
+});
+
+runTest('VIDEO_SPOTLIGHT renders video hero player card with play button', () => {
+  const video = renderPersonaTemplate_('FOUNDER', sampleTokenPayload, 'VIDEO_SPOTLIGHT');
+  assert.ok(video.htmlBody.includes('Watch Video Case Study Walkthrough'));
+  assert.ok(video.htmlBody.includes('Plant Workforce Turnaround & Systems Architecture'));
+  assert.ok(video.htmlBody.includes('3,850'));
+  assert.ok(!video.htmlBody.includes('undefined'));
+});
+
+runTest('ULTRA_HUMAN renders clean unboxed text email with inline hyperlinks', () => {
+  const human = renderPersonaTemplate_('HIRING_MGR', sampleTokenPayload, 'ULTRA_HUMAN');
+  assert.ok(!human.htmlBody.includes('fluid-container'));
+  assert.ok(human.htmlBody.includes('Watch the 3-minute video portfolio & turnaround walkthrough here'));
+  assert.ok(human.htmlBody.includes('View Full Executive CV (PDF)'));
+  assert.ok(human.htmlBody.includes('Best regards,'));
+  assert.ok(!human.htmlBody.includes('undefined'));
 });
 
 // -------------------------------------------------------------

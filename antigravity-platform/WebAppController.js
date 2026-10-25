@@ -256,16 +256,118 @@ function apiRunLeadScoring() {
   }
 }
 
-function apiGenerateDrafts(campaignId) {
+function apiGenerateDrafts(campaignId, templateArchetype) {
   try {
-    const res = generateCampaignOutreachDrafts(campaignId || 'CMPG-01');
+    const res = generateCampaignOutreachDrafts(campaignId || 'CMPG-01', templateArchetype);
     const count = (res && typeof res.count === 'number') ? res.count : 0;
     return {
       success: true,
       count: count,
+      archetype: res.archetype || templateArchetype,
       message: count > 0 
         ? ('Synthesized ' + count + ' outreach draft(s) ready for review!')
         : 'All eligible contacts already have drafts synthesized in the queue.'
+    };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+/**
+ * Re-renders an existing outreach draft row using a newly selected design archetype.
+ */
+function apiReRenderDraftWithTemplate(outreachId, newArchetype) {
+  try {
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return { success: false, error: 'Spreadsheet unavailable' };
+
+    const outreachSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OUTREACH_HISTORY);
+    const contactSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CONTACTS);
+    const profileSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CANDIDATE_PROFILE);
+    const compSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.TARGET_COMPANIES);
+    const oppSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OPPORTUNITIES);
+    const projSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.PROJECTS);
+    const expSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.WORK_EXPERIENCE);
+
+    const outreachData = outreachSheet.getDataRange().getValues();
+    let rowIndex = -1;
+    let targetRow = null;
+
+    for (let i = 1; i < outreachData.length; i++) {
+      if (String(outreachData[i][0]) === outreachId) {
+        rowIndex = i + 1;
+        targetRow = outreachData[i];
+        break;
+      }
+    }
+
+    if (!targetRow) return { success: false, error: 'Outreach row not found: ' + outreachId };
+
+    const contactId = String(targetRow[2]);
+    const contacts = contactSheet.getDataRange().getValues();
+    let contactRow = null;
+    for (let i = 1; i < contacts.length; i++) {
+      if (String(contacts[i][0]) === contactId) {
+        contactRow = contacts[i];
+        break;
+      }
+    }
+    if (!contactRow) return { success: false, error: 'Contact not found: ' + contactId };
+
+    const profile = profileSheet.getDataRange().getValues()[1] || [];
+    const companies = buildLookupMap_(compSheet.getDataRange().getValues(), 0);
+    const opps = buildLookupMap_(oppSheet.getDataRange().getValues(), 0);
+    const projects = buildLookupMap_(projSheet.getDataRange().getValues(), 0);
+    const experiences = expSheet.getDataRange().getValues();
+    const primaryExp = experiences.length > 1 ? experiences[1] : [];
+
+    const comp = companies[contactRow[1]] || [];
+    const opp = opps[contactRow[2]] || [];
+    const projId = opp[8] || targetRow[4] || 'PRJ-001';
+    const proj = projects[projId] || [];
+
+    const tokenPayload = {
+      first_name: contactRow[3] || 'Leader',
+      last_name: contactRow[4] || '',
+      company_name: comp[1] || 'your organization',
+      funding_stage_headcount: comp[4] || '500-1000 employees',
+      recent_trigger_event_short: comp[5] || 'expanding plant operations and workforce footprint',
+      role_title_opp: opp[2] || 'Head - Plant Human Resources & Industrial Relations',
+      primary_pain_point: opp[6] || 'shopfloor absenteeism, contract labour compliance, and unstandardized appraisal systems',
+      required_skills_top3: opp[7] || 'Plant HR, Industrial Relations, Statutory Compliance',
+      required_skill_1: (opp[7] || 'Plant HR').split(',')[0].trim(),
+      required_skill_2: ((opp[7] || 'Plant HR, IR').split(',')[1] || 'Industrial Relations').trim(),
+      project_title: proj[2] || 'Workforce Attendance & PMS Institutionalization',
+      architecture_summary: proj[6] || 'architected an in-house integrated employee workforce platform combining Safety reporting, KRA/KPI performance appraisals, and TNI-driven training workflows',
+      quantified_business_impact: proj[7] || 'rolled out PMS to 100 senior leaders in 6 months and scaled coverage to 200 managers across 3,850 personnel',
+      github_repo_url: appendUtm_(proj[8], comp[1], contactId),
+      case_study_url_utm: appendUtm_(proj[9], comp[1], contactId),
+      exp_company_name: primaryExp[2] || 'Bihar Foundry & Castings Ltd (GMG Group)',
+      exp_role_title: primaryExp[3] || 'Head - Human Resources & Industrial Relations',
+      exp_roi_statement: primaryExp[7] || 'governed 3,850 plant personnel with 0-strike industrial peace and in-house digitized workforce platforms',
+      custom_roi_hypothesis: opp[9] || 'applying my 3,850-worker workforce governance and digital Safety/PMS framework can eliminate overtime leakage and optimize shopfloor productivity',
+      candidate_full_name: profile[1] || 'Ankit Choudhary',
+      candidate_headline: profile[2] || 'Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation',
+      years_experience: profile[3] || 15,
+      github_profile_url: profile[6] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
+      portfolio_base_url: profile[5] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
+      portfolio_video_url: (profile[5] && profile[5].length > 10) ? appendUtm_(profile[5], comp[1], contactId) : 'https://linkedin.com/in/ankit-choudhary-human-resources',
+      resume_drive_url: profile[8] ? ('https://drive.google.com/file/d/' + profile[8] + '/view') : 'https://linkedin.com/in/ankit-choudhary-human-resources',
+      calendar_booking_url: profile[9] || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion'
+    };
+
+    const rendered = renderPersonaTemplate_(contactRow[7], tokenPayload, newArchetype);
+
+    // Save newly re-rendered subject & HTML body to Google Sheet
+    outreachSheet.getRange(rowIndex, 6).setValue(rendered.subject);
+    outreachSheet.getRange(rowIndex, 7).setValue(rendered.htmlBody);
+
+    return {
+      success: true,
+      outreachId: outreachId,
+      archetype: newArchetype,
+      subject: rendered.subject,
+      htmlBody: rendered.htmlBody
     };
   } catch (e) {
     return { success: false, error: e.message };

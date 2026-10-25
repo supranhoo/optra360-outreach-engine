@@ -219,7 +219,16 @@ var ANTIGRAVITY_CONFIG = {
     PIPELINE_STAGE: ['1_INTRO_CALL', '2_TECH_SCREEN', '3_SYSTEM_DESIGN', '4_EXEC_FINAL', '5_OFFER', 'CLOSED'],
     ENTITY_TYPE: ['COMPANY', 'CONTACT', 'PIPELINE'],
     NOTE_AUTHOR: ['CANDIDATE', 'AI_COPILOT']
-  }
+  },
+
+  // Template Design Archetypes (Responsive Desktop/Mobile)
+  TEMPLATE_ARCHETYPES: {
+    CLASSIC_LETTER: 'CLASSIC_LETTER',   // Archetype 1: Classic Executive Letterhead with 3-metric proof grid
+    MODERN_BRIEF: 'MODERN_BRIEF',       // Archetype 2: Modern Operations Brief with top accent & horizontal metrics
+    VIDEO_SPOTLIGHT: 'VIDEO_SPOTLIGHT', // Archetype 3: Video Spotlight Showcase with embedded video player card
+    ULTRA_HUMAN: 'ULTRA_HUMAN'          // Archetype 4: Ultra-Human 1-to-1 Note (clean container-less plain text+)
+  },
+  DEFAULT_TEMPLATE_ARCHETYPE: 'CLASSIC_LETTER'
 };
 
 // Node.js export compatibility for offline testing

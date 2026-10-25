@@ -8,7 +8,7 @@
  * Generates hyper-personalized outreach email drafts for all eligible contacts
  * enrolled in an active campaign cohort, and appends them to Outreach_History with DRAFT_READY status.
  */
-function generateCampaignOutreachDrafts(campaignId) {
+function generateCampaignOutreachDrafts(campaignId, templateArchetype) {
   const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
   if (!ss) return;
   const profileSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CANDIDATE_PROFILE);
@@ -40,6 +40,7 @@ function generateCampaignOutreachDrafts(campaignId) {
   const primaryExp = experiences.length > 1 ? experiences[1] : [];
   const newOutreachRows = [];
   const now = new Date();
+  const selectedArchetype = templateArchetype || (ANTIGRAVITY_CONFIG.DEFAULT_TEMPLATE_ARCHETYPE || 'CLASSIC_LETTER');
 
   // Auto-verify & score any unhandled contacts first so newly added leads are immediately eligible
   if (typeof processAndScoreNewContacts === 'function') {
@@ -130,7 +131,7 @@ function generateCampaignOutreachDrafts(campaignId) {
       calendar_booking_url: profile[9] || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion'
     };
 
-    const rendered = renderPersonaTemplate_(c[7], tokenPayload);
+    const rendered = renderPersonaTemplate_(c[7], tokenPayload, selectedArchetype);
     const scheduledTime = computeNextSendSlot_(now, newOutreachRows.length, sendStartHr, sendEndHr);
     const outreachId = 'OUT-' + Utilities.getUuid().slice(0, 8).toUpperCase();
 
@@ -179,118 +180,351 @@ function generateCampaignOutreachDrafts(campaignId) {
 }
 
 /**
- * Helper to build the responsive executive HTML email layout.
- * Formatted as an authentic, high-impact 1-to-1 executive letter with clean letterhead,
- * subtle video walkthrough callout, 3-metric proof grid, and direct CV/calendar links.
+ * Returns embedded responsive CSS for mobile/desktop email clients.
+ * Media queries scale down layouts on screens <= 600px, stack columns,
+ * expand touch buttons to 100% full width, and adjust typography.
  */
-function buildExecutiveHtmlEmail_(cfg, t) {
+function getResponsiveEmailStyles_() {
+  return '<style type="text/css">\n' +
+    '  @media only screen and (max-width: 600px) {\n' +
+    '    .fluid-container { width: 100% !important; max-width: 100% !important; border-radius: 0 !important; border-left: none !important; border-right: none !important; }\n' +
+    '    .fluid-padding { padding: 18px 14px !important; }\n' +
+    '    .stack-col { display: block !important; width: 100% !important; max-width: 100% !important; margin: 8px 0 !important; box-sizing: border-box !important; text-align: left !important; padding: 14px 16px !important; }\n' +
+    '    .mobile-full-btn { display: block !important; width: 100% !important; margin: 8px 0 !important; padding: 13px 16px !important; font-size: 13.5px !important; text-align: center !important; box-sizing: border-box !important; }\n' +
+    '    .mobile-header-table td { display: block !important; width: 100% !important; text-align: left !important; }\n' +
+    '    .mobile-header-table td:last-child { margin-top: 10px !important; }\n' +
+    '    .mobile-metric-val { font-size: 22px !important; }\n' +
+    '  }\n' +
+    '</style>\n';
+}
+
+/**
+ * ARCHETYPE 1: Classic Executive Letter
+ * Understated executive letterhead, fluid-hybrid stackable 3-column proof cards,
+ * clean video walkthrough callout, and full-width touch buttons on mobile.
+ */
+function buildClassicLetterEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
   const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
   const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
 
-  return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; color: #1e293b; line-height: 1.6;">' +
-    '<!-- Executive Letterhead -->' +
-    '<div style="background: #f8fafc; padding: 18px 24px; border-bottom: 1px solid #e2e8f0;">' +
-      '<table width="100%" cellpadding="0" cellspacing="0">' +
-        '<tr>' +
-          '<td>' +
-            '<div style="font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em;">' + t.candidate_full_name + '</div>' +
-            '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
-          '</td>' +
-          '<td align="right" style="vertical-align: middle;">' +
-            '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 4px; text-decoration: none;">📄 View CV (PDF)</a>' +
-          '</td>' +
-        '</tr>' +
-      '</table>' +
-    '</div>' +
-
-    '<!-- Body Content Container -->' +
-    '<div style="padding: 24px 28px;">' +
-      '<p style="font-size: 15px; margin-top: 0; color: #0f172a;">Hi <strong>' + t.first_name + '</strong>,</p>' +
-      '<p style="font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 18px;">' + cfg.openingHook + '</p>' +
-
-      '<!-- Clean Video Portfolio & Case Study Callout Box -->' +
-      '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #0284c7; border-radius: 6px; padding: 16px 18px; margin: 20px 0;">' +
-        '<div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">' +
-          '📹 Video Portfolio & Systems Case Study Walkthrough' +
-        '</div>' +
-        '<div style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 12px;">' +
-          'A concise executive walkthrough showing how we curbed shopfloor absenteeism, deployed 0-to-1 PMS, and maintained zero-strike IR peace across 3,850 personnel at Bihar Foundry & Castings Ltd.' +
-        '</div>' +
-        '<a href="' + videoUrl + '" target="_blank" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 8px 16px; border-radius: 4px; text-decoration: none;">' +
-          '▶ Watch Video Walkthrough & Case Study →' +
-        '</a>' +
+  return getResponsiveEmailStyles_() +
+    '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; color: #1e293b; line-height: 1.6; box-sizing: border-box;">' +
+      '<!-- Executive Letterhead -->' +
+      '<div class="fluid-padding" style="background: #f8fafc; padding: 18px 24px; border-bottom: 1px solid #e2e8f0;">' +
+        '<table class="mobile-header-table" width="100%" cellpadding="0" cellspacing="0">' +
+          '<tr>' +
+            '<td>' +
+              '<div style="font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em;">' + t.candidate_full_name + '</div>' +
+              '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
+            '</td>' +
+            '<td align="right" style="vertical-align: middle;">' +
+              '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 4px; text-decoration: none;">📄 View CV (PDF)</a>' +
+            '</td>' +
+          '</tr>' +
+        '</table>' +
       '</div>' +
 
-      '<!-- Verified Scale & Proof Metrics (3-Column Table Grid) -->' +
-      '<div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">' +
-        'Proven Scale & Verified Achievements across 3,850-personnel plant workforce:' +
-      '</div>' +
-      '<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 22px;">' +
-        '<tr>' +
-          '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
-            '<div style="font-size: 20px; font-weight: 800; color: #0284c7; line-height: 1.1;">3,850</div>' +
+      '<!-- Body Content Container -->' +
+      '<div class="fluid-padding" style="padding: 24px 28px;">' +
+        '<p style="font-size: 15px; margin-top: 0; color: #0f172a;">Hi <strong>' + t.first_name + '</strong>,</p>' +
+        '<p style="font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 18px;">' + cfg.openingHook + '</p>' +
+
+        '<!-- Video Portfolio & Systems Case Study -->' +
+        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #0284c7; border-radius: 6px; padding: 16px 18px; margin: 20px 0;">' +
+          '<div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">' +
+            '📹 Video Portfolio & Systems Case Study Walkthrough' +
+          '</div>' +
+          '<div style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 12px;">' +
+            'A concise executive walkthrough showing how we curbed shopfloor absenteeism, deployed 0-to-1 PMS, and maintained zero-strike IR peace across 3,850 personnel at Bihar Foundry & Castings Ltd.' +
+          '</div>' +
+          '<a href="' + videoUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 8px 16px; border-radius: 4px; text-decoration: none;">' +
+            '▶ Watch Video Walkthrough & Case Study →' +
+          '</a>' +
+        '</div>' +
+
+        '<!-- Proven Scale & Verified Metrics (Fluid-Hybrid Responsive Stackable) -->' +
+        '<div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">' +
+          'Proven Scale & Verified Achievements across 3,850-personnel plant workforce:' +
+        '</div>' +
+        '<div style="text-align: center; font-size: 0; margin-bottom: 22px;">' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 178px; vertical-align: top; margin: 4px; box-sizing: border-box; text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 10px;">' +
+            '<div class="mobile-metric-val" style="font-size: 20px; font-weight: 800; color: #0284c7; line-height: 1.1;">3,850</div>' +
             '<div style="font-size: 10px; font-weight: 700; color: #0f172a; margin-top: 4px; text-transform: uppercase;">Plant Workforce</div>' +
             '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">2,350 On-roll + 1,500 Contract</div>' +
-          '</td>' +
-          '<td width="3.5%"></td>' +
-          '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
-            '<div style="font-size: 20px; font-weight: 800; color: #059669; line-height: 1.1;">100%</div>' +
+          '</div>' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 178px; vertical-align: top; margin: 4px; box-sizing: border-box; text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 10px;">' +
+            '<div class="mobile-metric-val" style="font-size: 20px; font-weight: 800; color: #059669; line-height: 1.1;">100%</div>' +
             '<div style="font-size: 10px; font-weight: 700; color: #0f172a; margin-top: 4px; text-transform: uppercase;">Strike-Free IR</div>' +
             '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">Zero Labour Stoppages</div>' +
-          '</td>' +
-          '<td width="3.5%"></td>' +
-          '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
-            '<div style="font-size: 20px; font-weight: 800; color: #7c3aed; line-height: 1.1;">0-to-1</div>' +
+          '</div>' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 178px; vertical-align: top; margin: 4px; box-sizing: border-box; text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 10px;">' +
+            '<div class="mobile-metric-val" style="font-size: 20px; font-weight: 800; color: #7c3aed; line-height: 1.1;">0-to-1</div>' +
             '<div style="font-size: 10px; font-weight: 700; color: #0f172a; margin-top: 4px; text-transform: uppercase;">PMS Rollout</div>' +
             '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">200 Managers with KRAs</div>' +
-          '</td>' +
-        '</tr>' +
-      '</table>' +
+          '</div>' +
+        '</div>' +
 
-      '<!-- Targeted Execution Playbook -->' +
-      '<div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">' +
-        'How I Can Support ' + t.company_name + ':' +
-      '</div>' +
-      '<ul style="padding-left: 20px; margin: 0 0 20px 0; font-size: 13.5px; color: #334155; line-height: 1.6;">' +
-        cfg.playbookBullets.map(function(b) { return '<li style="margin-bottom: 6px;">' + b + '</li>'; }).join('') +
-      '</ul>' +
+        '<!-- Targeted Execution Playbook -->' +
+        '<div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">' +
+          'How I Can Support ' + t.company_name + ':' +
+        '</div>' +
+        '<ul style="padding-left: 20px; margin: 0 0 20px 0; font-size: 13.5px; color: #334155; line-height: 1.6;">' +
+          cfg.playbookBullets.map(function(b) { return '<li style="margin-bottom: 6px;">' + b + '</li>'; }).join('') +
+        '</ul>' +
 
-      '<!-- Dual Action Buttons: CV & Calendar -->' +
-      '<table width="100%" cellpadding="0" cellspacing="0" style="margin: 22px 0 16px 0;">' +
-        '<tr>' +
-          '<td align="left">' +
-            '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none; margin-right: 10px;">' +
-              '📄 View Full Executive CV (PDF) →' +
-            '</a>' +
-            '<a href="' + calendarUrl + '" target="_blank" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none;">' +
-              '📅 Schedule 15-Min Discussion →' +
-            '</a>' +
-          '</td>' +
-        '</tr>' +
-      '</table>' +
+        '<!-- Dual Action Buttons (Fluid-Hybrid Full Width on Mobile) -->' +
+        '<div style="margin: 22px 0 16px 0; text-align: left;">' +
+          '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 600; font-size: 12px; padding: 11px 18px; border-radius: 5px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
+            '📄 View Full Executive CV (PDF) →' +
+          '</a>' +
+          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 11px 18px; border-radius: 5px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+            '📅 Schedule 15-Min Discussion →' +
+          '</a>' +
+        '</div>' +
 
-      '<p style="font-size: 13.5px; color: #475569; margin-top: 18px; line-height: 1.5;">' +
-        cfg.closingAsk +
-      '</p>' +
+        '<p style="font-size: 13.5px; color: #475569; margin-top: 18px; line-height: 1.5;">' +
+          cfg.closingAsk +
+        '</p>' +
 
-      '<!-- Executive Signoff -->' +
-      '<div style="border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 22px;">' +
-        '<div style="font-weight: 700; font-size: 14px; color: #0f172a;">' + t.candidate_full_name + '</div>' +
-        '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
-        '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">Mobile: +91 91225 39111 &bull; Email: ankitchoudharymba@gmail.com</div>' +
-        '<div style="font-size: 11px; margin-top: 6px;">' +
-          '<a href="' + (t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources') + '" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 600;">LinkedIn Executive Profile ↗</a>' +
+        '<!-- Executive Signoff -->' +
+        '<div style="border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 22px;">' +
+          '<div style="font-weight: 700; font-size: 14px; color: #0f172a;">' + t.candidate_full_name + '</div>' +
+          '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
+          '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">Mobile: +91 91225 39111 &bull; Email: ankitchoudharymba@gmail.com</div>' +
+          '<div style="font-size: 11px; margin-top: 6px;">' +
+            '<a href="' + (t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources') + '" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 600;">LinkedIn Executive Profile ↗</a>' +
+          '</div>' +
         '</div>' +
       '</div>' +
+    '</div>';
+}
+
+/**
+ * ARCHETYPE 2: Modern Operations Brief
+ * Minimalist briefing memo with top accent rule, horizontal-to-vertical metrics strip,
+ * and responsive action pills.
+ */
+function buildModernBriefEmail_(cfg, t) {
+  const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
+  const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
+  const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
+
+  return getResponsiveEmailStyles_() +
+    '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; color: #0f172a; line-height: 1.6; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-sizing: border-box;">' +
+      '<div style="height: 4px; background: #0284c7; width: 100%;"></div>' +
+      '<div class="fluid-padding" style="padding: 24px 24px;">' +
+        '<table class="mobile-header-table" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px;">' +
+          '<tr>' +
+            '<td>' +
+              '<div style="font-size: 11px; font-weight: 700; color: #0284c7; text-transform: uppercase; letter-spacing: 0.08em;">Operations & Workforce Briefing</div>' +
+              '<div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 2px;">Institutional Plant HR & Systems Rollout</div>' +
+            '</td>' +
+            '<td align="right" style="vertical-align: top;">' +
+              '<span style="font-size: 11px; color: #64748b; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-family: monospace;">CONFIDENTIAL</span>' +
+            '</td>' +
+          '</tr>' +
+        '</table>' +
+
+        '<p style="font-size: 15px; margin-top: 0; color: #0f172a;">Hi <strong>' + t.first_name + '</strong>,</p>' +
+        '<p style="font-size: 14px; color: #334155; line-height: 1.6;">' + cfg.openingHook + '</p>' +
+
+        '<!-- Responsive Horizontal/Stacked Metrics Strip -->' +
+        '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 12px; margin: 18px 0; text-align: center; font-size: 0;">' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 180px; vertical-align: top; padding: 6px 10px; box-sizing: border-box; text-align: left;">' +
+            '<div style="font-size: 10.5px; font-weight: 700; color: #64748b; text-transform: uppercase;">WORKFORCE SCALE</div>' +
+            '<div class="mobile-metric-val" style="font-size: 16px; font-weight: 800; color: #0f172a; margin-top: 2px;">3,850 Personnel</div>' +
+            '<div style="font-size: 11px; color: #64748b;">Steel & Foundry Plants</div>' +
+          '</div>' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 180px; vertical-align: top; padding: 6px 10px; box-sizing: border-box; text-align: left;">' +
+            '<div style="font-size: 10.5px; font-weight: 700; color: #64748b; text-transform: uppercase;">SHOPFLOOR IR</div>' +
+            '<div class="mobile-metric-val" style="font-size: 16px; font-weight: 800; color: #059669; margin-top: 2px;">100% Strike-Free</div>' +
+            '<div style="font-size: 11px; color: #64748b;">Zero Labour Stoppages</div>' +
+          '</div>' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 180px; vertical-align: top; padding: 6px 10px; box-sizing: border-box; text-align: left;">' +
+            '<div style="font-size: 10.5px; font-weight: 700; color: #64748b; text-transform: uppercase;">APPRAISAL / PMS</div>' +
+            '<div class="mobile-metric-val" style="font-size: 16px; font-weight: 800; color: #0284c7; margin-top: 2px;">0-to-1 In-House</div>' +
+            '<div style="font-size: 11px; color: #64748b;">200 Plant Managers</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<p style="font-size: 14px; color: #334155; line-height: 1.6;">' +
+          'I summarized the operational playbook we used at Bihar Foundry & Castings Ltd into a concise 3-minute video portfolio and documented case study:' +
+        '</p>' +
+
+        '<div style="margin: 14px 0 20px 0;">' +
+          '<a href="' + videoUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
+            '▶ Watch Video Walkthrough (3 Mins)' +
+          '</a>' +
+          '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+            '📄 Download CV (PDF)' +
+          '</a>' +
+        '</div>' +
+
+        '<p style="font-size: 14px; color: #334155; line-height: 1.6;">' +
+          cfg.closingAsk +
+        '</p>' +
+
+        '<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">' +
+          '<div style="font-weight: 700; font-size: 14px; color: #0f172a;">' + t.candidate_full_name + '</div>' +
+          '<div style="font-size: 12.5px; color: #64748b;">' + t.candidate_headline + '</div>' +
+          '<div style="font-size: 12px; color: #64748b; margin-top: 4px;">' +
+            'Mobile: +91 91225 39111 &bull; Email: ankitchoudharymba@gmail.com &bull; <a href="' + (t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources') + '" style="color: #0284c7; text-decoration: none;">LinkedIn</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+/**
+ * ARCHETYPE 3: Video Spotlight Showcase
+ * Media-forward layout featuring an embedded video simulation player card hero,
+ * verified metric scorecard, and direct CV download.
+ */
+function buildVideoSpotlightEmail_(cfg, t) {
+  const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
+  const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
+  const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
+
+  return getResponsiveEmailStyles_() +
+    '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; color: #1e293b; line-height: 1.6; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-sizing: border-box;">' +
+      '<div class="fluid-padding" style="padding: 24px 24px;">' +
+        '<p style="font-size: 15px; margin-top: 0; color: #0f172a;">Hi <strong>' + t.first_name + '</strong>,</p>' +
+        '<p style="font-size: 14px; color: #334155; line-height: 1.6;">' + cfg.openingHook + '</p>' +
+
+        '<!-- Video Spotlight Player Card -->' +
+        '<div style="background: #0f172a; border-radius: 8px; overflow: hidden; margin: 20px 0; border: 1px solid #1e293b; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">' +
+          '<div style="padding: 24px 20px; text-align: center; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);">' +
+            '<a href="' + videoUrl + '" target="_blank" style="display: inline-block; width: 54px; height: 54px; line-height: 54px; border-radius: 50%; background: #0284c7; color: #ffffff; font-size: 20px; text-decoration: none; text-align: center; box-shadow: 0 0 20px rgba(2, 132, 199, 0.6);">' +
+              '▶' +
+            '</a>' +
+            '<div style="font-size: 15px; font-weight: 700; color: #ffffff; margin-top: 14px;">' +
+              'Plant Workforce Turnaround & Systems Architecture' +
+            '</div>' +
+            '<div style="font-size: 12px; color: #94a3b8; max-width: 440px; margin: 6px auto 14px auto;">' +
+              'A 3-minute executive walkthrough on how we eliminated shopfloor absenteeism, rolled out 0-to-1 PMS, and kept 100% strike-free IR across 3,850 personnel at Bihar Foundry & Castings Ltd.' +
+            '</div>' +
+            '<a href="' + videoUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0284c7; color: #ffffff; font-size: 12px; font-weight: 700; padding: 9px 18px; border-radius: 4px; text-decoration: none;">' +
+              '▶ Watch Video Case Study Walkthrough' +
+            '</a>' +
+          '</div>' +
+          '<div style="background: #1e293b; padding: 10px 16px; font-size: 11px; color: #cbd5e1; text-align: center;">' +
+            'Scale: 3,850 Workforce (Steel & Foundry) &bull; 3 mins &bull; No Login Required' +
+          '</div>' +
+        '</div>' +
+
+        '<!-- Verified Metrics Strip -->' +
+        '<div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">' +
+          'Verified Operational Results across 3,850 workforce:' +
+        '</div>' +
+        '<div style="text-align: center; font-size: 0; margin-bottom: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 4px;">' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 180px; padding: 8px; box-sizing: border-box; text-align: center;">' +
+            '<div class="mobile-metric-val" style="font-size: 18px; font-weight: 800; color: #0284c7;">3,850</div>' +
+            '<div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600;">Workforce Scope</div>' +
+          '</div>' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 180px; padding: 8px; box-sizing: border-box; text-align: center;">' +
+            '<div class="mobile-metric-val" style="font-size: 18px; font-weight: 800; color: #059669;">Zero Strikes</div>' +
+            '<div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600;">100% IR Harmony</div>' +
+          '</div>' +
+          '<div class="stack-col" style="display: inline-block; width: 100%; max-width: 180px; padding: 8px; box-sizing: border-box; text-align: center;">' +
+            '<div class="mobile-metric-val" style="font-size: 18px; font-weight: 800; color: #7c3aed;">200 Mgrs</div>' +
+            '<div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600;">0-to-1 PMS Live</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<!-- Direct CV and Booking Action -->' +
+        '<div style="margin: 16px 0 20px 0;">' +
+          '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
+            '📄 Download Executive CV (PDF) →' +
+          '</a>' +
+          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; font-weight: 600; font-size: 12px; padding: 9px 16px; border-radius: 5px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+            '📅 Schedule 15-Min Intro Call' +
+          '</a>' +
+        '</div>' +
+
+        '<p style="font-size: 13.5px; color: #475569; margin-top: 18px; line-height: 1.5;">' +
+          cfg.closingAsk +
+        '</p>' +
+
+        '<div style="border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 22px;">' +
+          '<div style="font-weight: 700; font-size: 14px; color: #0f172a;">' + t.candidate_full_name + '</div>' +
+          '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
+          '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">Mobile: +91 91225 39111 &bull; Email: ankitchoudharymba@gmail.com</div>' +
+          '<div style="font-size: 11px; margin-top: 4px;">' +
+            '<a href="' + (t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources') + '" target="_blank" style="color: #0284c7; text-decoration: none;">LinkedIn Executive Profile ↗</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+/**
+ * ARCHETYPE 4: Ultra-Human 1-to-1 Note
+ * Pure clean email text with zero outer cards or banners.
+ * Looks 100% like a personal note typed from Gmail or Apple Mail with clean hyperlinks.
+ */
+function buildUltraHumanEmail_(cfg, t) {
+  const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
+  const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
+  const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
+
+  return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; width: 100%; margin: 0 auto; background: #ffffff; color: #222222; line-height: 1.65; padding: 12px 6px; box-sizing: border-box;">' +
+    '<p style="font-size: 15px; margin-top: 0;">Hi <strong>' + t.first_name + '</strong>,</p>' +
+    '<p style="font-size: 14px; margin-bottom: 14px;">' + cfg.openingHook + '</p>' +
+    '<p style="font-size: 14px; margin-bottom: 14px;">' +
+      'To make this concrete, I put together a short <strong>3-minute video walkthrough</strong> breaking down how we structured shopfloor systems, curbed absenteeism, rolled out 0-to-1 PMS, and maintained 100% strike-free IR across 3,850 personnel at Bihar Foundry & Castings Ltd.' +
+    '</p>' +
+    '<p style="font-size: 14px; margin-bottom: 16px;">' +
+      '👉 <strong><a href="' + videoUrl + '" style="color: #0066cc; text-decoration: underline;">Watch the 3-minute video portfolio & turnaround walkthrough here</a></strong>' +
+    '</p>' +
+    '<p style="font-size: 14px; margin-bottom: 14px;">' +
+      'Key plant initiatives implemented:' +
+    '</p>' +
+    '<ul style="padding-left: 20px; font-size: 13.5px; line-height: 1.6; margin-bottom: 16px; color: #333333;">' +
+      cfg.playbookBullets.map(function(b) { return '<li style="margin-bottom: 6px;">' + b + '</li>'; }).join('') +
+    '</ul>' +
+    '<p style="font-size: 14px; margin-bottom: 16px;">' +
+      'You can also view my complete credentials and verified track record directly:<br>' +
+      '📄 <strong><a href="' + cvUrl + '" style="color: #0066cc; text-decoration: underline;">View Full Executive CV (PDF)</a></strong>' +
+    '</p>' +
+    '<p style="font-size: 14px; margin-bottom: 18px;">' +
+      cfg.closingAsk +
+    '</p>' +
+    '<p style="font-size: 14px; margin-bottom: 24px;">' +
+      'Best regards,' +
+    '</p>' +
+    '<div style="font-size: 13.5px; line-height: 1.5; color: #333333;">' +
+      '<strong>' + t.candidate_full_name + '</strong><br>' +
+      'Head of HR & Industrial Relations<br>' +
+      '15+ Years Leadership • Heavy Manufacturing & Plant Operations<br>' +
+      'Mobile: <a href="tel:+919122539111" style="color: #333333; text-decoration: none;">+91 91225 39111</a> | Email: <a href="mailto:ankitchoudharymba@gmail.com" style="color: #0066cc; text-decoration: none;">ankitchoudharymba@gmail.com</a><br>' +
+      'LinkedIn: <a href="' + (t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources') + '" style="color: #0066cc; text-decoration: underline;">LinkedIn Executive Profile</a>' +
     '</div>' +
   '</div>';
 }
 
 /**
- * Renders persona-aligned subject line and HTML body across the 6 template families.
+ * Dispatcher helper to build the requested responsive executive HTML email layout.
  */
-function renderPersonaTemplate_(persona, t) {
+function buildExecutiveHtmlEmail_(cfg, t, archetype) {
+  const arch = String(archetype || 'CLASSIC_LETTER').toUpperCase();
+  switch (arch) {
+    case 'MODERN_BRIEF':
+      return buildModernBriefEmail_(cfg, t);
+    case 'VIDEO_SPOTLIGHT':
+      return buildVideoSpotlightEmail_(cfg, t);
+    case 'ULTRA_HUMAN':
+      return buildUltraHumanEmail_(cfg, t);
+    case 'CLASSIC_LETTER':
+    default:
+      return buildClassicLetterEmail_(cfg, t);
+  }
+}
+
+/**
+ * Renders persona-aligned subject line and HTML body across the 6 template families and chosen archetype.
+ */
+function renderPersonaTemplate_(persona, t, archetype) {
   let subject = '';
   const p = String(persona || 'HIRING_MGR').toUpperCase();
   let cfg = { openingHook: '', playbookBullets: [], closingAsk: '' };
@@ -365,7 +599,7 @@ function renderPersonaTemplate_(persona, t) {
       cfg.closingAsk = 'Full case study & credentials above. Open to a 15-minute discussion this week to explore how this playbook aligns with ' + t.company_name + '.';
   }
 
-  const htmlBody = buildExecutiveHtmlEmail_(cfg, t);
+  const htmlBody = buildExecutiveHtmlEmail_(cfg, t, archetype);
   return { subject: subject, htmlBody: htmlBody };
 }
 
@@ -407,6 +641,11 @@ function computeNextSendSlot_(baseDate, indexOffset, startHr, endHr) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     renderPersonaTemplate_,
+    buildExecutiveHtmlEmail_,
+    buildClassicLetterEmail_,
+    buildModernBriefEmail_,
+    buildVideoSpotlightEmail_,
+    buildUltraHumanEmail_,
     appendUtm_,
     computeNextSendSlot_
   };
