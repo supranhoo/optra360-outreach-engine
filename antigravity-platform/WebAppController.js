@@ -420,11 +420,27 @@ function apiSendTestEmail(outreachId, recipientOverride) {
       'Outreach ID: <code>' + outreachId + '</code> • Campaign: <code>' + draftRow[1] + '</code><br>' +
       '<em>This preview email was sent directly from your Antigravity Draft Studio for visual review and quality assurance.</em></p>';
 
-    MailApp.sendEmail({
-      to: targetEmail,
-      subject: testSubject,
-      htmlBody: testBody
-    });
+    const plainText = testBody.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+    try {
+      if (typeof GmailApp !== 'undefined' && GmailApp.sendEmail) {
+        GmailApp.sendEmail(targetEmail, testSubject, plainText, {
+          htmlBody: testBody
+        });
+      } else {
+        MailApp.sendEmail({
+          to: targetEmail,
+          subject: testSubject,
+          htmlBody: testBody
+        });
+      }
+    } catch (e1) {
+      MailApp.sendEmail({
+        to: targetEmail,
+        subject: testSubject,
+        htmlBody: testBody
+      });
+    }
 
     return {
       success: true,

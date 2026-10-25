@@ -180,7 +180,8 @@ function generateCampaignOutreachDrafts(campaignId) {
 
 /**
  * Helper to build the responsive executive HTML email layout.
- * Includes header banner, video portfolio showcase card, 3-metric proof grid, and dual CTA buttons.
+ * Formatted as an authentic, high-impact 1-to-1 executive letter with clean letterhead,
+ * subtle video walkthrough callout, 3-metric proof grid, and direct CV/calendar links.
  */
 function buildExecutiveHtmlEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
@@ -188,91 +189,97 @@ function buildExecutiveHtmlEmail_(cfg, t) {
   const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
 
   return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; color: #1e293b; line-height: 1.6;">' +
-    '<!-- Executive Header Banner -->' +
-    '<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 24px 28px; border-bottom: 3px solid #38bdf8;">' +
-      '<div style="font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Executive Leadership Dossier</div>' +
-      '<div style="font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em;">' + t.candidate_full_name + '</div>' +
-      '<div style="font-size: 13px; color: #cbd5e1; margin-top: 3px;">' + t.candidate_headline + '</div>' +
+    '<!-- Executive Letterhead -->' +
+    '<div style="background: #f8fafc; padding: 18px 24px; border-bottom: 1px solid #e2e8f0;">' +
+      '<table width="100%" cellpadding="0" cellspacing="0">' +
+        '<tr>' +
+          '<td>' +
+            '<div style="font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em;">' + t.candidate_full_name + '</div>' +
+            '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
+          '</td>' +
+          '<td align="right" style="vertical-align: middle;">' +
+            '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 4px; text-decoration: none;">📄 View CV (PDF)</a>' +
+          '</td>' +
+        '</tr>' +
+      '</table>' +
     '</div>' +
 
     '<!-- Body Content Container -->' +
     '<div style="padding: 24px 28px;">' +
       '<p style="font-size: 15px; margin-top: 0; color: #0f172a;">Hi <strong>' + t.first_name + '</strong>,</p>' +
-      '<p style="font-size: 14px; color: #334155; line-height: 1.6;">' + cfg.openingHook + '</p>' +
+      '<p style="font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 18px;">' + cfg.openingHook + '</p>' +
 
-      '<!-- Featured Video Portfolio & Case Study Card -->' +
-      '<div style="background: #0f172a; border-radius: 8px; padding: 20px 22px; margin: 20px 0; border: 1px solid #1e293b; color: #ffffff;">' +
-        '<div style="display: inline-block; background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">' +
-          '🎬 Featured Video Portfolio & Case Study' +
+      '<!-- Clean Video Portfolio & Case Study Callout Box -->' +
+      '<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #0284c7; border-radius: 6px; padding: 16px 18px; margin: 20px 0;">' +
+        '<div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">' +
+          '📹 Video Portfolio & Systems Case Study Walkthrough' +
         '</div>' +
-        '<div style="font-size: 15px; font-weight: 700; color: #f8fafc; line-height: 1.35; margin-bottom: 6px;">' +
-          'Workforce Systems Turnaround: Scaling from Ad-Hoc Management to Institutional Governance' +
+        '<div style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 12px;">' +
+          'A concise executive walkthrough showing how we curbed shopfloor absenteeism, deployed 0-to-1 PMS, and maintained zero-strike IR peace across 3,850 personnel at Bihar Foundry & Castings Ltd.' +
         '</div>' +
-        '<div style="font-size: 12px; color: #94a3b8; line-height: 1.55; margin-bottom: 14px;">' +
-          'A brief executive walkthrough detailing how we curbed shopfloor absenteeism, deployed 0-to-1 PMS, and maintained zero-strike IR peace across 3,850 personnel at Bihar Foundry & Castings Ltd.' +
-        '</div>' +
-        '<a href="' + videoUrl + '" target="_blank" style="display: inline-block; background: #38bdf8; color: #0f172a; font-weight: 800; font-size: 12px; padding: 9px 18px; border-radius: 5px; text-decoration: none; letter-spacing: 0.02em;">' +
-          '▶ Watch Executive Walkthrough & Portfolio →' +
+        '<a href="' + videoUrl + '" target="_blank" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 8px 16px; border-radius: 4px; text-decoration: none;">' +
+          '▶ Watch Video Walkthrough & Case Study →' +
         '</a>' +
       '</div>' +
 
       '<!-- Verified Scale & Proof Metrics (3-Column Table Grid) -->' +
-      '<div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">' +
+      '<div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">' +
         'Proven Scale & Verified Achievements across 3,850-personnel plant workforce:' +
       '</div>' +
       '<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 22px;">' +
         '<tr>' +
           '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
             '<div style="font-size: 20px; font-weight: 800; color: #0284c7; line-height: 1.1;">3,850</div>' +
-            '<div style="font-size: 10px; font-weight: 800; color: #0f172a; margin-top: 4px; text-transform: uppercase;">Plant Workforce</div>' +
+            '<div style="font-size: 10px; font-weight: 700; color: #0f172a; margin-top: 4px; text-transform: uppercase;">Plant Workforce</div>' +
             '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">2,350 On-roll + 1,500 Contract</div>' +
           '</td>' +
           '<td width="3.5%"></td>' +
           '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
-            '<div style="font-size: 20px; font-weight: 800; color: #10b981; line-height: 1.1;">100%</div>' +
-            '<div style="font-size: 10px; font-weight: 800; color: #0f172a; margin-top: 4px; text-transform: uppercase;">Strike-Free IR</div>' +
+            '<div style="font-size: 20px; font-weight: 800; color: #059669; line-height: 1.1;">100%</div>' +
+            '<div style="font-size: 10px; font-weight: 700; color: #0f172a; margin-top: 4px; text-transform: uppercase;">Strike-Free IR</div>' +
             '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">Zero Labour Stoppages</div>' +
           '</td>' +
           '<td width="3.5%"></td>' +
           '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
-            '<div style="font-size: 20px; font-weight: 800; color: #8b5cf6; line-height: 1.1;">0-to-1</div>' +
-            '<div style="font-size: 10px; font-weight: 800; color: #0f172a; margin-top: 4px; text-transform: uppercase;">PMS Rollout</div>' +
+            '<div style="font-size: 20px; font-weight: 800; color: #7c3aed; line-height: 1.1;">0-to-1</div>' +
+            '<div style="font-size: 10px; font-weight: 700; color: #0f172a; margin-top: 4px; text-transform: uppercase;">PMS Rollout</div>' +
             '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">200 Managers with KRAs</div>' +
           '</td>' +
         '</tr>' +
       '</table>' +
 
       '<!-- Targeted Execution Playbook -->' +
-      '<div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">' +
+      '<div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">' +
         'How I Can Support ' + t.company_name + ':' +
       '</div>' +
-      '<ul style="padding-left: 20px; margin: 0 0 20px 0; font-size: 13px; color: #334155; line-height: 1.6;">' +
+      '<ul style="padding-left: 20px; margin: 0 0 20px 0; font-size: 13.5px; color: #334155; line-height: 1.6;">' +
         cfg.playbookBullets.map(function(b) { return '<li style="margin-bottom: 6px;">' + b + '</li>'; }).join('') +
       '</ul>' +
 
       '<!-- Dual Action Buttons: CV & Calendar -->' +
-      '<table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0 16px 0;">' +
+      '<table width="100%" cellpadding="0" cellspacing="0" style="margin: 22px 0 16px 0;">' +
         '<tr>' +
-          '<td align="center">' +
-            '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 700; font-size: 12px; padding: 11px 20px; border-radius: 6px; text-decoration: none; margin-right: 8px; border: 1px solid #334155;">' +
+          '<td align="left">' +
+            '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none; margin-right: 10px;">' +
               '📄 View Full Executive CV (PDF) →' +
             '</a>' +
-            '<a href="' + calendarUrl + '" target="_blank" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 700; font-size: 12px; padding: 11px 20px; border-radius: 6px; text-decoration: none;">' +
+            '<a href="' + calendarUrl + '" target="_blank" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none;">' +
               '📅 Schedule 15-Min Discussion →' +
             '</a>' +
           '</td>' +
         '</tr>' +
       '</table>' +
 
-      '<p style="font-size: 13px; color: #475569; margin-top: 20px; line-height: 1.5;">' +
+      '<p style="font-size: 13.5px; color: #475569; margin-top: 18px; line-height: 1.5;">' +
         cfg.closingAsk +
       '</p>' +
 
       '<!-- Executive Signoff -->' +
       '<div style="border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 22px;">' +
-        '<div style="font-weight: 800; font-size: 14px; color: #0f172a;">' + t.candidate_full_name + '</div>' +
+        '<div style="font-weight: 700; font-size: 14px; color: #0f172a;">' + t.candidate_full_name + '</div>' +
         '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
-        '<div style="font-size: 11px; color: #0284c7; margin-top: 4px;">' +
+        '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">Mobile: +91 91225 39111 &bull; Email: ankitchoudharymba@gmail.com</div>' +
+        '<div style="font-size: 11px; margin-top: 6px;">' +
           '<a href="' + (t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources') + '" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 600;">LinkedIn Executive Profile ↗</a>' +
         '</div>' +
       '</div>' +
@@ -291,7 +298,7 @@ function renderPersonaTemplate_(persona, t) {
   switch (p) {
     case 'FOUNDER':
       subject = 'Plant HR & workforce systems — Ankit Choudhary (' + t.company_name + ')';
-      cfg.openingHook = 'As ' + t.company_name + ' scales manufacturing operations across ' + t.funding_stage_headcount + ', ad-hoc shopfloor management, uncontrolled contract-labour absenteeism, and manual time-office loopholes often directly erode plant EBITDA and create persistent promoter bottlenecks.';
+      cfg.openingHook = 'I\'ve been following ' + t.company_name + '\'s expansion in manufacturing operations. As growing manufacturing firms scale production capacity, setting up disciplined plant systems — biometric attendance governance, structured KRA/KPI appraisals, and contractor compliance — becomes essential to sustaining plant margins and eliminating promoter bottlenecks.';
       cfg.playbookBullets = [
         '<strong>Attendance & Overtime Turnaround:</strong> Restructured biometric attendance governance and introduced production-linked increment policies to eliminate shopfloor absenteeism and overtime leakage (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).',
         '<strong>0-to-1 PMS Implementation:</strong> Rolled out structured KRA/KPI appraisals to 100 senior leaders in 6 months, expanding coverage to 200 managers across 3,850 plant personnel.',
@@ -349,7 +356,7 @@ function renderPersonaTemplate_(persona, t) {
 
     default:
       subject = 'Building institutional Plant HR & PMS governance at ' + t.company_name;
-      cfg.openingHook = 'As manufacturing organizations scale across ' + t.funding_stage_headcount + ', building structured HR processes, curbing shopfloor absenteeism, and de-risking contract-labour compliance are critical to sustaining operating margins.';
+      cfg.openingHook = 'As growing manufacturing organizations scale across ' + t.funding_stage_headcount + ', building structured HR processes, curbing shopfloor absenteeism, and de-risking contract-labour compliance are critical to sustaining operating margins.';
       cfg.playbookBullets = [
         '<strong>' + t.project_title + ':</strong> ' + t.architecture_summary,
         '<strong>Verified Business Impact:</strong> ' + t.quantified_business_impact,
