@@ -334,6 +334,16 @@ runTest('Validates Quick Add Lead required fields', () => {
   assert.strictEqual(validateEmailAndMx_(validLead.email), true);
 });
 
+runTest('Validates Executive HTML email architecture components', () => {
+  const tpl = renderPersonaTemplate_('FOUNDER', sampleTokenPayload);
+  assert.ok(tpl.htmlBody.includes('Executive Leadership Dossier'));
+  assert.ok(tpl.htmlBody.includes('Featured Video Portfolio & Case Study'));
+  assert.ok(tpl.htmlBody.includes('3,850'));
+  assert.ok(tpl.htmlBody.includes('View Full Executive CV (PDF)'));
+  assert.ok(tpl.htmlBody.includes('Schedule 15-Min Discussion'));
+  assert.ok(!tpl.htmlBody.includes('undefined'));
+});
+
 // -------------------------------------------------------------
 // Test Summary
 // -------------------------------------------------------------

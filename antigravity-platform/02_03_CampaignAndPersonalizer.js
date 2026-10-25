@@ -125,7 +125,8 @@ function generateCampaignOutreachDrafts(campaignId) {
       years_experience: profile[3] || 15,
       github_profile_url: profile[6] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
       portfolio_base_url: profile[5] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
-      resume_drive_url: profile[8] ? ('https://drive.google.com/file/d/' + profile[8] + '/view') : '',
+      portfolio_video_url: (profile[5] && profile[5].length > 10) ? appendUtm_(profile[5], comp[1], c[0]) : 'https://linkedin.com/in/ankit-choudhary-human-resources',
+      resume_drive_url: profile[8] ? ('https://drive.google.com/file/d/' + profile[8] + '/view') : 'https://linkedin.com/in/ankit-choudhary-human-resources',
       calendar_booking_url: profile[9] || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion'
     };
 
@@ -178,101 +179,187 @@ function generateCampaignOutreachDrafts(campaignId) {
 }
 
 /**
+ * Helper to build the responsive executive HTML email layout.
+ * Includes header banner, video portfolio showcase card, 3-metric proof grid, and dual CTA buttons.
+ */
+function buildExecutiveHtmlEmail_(cfg, t) {
+  const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
+  const cvUrl = t.resume_drive_url || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
+  const calendarUrl = t.calendar_booking_url || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion';
+
+  return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; color: #1e293b; line-height: 1.6;">' +
+    '<!-- Executive Header Banner -->' +
+    '<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 24px 28px; border-bottom: 3px solid #38bdf8;">' +
+      '<div style="font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Executive Leadership Dossier</div>' +
+      '<div style="font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em;">' + t.candidate_full_name + '</div>' +
+      '<div style="font-size: 13px; color: #cbd5e1; margin-top: 3px;">' + t.candidate_headline + '</div>' +
+    '</div>' +
+
+    '<!-- Body Content Container -->' +
+    '<div style="padding: 24px 28px;">' +
+      '<p style="font-size: 15px; margin-top: 0; color: #0f172a;">Hi <strong>' + t.first_name + '</strong>,</p>' +
+      '<p style="font-size: 14px; color: #334155; line-height: 1.6;">' + cfg.openingHook + '</p>' +
+
+      '<!-- Featured Video Portfolio & Case Study Card -->' +
+      '<div style="background: #0f172a; border-radius: 8px; padding: 20px 22px; margin: 20px 0; border: 1px solid #1e293b; color: #ffffff;">' +
+        '<div style="display: inline-block; background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">' +
+          '🎬 Featured Video Portfolio & Case Study' +
+        '</div>' +
+        '<div style="font-size: 15px; font-weight: 700; color: #f8fafc; line-height: 1.35; margin-bottom: 6px;">' +
+          'Workforce Systems Turnaround: Scaling from Ad-Hoc Management to Institutional Governance' +
+        '</div>' +
+        '<div style="font-size: 12px; color: #94a3b8; line-height: 1.55; margin-bottom: 14px;">' +
+          'A brief executive walkthrough detailing how we curbed shopfloor absenteeism, deployed 0-to-1 PMS, and maintained zero-strike IR peace across 3,850 personnel at Bihar Foundry & Castings Ltd.' +
+        '</div>' +
+        '<a href="' + videoUrl + '" target="_blank" style="display: inline-block; background: #38bdf8; color: #0f172a; font-weight: 800; font-size: 12px; padding: 9px 18px; border-radius: 5px; text-decoration: none; letter-spacing: 0.02em;">' +
+          '▶ Watch Executive Walkthrough & Portfolio →' +
+        '</a>' +
+      '</div>' +
+
+      '<!-- Verified Scale & Proof Metrics (3-Column Table Grid) -->' +
+      '<div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;">' +
+        'Proven Scale & Verified Achievements across 3,850-personnel plant workforce:' +
+      '</div>' +
+      '<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 22px;">' +
+        '<tr>' +
+          '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
+            '<div style="font-size: 20px; font-weight: 800; color: #0284c7; line-height: 1.1;">3,850</div>' +
+            '<div style="font-size: 10px; font-weight: 800; color: #0f172a; margin-top: 4px; text-transform: uppercase;">Plant Workforce</div>' +
+            '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">2,350 On-roll + 1,500 Contract</div>' +
+          '</td>' +
+          '<td width="3.5%"></td>' +
+          '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
+            '<div style="font-size: 20px; font-weight: 800; color: #10b981; line-height: 1.1;">100%</div>' +
+            '<div style="font-size: 10px; font-weight: 800; color: #0f172a; margin-top: 4px; text-transform: uppercase;">Strike-Free IR</div>' +
+            '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">Zero Labour Stoppages</div>' +
+          '</td>' +
+          '<td width="3.5%"></td>' +
+          '<td width="31%" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 10px; text-align: center; vertical-align: top;">' +
+            '<div style="font-size: 20px; font-weight: 800; color: #8b5cf6; line-height: 1.1;">0-to-1</div>' +
+            '<div style="font-size: 10px; font-weight: 800; color: #0f172a; margin-top: 4px; text-transform: uppercase;">PMS Rollout</div>' +
+            '<div style="font-size: 10px; color: #64748b; margin-top: 2px;">200 Managers with KRAs</div>' +
+          '</td>' +
+        '</tr>' +
+      '</table>' +
+
+      '<!-- Targeted Execution Playbook -->' +
+      '<div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">' +
+        'How I Can Support ' + t.company_name + ':' +
+      '</div>' +
+      '<ul style="padding-left: 20px; margin: 0 0 20px 0; font-size: 13px; color: #334155; line-height: 1.6;">' +
+        cfg.playbookBullets.map(function(b) { return '<li style="margin-bottom: 6px;">' + b + '</li>'; }).join('') +
+      '</ul>' +
+
+      '<!-- Dual Action Buttons: CV & Calendar -->' +
+      '<table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0 16px 0;">' +
+        '<tr>' +
+          '<td align="center">' +
+            '<a href="' + cvUrl + '" target="_blank" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 700; font-size: 12px; padding: 11px 20px; border-radius: 6px; text-decoration: none; margin-right: 8px; border: 1px solid #334155;">' +
+              '📄 View Full Executive CV (PDF) →' +
+            '</a>' +
+            '<a href="' + calendarUrl + '" target="_blank" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 700; font-size: 12px; padding: 11px 20px; border-radius: 6px; text-decoration: none;">' +
+              '📅 Schedule 15-Min Discussion →' +
+            '</a>' +
+          '</td>' +
+        '</tr>' +
+      '</table>' +
+
+      '<p style="font-size: 13px; color: #475569; margin-top: 20px; line-height: 1.5;">' +
+        cfg.closingAsk +
+      '</p>' +
+
+      '<!-- Executive Signoff -->' +
+      '<div style="border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 22px;">' +
+        '<div style="font-weight: 800; font-size: 14px; color: #0f172a;">' + t.candidate_full_name + '</div>' +
+        '<div style="font-size: 12px; color: #64748b; margin-top: 2px;">' + t.candidate_headline + '</div>' +
+        '<div style="font-size: 11px; color: #0284c7; margin-top: 4px;">' +
+          '<a href="' + (t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources') + '" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 600;">LinkedIn Executive Profile ↗</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+/**
  * Renders persona-aligned subject line and HTML body across the 6 template families.
  */
 function renderPersonaTemplate_(persona, t) {
   let subject = '';
-  let body = '';
   const p = String(persona || 'HIRING_MGR').toUpperCase();
+  let cfg = { openingHook: '', playbookBullets: [], closingAsk: '' };
 
   switch (p) {
     case 'FOUNDER':
-      subject = 'Building institutional Plant HR & workforce systems at ' + t.company_name;
-      body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>As manufacturing organizations scale across ' + t.funding_stage_headcount + ', ad-hoc shopfloor management, uncontrolled contract-labour absenteeism, and manual time-office loopholes often start directly eroding plant EBITDA and creating promoter bottlenecks.</p>' +
-        '<p>At Bihar Foundry & Castings Ltd (GMG Group), I engineered the complete workforce governance turnaround from scratch across a <strong>3,850-personnel plant workforce</strong> (2,350 on-roll + 1,500 contract workers):</p>' +
-        '<ul>' +
-        '<li><strong>Attendance & Overtime Turnaround:</strong> Restructured biometric attendance governance and introduced a production-linked increment policy, drastically curbing shopfloor absenteeism and overtime leakage (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</li>' +
-        '<li><strong>0-to-1 PMS Implementation:</strong> Rolled out structured KRA/KPI appraisals to 100 senior leaders in 6 months, expanding coverage to 200 managers in 9 months.</li>' +
-        '<li><strong>In-House Digital Platform:</strong> Architected a custom full-stack Safety, Appraisal & LMS platform without expensive multi-crore enterprise ERP bloat.</li>' +
-        '<li><strong>Statutory & IR De-risking:</strong> 100% labour compliance (Factory Act, CLRA, BOCW) and maintained zero-strike industrial peace.</li>' +
-        '</ul>' +
-        '<p><strong>Why this matters for ' + t.company_name + ':</strong> ' + t.custom_roi_hypothesis + '</p>' +
-        '<p>Full background & career portfolio: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>.</p>' +
-        '<p>Would you be open to a 15-minute introductory discussion this week to explore how this systems playbook can institutionalize ' + t.company_name + '\'s plant operations as you scale?</p>' +
-        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '<br><a href="' + t.calendar_booking_url + '">Schedule a 15-min call</a></p>';
+      subject = 'Plant HR & workforce systems — Ankit Choudhary (' + t.company_name + ')';
+      cfg.openingHook = 'As ' + t.company_name + ' scales manufacturing operations across ' + t.funding_stage_headcount + ', ad-hoc shopfloor management, uncontrolled contract-labour absenteeism, and manual time-office loopholes often directly erode plant EBITDA and create persistent promoter bottlenecks.';
+      cfg.playbookBullets = [
+        '<strong>Attendance & Overtime Turnaround:</strong> Restructured biometric attendance governance and introduced production-linked increment policies to eliminate shopfloor absenteeism and overtime leakage (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).',
+        '<strong>0-to-1 PMS Implementation:</strong> Rolled out structured KRA/KPI appraisals to 100 senior leaders in 6 months, expanding coverage to 200 managers across 3,850 plant personnel.',
+        '<strong>In-House Digital Architecture:</strong> Deployed integrated Safety reporting, Appraisal, and LMS workflows without multi-crore enterprise ERP bloat.',
+        '<strong>Statutory & IR De-risking:</strong> 100% compliance across Factory Act, CLRA & BOCW with zero strikes and zero labour stoppages at Bihar Foundry & Castings Ltd.'
+      ];
+      cfg.closingAsk = 'Would you be open to a 15-minute introductory discussion this week to explore how this systems playbook can institutionalize ' + t.company_name + '\'s plant operations as you scale?';
       break;
 
     case 'TECH_LEAD':
     case 'CTO':
       subject = 'Curtailed shopfloor absenteeism & overtime across 3,850 plant personnel (case study)';
-      body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>Managing multi-shift plant operations and expanding production capacity always comes down to shopfloor discipline: shift deployment adherence, contractor compliance, and supervisory capability.</p>' +
-        '<p>In my recent role heading Plant HR & IR across a <strong>3,850-personnel manufacturing workforce</strong>, I resolved these exact operational bottlenecks:</p>' +
-        '<ul>' +
-        '<li><strong>Shopfloor Discipline:</strong> Restructured time-office biometric governance across 3 production shifts, curbing absenteeism and eliminating overtime leakage (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</li>' +
-        '<li><strong>Digital Safety & Workforce Platform:</strong> Architected an in-house Safety incident reporting and KRA/KPI platform adopted plant-wide.</li>' +
-        '<li><strong>Zero-Strike IR Governance:</strong> De-risked union friction, labour contractor compliance, and local administrative liaison.</li>' +
-        '</ul>' +
-        '<p>I am exploring my next manufacturing leadership role and would welcome the opportunity to bring this proven systems playbook to ' + t.company_name + '.</p>' +
-        '<p>Open to a brief 12-minute operational discussion this Thursday to share what worked across our heavy manufacturing plants?</p>' +
-        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '</p>';
+      cfg.openingHook = 'Managing multi-shift plant operations and expanding production capacity always comes down to shopfloor discipline: shift deployment adherence, contractor compliance, and supervisory capability.';
+      cfg.playbookBullets = [
+        '<strong>Shopfloor Discipline:</strong> Overhauled biometric time-office governance across 3 production shifts, curbing absenteeism and eliminating overtime leakage in a 3,850-personnel manufacturing workforce (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).',
+        '<strong>Digital Safety & Workforce Governance:</strong> Architected an in-house Safety incident reporting and KRA/KPI framework adopted plant-wide.',
+        '<strong>Zero-Strike IR Governance:</strong> De-risked union friction, labour contractor compliance, and local administrative liaison.'
+      ];
+      cfg.closingAsk = 'I am exploring my next manufacturing leadership role and would welcome a brief 12-minute operational discussion to share what worked across our heavy manufacturing plants.';
       break;
 
     case 'HIRING_MGR':
       subject = '0-to-1 PMS & Digital Safety rollout across plant operations — Ankit Choudhary';
-      body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>I reviewed ' + t.company_name + '\'s growth in manufacturing operations and wanted to connect regarding your HR leadership and workforce governance roadmap.</p>' +
-        '<p>Over 15 years leading Plant HR & Industrial Relations, I specialize in taking growing manufacturing organizations from ad-hoc processes to institutionalized, tech-enabled systems:</p>' +
-        '<ol>' +
-        '<li><strong>0-to-1 PMS Architecture:</strong> Built and deployed structured KRA/KPI performance appraisals for 100 leaders in 6 months, scaling to 200 managers across 3,850 personnel.</li>' +
-        '<li><strong>Attendance & Absenteeism Overhaul:</strong> Formulated production-linked increment policies and biometric time-office governance to curb shopfloor absenteeism (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</li>' +
-        '<li><strong>L&D Division Setup:</strong> Established training architecture driven by real-time Training Need Identification (TNI) matrices.</li>' +
-        '</ol>' +
-        '<p>Full portfolio & leadership credentials: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>' + (t.resume_drive_url ? ' | <a href="' + t.resume_drive_url + '">Resume PDF</a>' : '') + '.</p>' +
-        '<p>Do you have 15 minutes early next week to discuss your workforce roadmap and how my systems-implementation background aligns?</p>' +
-        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '</p>';
+      cfg.openingHook = 'I reviewed ' + t.company_name + '\'s growth in manufacturing operations and wanted to connect regarding your HR leadership and workforce governance roadmap.';
+      cfg.playbookBullets = [
+        '<strong>0-to-1 PMS Architecture:</strong> Built and deployed structured KRA/KPI performance appraisals for 100 leaders in 6 months, scaling to 200 managers across 3,850 personnel.',
+        '<strong>Attendance & Absenteeism Overhaul:</strong> Formulated production-linked increment policies and biometric time-office governance to curb shopfloor absenteeism (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).',
+        '<strong>L&D Division Setup:</strong> Established training architecture driven by real-time Training Need Identification (TNI) matrices.'
+      ];
+      cfg.closingAsk = 'Do you have 15 minutes early next week to discuss your workforce roadmap and how my systems-implementation background aligns?';
       break;
 
     case 'RECRUITER':
       subject = 'Candidate: ' + t.role_title_opp + ' — 15 yrs Manufacturing HR Leadership + Plant Systems Turnaround';
-      body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>I noticed you are leading talent acquisition for ' + t.company_name + ' and wanted to share my background for leadership opportunities in Plant HR, Industrial Relations, and Workforce Strategy.</p>' +
-        '<p><strong>Quick Fit Overview:</strong></p>' +
-        '<ul>' +
-        '<li><strong>Experience:</strong> 15 years leading Plant HR, IR, and workforce governance across heavy manufacturing, steel, and foundry plants.</li>' +
-        '<li><strong>Workforce Scale:</strong> Governed 3,850 personnel (2,350 on-roll + 1,500 contract workers) across 3 production shifts.</li>' +
-        '<li><strong>Systems Implementation:</strong> Built 0-to-1 PMS (200 managers), digital Safety/LMS platform, and production-linked attendance policy (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</li>' +
-        '<li><strong>Compliance & IR:</strong> 100% statutory compliance (Factory Act, CLRA, BOCW) and zero-strike industrial harmony.</li>' +
-        '<li><strong>Portfolio & CV:</strong> <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>' + (t.resume_drive_url ? ' | <a href="' + t.resume_drive_url + '">Resume PDF</a>' : '') + '.</li>' +
-        '</ul>' +
-        '<p>Are you open to a brief 10-minute screening call this week?</p>' +
-        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '</p>';
+      cfg.openingHook = 'I noticed you are leading talent acquisition for ' + t.company_name + ' and wanted to share my background for leadership opportunities in Plant HR, Industrial Relations, and Workforce Strategy.';
+      cfg.playbookBullets = [
+        '<strong>15 Years Leadership:</strong> Plant HR, IR, and workforce governance across heavy manufacturing, steel, and foundry plants.',
+        '<strong>Workforce Scale:</strong> Governed 3,850 personnel (2,350 on-roll + 1,500 contract workers) across 3 production shifts.',
+        '<strong>0-to-1 Systems:</strong> Built PMS (200 managers), digital Safety/LMS platform, and production-linked attendance policy (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).',
+        '<strong>100% Compliance:</strong> Complete statutory governance (Factory Act, CLRA, BOCW) and zero-strike industrial harmony.'
+      ];
+      cfg.closingAsk = 'Are you open to a brief 10-minute screening call this week?';
       break;
 
     case 'PEER':
       subject = 'Quick question on ' + t.company_name + '\'s manufacturing plant culture';
-      body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>Came across your profile while researching ' + t.company_name + '\'s manufacturing operations around ' + t.recent_trigger_event_short + '.</p>' +
-        '<p>I have led Plant HR and workforce governance across large industrial setups (most recently 3,850 personnel at Bihar Foundry & Castings Ltd), implementing digital workforce systems and attendance turnarounds (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</p>' +
-        '<p>I am exploring senior HR leadership opportunities with growing manufacturing firms and wanted to ask: how have you found the operational leadership and growth culture at ' + t.company_name + '?</p>' +
-        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong></p>';
+      cfg.openingHook = 'Came across your profile while researching ' + t.company_name + '\'s manufacturing operations around ' + t.recent_trigger_event_short + '. I have led Plant HR and workforce governance across large industrial setups (most recently 3,850 personnel at Bihar Foundry & Castings Ltd), implementing digital workforce systems and attendance turnarounds (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).';
+      cfg.playbookBullets = [
+        'Curtailed shopfloor absenteeism and overtime via biometric governance.',
+        'Architected 0-to-1 PMS and L&D frameworks across 200 managers.',
+        'Maintained 100% industrial peace and zero labour stoppages.'
+      ];
+      cfg.closingAsk = 'I am exploring senior HR leadership opportunities with growing manufacturing firms and wanted to ask: how have you found the operational leadership and growth culture at ' + t.company_name + '?';
       break;
 
-    default: // General Problem-First Systems Implementation Pitch
+    default:
       subject = 'Building institutional Plant HR & PMS governance at ' + t.company_name;
-      body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>As manufacturing organizations scale across ' + t.funding_stage_headcount + ', building structured HR processes, curbing shopfloor absenteeism, and de-risking contract-labour compliance are critical to sustaining operating margins.</p>' +
-        '<p>Over 15 years, I have architected and deployed these exact systems in heavy manufacturing:</p>' +
-        '<ul>' +
-        '<li><strong><a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>:</strong> ' + t.architecture_summary + '</li>' +
-        '<li><strong>Verified Business Impact:</strong> ' + t.quantified_business_impact + '</li>' +
-        '</ul>' +
-        '<p>Full case study & credentials: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>. Open to a 15-minute discussion this week, or feel free to grab a slot at <a href="' + t.calendar_booking_url + '">my calendar link</a>.</p>' +
-        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '</p>';
+      cfg.openingHook = 'As manufacturing organizations scale across ' + t.funding_stage_headcount + ', building structured HR processes, curbing shopfloor absenteeism, and de-risking contract-labour compliance are critical to sustaining operating margins.';
+      cfg.playbookBullets = [
+        '<strong>' + t.project_title + ':</strong> ' + t.architecture_summary,
+        '<strong>Verified Business Impact:</strong> ' + t.quantified_business_impact,
+        '<strong>Turnaround Scale:</strong> Governed 3,850 personnel with 0-strike industrial peace.'
+      ];
+      cfg.closingAsk = 'Full case study & credentials above. Open to a 15-minute discussion this week to explore how this playbook aligns with ' + t.company_name + '.';
   }
 
-  return { subject: subject, htmlBody: body };
+  const htmlBody = buildExecutiveHtmlEmail_(cfg, t);
+  return { subject: subject, htmlBody: htmlBody };
 }
 
 /**

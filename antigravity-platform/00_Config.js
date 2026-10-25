@@ -33,6 +33,11 @@ var ANTIGRAVITY_CONFIG = {
     }
   },
 
+  // Default Portfolio, Video & CV URLs
+  DEFAULT_PORTFOLIO_VIDEO_URL: 'https://linkedin.com/in/ankit-choudhary-human-resources',
+  DEFAULT_RESUME_URL: 'https://linkedin.com/in/ankit-choudhary-human-resources',
+  DEFAULT_CALENDLY_URL: 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion',
+
   // Dynamic Relational Spreadsheet Resolution (Standalone Apps Script Compatible)
   DEFAULT_SPREADSHEET_ID: '1KEJfOBK8PobuGQ6TI-91AKebXehOphDD3LwQw_zaXwU',
 
