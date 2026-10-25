@@ -753,6 +753,9 @@
           <svg style="width: 15px; height: 15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
           Open CRM Database
         </a>
+        <button class="btn sm primary" onclick="forceSyncAnkitProfile()" title="Force overwrite CRM sheets with Ankit Choudhary's CV & Proof-of-Work">
+          ⚡ Sync Ankit's CV to Sheet
+        </button>
         <button class="btn sm" onclick="refreshDashboardData()">
           <svg style="width: 14px; height: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
           Sync
@@ -1052,7 +1055,16 @@
           <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
             Provisions or resets the 14 relational tables, data validation rules, and Command Center formulas in Google Sheets.
           </p>
-          <button class="btn primary sm" onclick="bootstrapDb()">Bootstrap / Reset Database</button>
+          <button class="btn sm" onclick="bootstrapDb()">Bootstrap / Reset Database</button>
+        </div>
+
+        <!-- Ankit Profile Force Sync -->
+        <div class="panel" style="padding: 1.5rem; border: 1px solid rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.06);">
+          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; color: #818cf8;">👤 Candidate Profile & Proof-of-Work Sync</h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Overwrites the CRM spreadsheet with Ankit Choudhary's exact CV records (15 yrs exp, 3,850 workforce, PMS/LMS platform, industrial relations governance), real manufacturing targets (Jindal Steel & Power, Tata Steel, Vedanta), and active opportunities.
+          </p>
+          <button class="btn primary sm" onclick="forceSyncAnkitProfile()">⚡ Force-Sync Ankit's Profile & Proof-of-Work to Sheet Now</button>
         </div>
 
       </div>
@@ -1378,6 +1390,21 @@
         })
         .withFailureHandler(onError)
         .apiSaveSettings({ geminiApiKey: key });
+    }
+
+    function forceSyncAnkitProfile() {
+      showToast('<span class="spinner"></span> Syncing Ankit Choudhary CV & Proof-of-Work to Sheet...');
+      google.script.run
+        .withSuccessHandler(function(r) {
+          if (r && r.success) {
+            showToast('✅ ' + r.message);
+            refreshDashboardData();
+          } else {
+            showToast('⚠️ Error: ' + (r ? r.error : 'Unknown error'));
+          }
+        })
+        .withFailureHandler(onError)
+        .apiSyncAnkitProfile();
     }
 
     function onError(err) {

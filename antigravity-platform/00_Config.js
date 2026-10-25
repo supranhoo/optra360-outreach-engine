@@ -34,16 +34,22 @@ var ANTIGRAVITY_CONFIG = {
   },
 
   // Dynamic Relational Spreadsheet Resolution (Standalone Apps Script Compatible)
+  DEFAULT_SPREADSHEET_ID: '1KEJfOBK8PobuGQ6TI-91AKebXehOphDD3LwQw_zaXwU',
+
   getSpreadsheet: function() {
     if (typeof PropertiesService === 'undefined' || !PropertiesService.getScriptProperties) {
       return null;
     }
     const props = PropertiesService.getScriptProperties();
-    let sheetId = props.getProperty('SPREADSHEET_ID');
+    let sheetId = props.getProperty('SPREADSHEET_ID') || this.DEFAULT_SPREADSHEET_ID;
 
     if (sheetId && typeof SpreadsheetApp !== 'undefined') {
       try {
-        return SpreadsheetApp.openById(sheetId);
+        const ss = SpreadsheetApp.openById(sheetId);
+        if (ss) {
+          props.setProperty('SPREADSHEET_ID', sheetId);
+          return ss;
+        }
       } catch (e) {
         console.warn('Could not open spreadsheet by ID ' + sheetId + ': ' + e.message);
       }

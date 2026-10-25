@@ -9,6 +9,22 @@
  * Serves the standalone responsive Single Page Application UI.
  */
 function doGet(e) {
+  if (e && e.parameter && e.parameter.action === 'syncAnkitProfile') {
+    try {
+      syncAnkitProfileNow();
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: "Ankit Choudhary's profile, projects, and CV data synced to Sheet successfully!",
+        spreadsheetUrl: ANTIGRAVITY_CONFIG.getSpreadsheetUrl()
+      })).setMimeType(ContentService.MimeType.JSON);
+    } catch (err) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        error: err.message
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
   return HtmlService.createHtmlOutputFromFile('WebAppUI')
     .setTitle('⚡ Project Antigravity — Job Outreach Intelligence')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
@@ -271,6 +287,19 @@ function apiBootstrapDb() {
   try {
     bootstrapAntigravityArchitecture();
     return { success: true, spreadsheetUrl: ANTIGRAVITY_CONFIG.getSpreadsheetUrl() };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function apiSyncAnkitProfile() {
+  try {
+    syncAnkitProfileNow();
+    return {
+      success: true,
+      message: "Ankit Choudhary's CV, projects, and career records synced to Sheet successfully!",
+      spreadsheetUrl: ANTIGRAVITY_CONFIG.getSpreadsheetUrl()
+    };
   } catch (e) {
     return { success: false, error: e.message };
   }
