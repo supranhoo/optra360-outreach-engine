@@ -156,19 +156,19 @@ function generateInterviewPrepDossier(pipelineId, companyId, opportunityId, cont
   body.appendParagraph('• Custom Hypothesis for ' + companyName + ': ' + (opp[9] || 'Applying this pattern de-risks Q1 roadmap velocity.'));
 
   // Section 3: STAR Behavioral Talking Points
-  body.appendParagraph('\n3. Enterprise Credibility (STAR Story)').setHeading(DocumentApp.ParagraphHeading.HEADING1);
-  body.appendParagraph('• Situation: At ' + (exp[2] || 'FinScale Payments') + ', ' + (exp[5] || 'inherited high-load monolithic bottlenecks'));
-  body.appendParagraph('• Task: ' + (exp[3] || 'Lead Engineer') + ' responsible for stabilizing mission-critical transactions');
-  body.appendParagraph('• Action: ' + (exp[6] || 'Re-architected pipeline into idempotent Kafka event consumers with automated replay'));
-  body.appendParagraph('• Result: ' + (exp[7] || 'Processed $1.8B volume at 99.996% uptime, recovering $420K in revenue'));
+  body.appendParagraph('\n3. Enterprise Credibility (STAR Leadership Story)').setHeading(DocumentApp.ParagraphHeading.HEADING1);
+  body.appendParagraph('• Situation: At ' + (exp[2] || 'Bihar Foundry & Castings Limited') + ', ' + (exp[5] || 'inherited high-load multi-shift manufacturing operations across 3,850 plant personnel'));
+  body.appendParagraph('• Task: ' + (exp[3] || 'Senior Manager - HR') + ' leading 27-member team responsible for plant workforce governance, IR stability, and performance transformation');
+  body.appendParagraph('• Action: ' + (exp[6] || 'Architected in-house Safety, PMS & LMS platform; instituted revised increment policy and biometric attendance governance'));
+  body.appendParagraph('• Result: ' + (exp[7] || 'Elevated AmbitionBox rating to 4.2/5, scaled PMS across 200+ managers, and ensured zero production downtime from labour disputes'));
 
   // Section 4: 5 Reverse-Interview Questions for the Hiring Manager
-  body.appendParagraph('\n4. Reverse-Interview Questions for ' + (contact[3] || 'the Team')).setHeading(DocumentApp.ParagraphHeading.HEADING1);
-  body.appendListItem('What is the single biggest architectural bottleneck preventing the platform from handling 5x traffic over the next 12 months?');
-  body.appendListItem('How does your engineering team currently manage dead-letter queuing and distributed transaction retries in production?');
-  body.appendListItem('What is the standard iteration cadence between identifying a database query bottleneck and deploying an index or caching layer to production?');
-  body.appendListItem('In the ' + roleTitle + ' role, what would a 10/10 outcome look like by day 90?');
-  body.appendListItem('How does engineering leadership prioritize cloud compute cost-optimization against new feature roadmap commitments?');
+  body.appendParagraph('\n4. Strategic Reverse-Interview Questions for ' + (contact[3] || 'the Executive Leadership Team')).setHeading(DocumentApp.ParagraphHeading.HEADING1);
+  body.appendListItem('What is the single biggest workforce, contract-labour, or IR bottleneck currently preventing the manufacturing complex from hitting peak production output?');
+  body.appendListItem('How does plant leadership currently manage contractor compliance and biometric shift attendance across disparate vendor agencies?');
+  body.appendListItem('What is the current cadence between identifying shopfloor supervisory skill gaps and deploying targeted technical / safety training modules?');
+  body.appendListItem('In this ' + roleTitle + ' leadership position, what does an exceptional 10/10 milestone look like by day 90?');
+  body.appendListItem('How does executive leadership prioritize shopfloor digital transformation (PMS/LMS/Safety) alongside traditional industrial relations and statutory governance?');
 
   doc.saveAndClose();
 

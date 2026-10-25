@@ -186,13 +186,13 @@ const sampleTokenPayload = {
   exp_role_title: 'Lead Platform Engineer',
   exp_roi_statement: 'Processed $1.8B annualized volume at 99.996% uptime',
   custom_roi_hypothesis: 'Applying my Semantic RAG Caching pattern can cut VectorFlow token spend by 50%',
-  candidate_full_name: 'Aarav Mehta',
-  candidate_headline: 'Staff Systems & AI Infrastructure Engineer',
-  years_experience: 8.5,
-  github_profile_url: 'https://github.com/aarav-systems',
-  portfolio_base_url: 'https://aaravmehta.dev',
+  candidate_full_name: 'Ankit Choudhary',
+  candidate_headline: 'Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation',
+  years_experience: 15,
+  github_profile_url: 'https://linkedin.com/in/ankit-choudhary-human-resources',
+  portfolio_base_url: 'https://linkedin.com/in/ankit-choudhary-human-resources',
   resume_drive_url: 'https://drive.google.com/file/d/test/view',
-  calendar_booking_url: 'https://cal.com/aaravmehta/15min'
+  calendar_booking_url: 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion'
 };
 
 const personasToTest = ['FOUNDER', 'TECH_LEAD', 'HIRING_MGR', 'RECRUITER', 'PEER', 'DEFAULT'];

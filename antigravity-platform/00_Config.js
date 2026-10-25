@@ -24,11 +24,12 @@ var ANTIGRAVITY_CONFIG = {
   // Active User Email Resolution
   getCandidateEmail: function() {
     try {
-      return (typeof Session !== 'undefined' && Session.getActiveUser) 
+      const email = (typeof Session !== 'undefined' && Session.getActiveUser) 
         ? Session.getActiveUser().getEmail() 
-        : 'candidate@domain.com';
+        : '';
+      return email || 'ankitchoudharymba@gmail.com';
     } catch (e) {
-      return 'candidate@domain.com';
+      return 'ankitchoudharymba@gmail.com';
     }
   },
 

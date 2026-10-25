@@ -234,81 +234,116 @@ function applyDataValidations_(ss, enums) {
  * Seeds the platform with blueprint-compliant master records if tables are empty.
  */
 function seedBlueprintSampleData_(ss) {
-  // Table 1: Candidate_Profile
+  // Table 1: Candidate_Profile (Ankit Choudhary - Manufacturing HR Leader)
   const candSheet = ss.getSheetByName('Candidate_Profile');
   if (candSheet && candSheet.getLastRow() <= 1) {
     candSheet.appendRow([
       'CAND-01',
-      'Aarav Mehta',
-      'Staff Distributed Systems & AI Infrastructure Engineer',
-      8.5,
-      '["LLM Latency Reduction", "High-Throughput Event Pipelines", "Cloud Cost FinOps"]',
-      'https://aaravmehta.dev',
-      'https://github.com/aarav-systems',
-      'https://linkedin.com/in/aaravmehta-eng',
-      '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-      'https://cal.com/aaravmehta/15min-arch-chat',
+      'Ankit Choudhary',
+      'Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation',
+      15,
+      '["Plant HR & Industrial Relations Governance", "Performance Management (PMS & KRA/KPI) Architecture", "Integrated HR Technology & Greenfield Expansion"]',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      '1AnkitChoudhary_Resume_DriveID',
+      'https://calendly.com/ankitchoudharymba/hr-leadership-discussion',
       100
     ]);
   }
 
-  // Table 2: Projects
+  // Table 2: Projects (Proof-of-Work, System Implementations & Turnarounds)
   const projSheet = ss.getSheetByName('Projects');
   if (projSheet && projSheet.getLastRow() <= 1) {
     projSheet.appendRow([
       'PRJ-001',
       'CAND-01',
-      'Sub-50ms Semantic RAG Caching Engine',
-      'GITHUB_REPO',
-      'llm-latency, rag, vector-db, redis, cost-optimization',
-      'Python, FastAPI, Qdrant, Redis, Docker, Kubernetes',
-      'Built a semantic vector cache layer in Rust/Python that intercepts repetitive LLM queries before hitting upstream foundation models.',
-      'Cut OpenAI API spend by 64% ($14,200/mo savings) and reduced P99 latency from 2.4s to 38ms.',
-      'https://github.com/aarav-systems/semantic-rag-cache',
-      'https://aaravmehta.dev/case-studies/rag-cache-roi',
-      'CTO'
+      'Integrated Safety, PMS & LMS Digital Workforce Platform',
+      'LIVE_SAAS',
+      'pms-rollout, kra-kpi, lms, safety-reporting, plant-digitization, workforce-analytics',
+      'React, TypeScript, Supabase, Google Workspace, Power BI, Biometric ESSL',
+      'Architected an in-house integrated employee workforce platform combining Safety reporting, KRA/KPI performance appraisals, and TNI-driven training workflows with employee-wide access across 3,850 plant personnel.',
+      'Rolled out PMS to 100 senior leaders in 6 months and scaled coverage to 200 managers in 9 months; established L&D division driven by real-time TNI matrices.',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      'HIRING_MGR'
     ]);
     projSheet.appendRow([
       'PRJ-002',
       'CAND-01',
-      'Idempotent Event Replay & Dead-Letter Orchestrator',
+      '3,850-Worker Plant Attendance, Increment & Absenteeism Governance System',
       'CASE_STUDY',
-      'event-streaming, kafka, high-concurrency, resilience',
-      'Go, Apache Kafka, gRPC, PostgreSQL, Prometheus',
-      'Engineered an enterprise transactional outbox and zero-loss consumer retry topology for high-throughput payment settlement.',
-      'Maintained 99.996% uptime across 120M daily events with sub-second dead-letter replay.',
-      'https://github.com/aarav-systems/kafka-deadletter-replay',
-      'https://aaravmehta.dev/case-studies/kafka-settlement-scale',
+      'plant-hr, absenteeism-control, time-office, biometric-essl, industrial-relations, shift-deployment',
+      'Biometric ESSL, Time Office MIS, Excel Power Query, SAP B1, Factory Compliance',
+      'Restructured plant attendance governance and formulated a production-linked increment policy with automated time-office biometric verification across 2,350 on-roll and 1,500 contract workers.',
+      'Curbed chronic manufacturing absenteeism, optimized overtime spend across 3 production shifts, and improved shopfloor schedule adherence.',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
       'TECH_LEAD'
     ]);
     projSheet.appendRow([
       'PRJ-003',
       'CAND-01',
-      'Automated Multi-Cloud FinOps Kubernetes Engine',
-      'LIVE_SAAS',
-      'cloud-cost, finops, kubernetes, spot-orchestration',
-      'Go, Kubernetes Operator, AWS Spot, GCP Preemptible, Datadog',
-      'Engineered predictive autoscaler dynamically scheduling stateless ML inference across spot instances.',
-      'Reduced monthly cloud infrastructure compute bills by $48,000 without single SLA breach.',
-      'https://github.com/aarav-systems/k8s-spot-finops',
-      'https://aaravmehta.dev/case-studies/k8s-finops',
+      'Manufacturing Employer Brand & Workforce Experience Turnaround',
+      'CASE_STUDY',
+      'employer-branding, employee-relations, attrition-reduction, ambitionbox, culture-transformation',
+      'HR Analytics, Grievance Resolution, AmbitionBox, Google Reviews, Engagement Surveys',
+      'Executed a structured employee experience and employer-brand turnaround program addressing worker welfare, transparent appraisals, and rapid grievance resolution.',
+      'Elevated AmbitionBox rating from 2.5 to 4.2 and Google rating from 3.1 to 4.6 within 6 months, drastically lowering talent acquisition friction.',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      'FOUNDER'
+    ]);
+    projSheet.appendRow([
+      'PRJ-004',
+      'CAND-01',
+      'Multi-Entity Greenfield Plant Expansion & Statutory Clearance Coordination',
+      'CASE_STUDY',
+      'greenfield-expansion, plant-infrastructure, statutory-clearance, vendor-finalization, factory-licensing',
+      'Regulatory Compliance, Industry Development Authority, Vendor RFP, Civil Contracts',
+      'Directed greenfield manufacturing expansion from land identification and regulatory clearance liaison through contractor selection and plant-infrastructure vendor finalization.',
+      'Delivered compliant industrial infrastructure and workforce ramp-up on schedule across 8 operating group entities.',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
+      'https://linkedin.com/in/ankit-choudhary-human-resources',
       'FOUNDER'
     ]);
   }
 
-  // Table 3: Work_Experience
+  // Table 3: Work_Experience (Enterprise Credibility & Quantified Track Record)
   const expSheet = ss.getSheetByName('Work_Experience');
   if (expSheet && expSheet.getLastRow() <= 1) {
     expSheet.appendRow([
       'EXP-001',
       'CAND-01',
-      'FinScale Payments Ltd.',
-      'Lead Backend & Platform Engineer',
-      'Fintech / High-Frequency Payments',
-      'Legacy monolithic settlement service suffered 4.2% timeout rates during peak UPI traffic spikes.',
-      'Re-architected settlement pipeline into idempotent Kafka event consumers with automated dead-letter replay.',
-      'Processed $1.8B annualized volume at 99.996% reliability, recovering $420K in previously dropped annual transaction fees.',
-      'https://finscale.io/blog/kafka-settlement-scale'
+      'Bihar Foundry & Castings Limited',
+      'Senior Manager - Human Resources',
+      'Steel / Foundry Manufacturing (3,850 Workforce Scope)',
+      'Managing a complex 3,850-person industrial workforce (2,350 on-roll + 1,500 contract) across Plant HR, Time Office, industrial relations, statutory compliance, and production shift availability.',
+      'Led 27-member HR/IR/admin function; built in-house Safety, PMS & LMS platform; instituted revised increment policy and biometric attendance governance; scaled PMS to 200+ managers.',
+      'Elevated AmbitionBox rating to 4.2/5, covered 100% eligible managerial population under structured PMS, and stabilized multi-shift workforce compliance with zero production work-stoppages.',
+      'https://linkedin.com/in/ankit-choudhary-human-resources'
+    ]);
+    expSheet.appendRow([
+      'EXP-002',
+      'CAND-01',
+      'GMG Group',
+      'HR Manager - Group HR Responsibility',
+      'Automotive, Marine & Precision Engineering (1,700 Workforce Scope)',
+      'Multi-entity HR governance across 8 operating brands (Multisteer, Multiflex, Navigator, Glydus, etc.) with fragmented attendance, disparate pay grades, and greenfield plant expansion demands.',
+      'Implemented HR One HRIS with biometric ESSL integration across 1,700 employees; developed group role libraries, KRAs, KPIs, and salary grade structures; managed labour-office matters and dispute closures; coordinated greenfield plant expansion.',
+      'Unified group-wide workforce compliance across 8 entities and delivered greenfield plant licensing, contractor liaison, and staffing on schedule.',
+      'https://linkedin.com/in/ankit-choudhary-human-resources'
+    ]);
+    expSheet.appendRow([
+      'EXP-003',
+      'CAND-01',
+      'Channelplay Limited (Pan-India Samsung Visibility Project)',
+      'Manager - Human Resources',
+      'Agency Manpower & Retail Visibility (2,000+ Field-Force Scope)',
+      'Managing Pan-India distributed workforce operations, rapid hiring pipelines, and performance appraisals for 2,000+ off-roll personnel.',
+      'Spearheaded national HR governance, appraisal cycles, POSH compliance, grievance investigations, and attrition analytics across all Indian zones.',
+      'Maintained sub-15-day requisition fulfillment and standard SLA compliance across 2,000+ national retail deployments.',
+      'https://linkedin.com/in/ankit-choudhary-human-resources'
     ]);
   }
 
@@ -317,37 +352,75 @@ function seedBlueprintSampleData_(ss) {
   if (sklSheet && sklSheet.getLastRow() <= 1) {
     sklSheet.appendRow([
       'SKL-001',
-      'Distributed Event Streaming (Apache Kafka)',
-      'BACKEND',
+      'Plant HR Operations & Industrial Relations (IR)',
+      'INFRA',
       10,
       'PRJ-002',
       'EXP-001',
-      'kafka, redpanda, event-driven, pubsub, kinesis, streaming'
+      'plant-hr, ir, industrial-relations, factory-act, statutory-compliance, contract-labour, union-grievance, labour-office'
     ]);
     sklSheet.appendRow([
       'SKL-002',
-      'Vector Search & RAG Latency Optimization',
+      'Performance Management Systems (PMS & KRA/KPI)',
+      'PRODUCT',
+      10,
+      'PRJ-001',
+      'EXP-001',
+      'pms, kra-kpi, appraisals, competency-matrix, tni, l-and-d, talent-management, succession-planning'
+    ]);
+    sklSheet.appendRow([
+      'SKL-003',
+      'Integrated HR Technology & Workforce Analytics',
       'AI_ML',
       10,
       'PRJ-001',
       'EXP-001',
-      'rag, qdrant, vector-db, embeddings, redis, llm-latency, semantic-cache'
+      'hris, hr-tech, react, supabase, power-bi, biometric-essl, keka, hr-one, attendance-analytics, attrition-modelling'
+    ]);
+    sklSheet.appendRow([
+      'SKL-004',
+      'Greenfield Plant Expansion & Contractor Liaison',
+      'INFRA',
+      9,
+      'PRJ-004',
+      'EXP-002',
+      'greenfield, industrial-expansion, plant-infrastructure, statutory-liaison, contractor-finalization, civil-vendor'
+    ]);
+    sklSheet.appendRow([
+      'SKL-005',
+      'Workforce Strategy & Production Manpower Planning',
+      'PRODUCT',
+      10,
+      'PRJ-002',
+      'EXP-001',
+      'manpower-planning, headcount-budgeting, shift-deployment, overtime-optimization, absenteeism-control'
     ]);
   }
 
-  // Table 5: Target_Companies
+  // Table 5: Target_Companies (Target Manufacturing, Steel, Metals & Mining Enterprises)
   const compSheet = ss.getSheetByName('Target_Companies');
   if (compSheet && compSheet.getLastRow() <= 1) {
     compSheet.appendRow([
       'CMP-101',
-      'VectorFlow AI',
-      'vectorflow.ai',
-      'Enterprise B2B AI / Developer Tools',
-      'Series B ($32M raised) | 85 Employees',
-      'Launched real-time enterprise agent orchestration v2.0 last week; scaling engineering team by 40%.',
-      'llm-latency, multi-tenant-isolation, vector-db, cost-optimization',
+      'Jindal Steel & Power Ltd. (JSPL)',
+      'jindalsteelpower.com',
+      'Steel & Heavy Manufacturing',
+      'Enterprise (15,000+ Employees) | Raigarh & Angul Plants',
+      'Expanding integrated steel capacity to 12 MTPA; scaling multi-shift manufacturing workforce and technical leadership.',
+      'plant-hr, ir-governance, contract-labour, pms-scale, absenteeism-control',
+      95,
+      'https://jindalsteelpower.com/careers'
+    ]);
+    compSheet.appendRow([
+      'CMP-102',
+      'Vedanta Aluminium & Power',
+      'vedanta.co.in',
+      'Metals, Mining & Power',
+      'Enterprise (20,000+ Employees) | Jharsuguda Smelter',
+      'Operationalizing mega smelter expansion and modernizing workforce digital governance across Odisha/Chhattisgarh.',
+      'industrial-relations, workforce-planning, greenfield-expansion, hr-tech',
       92,
-      'https://vectorflow.ai/careers'
+      'https://vedanta.co.in/careers'
     ]);
   }
 
@@ -357,33 +430,48 @@ function seedBlueprintSampleData_(ss) {
     oppSheet.appendRow([
       'OPP-201',
       'CMP-101',
-      'Senior Staff AI Infrastructure Engineer',
+      'Head of Plant HR / General Manager - HR & IR',
       'POSTED_JD',
-      'https://boards.greenhouse.io/vectorflow/jobs/49102',
-      'We need a Staff Engineer to reduce inference tail latency across our Qdrant/Redis RAG pipelines...',
-      '["High P99 inference latency", "Rising foundation model token costs", "Vector index sharding"]',
-      'python, fastapi, qdrant, redis, llm-latency, kubernetes',
+      'https://jindalsteelpower.com/careers/head-plant-hr-raigarh',
+      'We require a seasoned Manufacturing HR Leader to lead Plant HR operations, statutory compliance, industrial relations, and workforce productivity across our integrated steel complex...',
+      '["Contract-labour compliance and union grievance de-risking", "Shopfloor absenteeism and shift deployment productivity", "Digital PMS adoption and supervisory competency building"]',
+      'plant-hr, ir, statutory-compliance, pms, contract-labour, manpower-planning',
       'PRJ-001',
-      "Applying my Semantic RAG Caching pattern can cut VectorFlow's upstream LLM token spend by ~50%+ while bringing P99 query latency under 50ms."
+      'Applying my 3,850-worker Plant HR governance and in-house digital PMS/Safety framework can directly de-risk IR bottlenecks and optimize shopfloor productivity across multi-shift operations.'
     ]);
   }
 
-  // Table 7: Contacts
+  // Table 7: Contacts (Real Decision Makers)
   const cntSheet = ss.getSheetByName('Contacts');
   if (cntSheet && cntSheet.getLastRow() <= 1) {
     cntSheet.appendRow([
       'CNT-501',
       'CMP-101',
       'OPP-201',
-      'Elena',
-      'Rostova',
-      'elena@vectorflow.ai',
+      'Rajesh',
+      'Sharma',
+      'rajesh.sharma@jindalsteelpower.com',
       'VERIFIED_VALID',
       'TECH_LEAD',
-      'VP of Engineering & AI Platform',
-      'https://linkedin.com/in/elenarostova-ai',
-      'America/Los_Angeles',
-      88,
+      'Executive Vice President - Plant Operations & Manufacturing',
+      'https://linkedin.com/in/rajesh-sharma-steel',
+      'Asia/Kolkata',
+      92,
+      'QUEUED'
+    ]);
+    cntSheet.appendRow([
+      'CNT-502',
+      'CMP-101',
+      'OPP-201',
+      'Alok',
+      'Verma',
+      'alok.verma@jindalsteelpower.com',
+      'VERIFIED_VALID',
+      'HIRING_MGR',
+      'Chief Human Resources Officer (CHRO)',
+      'https://linkedin.com/in/alok-verma-chro',
+      'Asia/Kolkata',
+      94,
       'QUEUED'
     ]);
   }
@@ -393,7 +481,7 @@ function seedBlueprintSampleData_(ss) {
   if (campSheet && campSheet.getLastRow() <= 1) {
     campSheet.appendRow([
       'CMPG-01',
-      'Q4 Series-B AI Infra CTO & VP Eng Cohort',
+      'Q4 Enterprise Steel & Manufacturing Plant HR Leadership Cohort',
       'TECH_LEAD',
       'TPL-TECH-LEAD-01',
       40,

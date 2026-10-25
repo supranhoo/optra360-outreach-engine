@@ -101,13 +101,13 @@ function generateCampaignOutreachDrafts(campaignId) {
       exp_role_title: primaryExp[3] || 'Lead Engineer',
       exp_roi_statement: primaryExp[7] || 'scaled core pipeline to 99.99% availability',
       custom_roi_hypothesis: opp[9] || 'applying these patterns can de-risk Q1 roadmap milestones by 4-6 weeks',
-      candidate_full_name: profile[1] || 'Aarav Mehta',
-      candidate_headline: profile[2] || 'Staff Systems & AI Infrastructure Engineer',
-      years_experience: profile[3] || 8,
-      github_profile_url: profile[6] || 'https://github.com',
-      portfolio_base_url: profile[5] || 'https://portfolio.dev',
+      candidate_full_name: profile[1] || 'Ankit Choudhary',
+      candidate_headline: profile[2] || 'Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation',
+      years_experience: profile[3] || 15,
+      github_profile_url: profile[6] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
+      portfolio_base_url: profile[5] || 'https://linkedin.com/in/ankit-choudhary-human-resources',
       resume_drive_url: profile[8] ? ('https://drive.google.com/file/d/' + profile[8] + '/view') : '',
-      calendar_booking_url: profile[9] || 'https://cal.com'
+      calendar_booking_url: profile[9] || 'https://calendly.com/ankitchoudharymba/hr-leadership-discussion'
     };
 
     const rendered = renderPersonaTemplate_(c[7], tokenPayload);

@@ -53,6 +53,20 @@
 
 ## 2. 14-Table Relational Database Schema Specifications
 
+### Production Master Profile Reference (Ankit Choudhary)
+* **Candidate ID**: `CAND-01`
+* **Full Name**: `Ankit Choudhary`
+* **Headline Positioning**: `Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation`
+* **Total Experience**: `15 Years`
+* **Contact & Socials**: `+91 7709693603` • `ankitchoudharymba@gmail.com` • `https://linkedin.com/in/ankit-choudhary-human-resources`
+* **Workforce Scale Led**: 3,850 Personnel (2,350 on-roll + 1,500 contract across Steel & Foundry Manufacturing)
+* **Core Value Pillars**:
+  1. `Plant HR & Industrial Relations Governance (Contract Labour, Wage Settlements, Statutory Compliance)`
+  2. `Performance Management Systems (PMS & KRA/KPI Architecture across Managerial & Supervisory Cadre)`
+  3. `Integrated HR Technology (In-House Safety, PMS, LMS & Biometric ESSL HRIS Architecture)`
+
+---
+
 ### Table 1: `Candidate_Profile`
 | Column Name | Data Type | Key / Constraint | Description & Purpose |
 |---|---|---|---|
