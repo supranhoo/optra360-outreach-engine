@@ -8,6 +8,51 @@ var ANTIGRAVITY_APOLLO = {
   API_BASE_URL: 'https://api.apollo.io/v1',
 
   /**
+   * Defined Target Segments: Exactly who we target and how we pitch them.
+   */
+  TARGET_SEGMENTS: {
+    PROMOTER_MD: {
+      id: 'PROMOTER_MD',
+      name: 'Promoters & Managing Directors',
+      subtitle: 'Mid-Market Growing Plants (200 - 2,500 Workforce)',
+      icon: '🏭',
+      whyWeTarget: 'Growing companies in transition from promoter-dependent management to institutional systems. Ankit provides 0-to-1 PMS, attendance governance, and EBITDA protection.',
+      howWeTarget: 'Executive letterhead pitching bottom-line payroll discipline, zero-strike IR peace, and verified 3,850 plant turnaround metrics.',
+      recommendedArchetype: 'CLASSIC_LETTER',
+      defaultTitles: ['Managing Director', 'Promoter', 'Owner', 'Founder', 'CEO', 'Executive Director', 'Joint Managing Director'],
+      defaultKeywords: 'Manufacturing, Steel, Foundry, Forgings, Industrial, Auto Components',
+      defaultEmployeeRanges: ['201,500', '501,1000', '1001,5000'],
+      locations: ['India']
+    },
+    PLANT_OPERATIONS: {
+      id: 'PLANT_OPERATIONS',
+      name: 'Plant Heads, COOs & Works Directors',
+      subtitle: 'Shopfloor & Factory Leadership (500 - 5,000 Workforce)',
+      icon: '⚙️',
+      whyWeTarget: 'Operational leaders suffering daily headaches from shopfloor absenteeism, shift scheduling friction, biometric leakage, and contractor compliance.',
+      howWeTarget: 'Confidential Operations Brief focusing on time-office digitization, shopfloor productivity metrics, and strike-free IR harmony.',
+      recommendedArchetype: 'MODERN_BRIEF',
+      defaultTitles: ['Plant Head', 'COO', 'Chief Operating Officer', 'Works Director', 'VP Operations', 'General Manager Works', 'Factory Head', 'Unit Head'],
+      defaultKeywords: 'Plant, Factory, Manufacturing, Operations, Foundry, Steel, Engineering',
+      defaultEmployeeRanges: ['501,1000', '1001,5000'],
+      locations: ['India']
+    },
+    HR_LEADERSHIP: {
+      id: 'HR_LEADERSHIP',
+      name: 'CHROs & Corporate HR Leaders',
+      subtitle: 'Enterprise People & IR Governance (200 - 5,000 Workforce)',
+      icon: '👔',
+      whyWeTarget: 'HR leaders seeking an accomplished Plant HR / IR lieutenant capable of rolling out 0-to-1 PMS (200+ managers with KRAs) and modern LMS platforms.',
+      howWeTarget: 'Video Spotlight / Ultra-Human personal briefing sharing practical implementation frameworks, statutory compliance, and digital workforce tools.',
+      recommendedArchetype: 'VIDEO_SPOTLIGHT',
+      defaultTitles: ['CHRO', 'Chief Human Resources Officer', 'Head HR', 'VP HR', 'Head IR', 'General Manager HR', 'Vice President Human Resources'],
+      defaultKeywords: 'Human Resources, Industrial Relations, Plant HR, Manufacturing, Corporate HR',
+      defaultEmployeeRanges: ['201,500', '501,1000', '1001,5000'],
+      locations: ['India']
+    }
+  },
+
+  /**
    * Retrieves the stored Apollo.io API key from Script Properties.
    */
   getApiKey: function() {
@@ -89,11 +134,14 @@ var ANTIGRAVITY_APOLLO = {
         }
       }
 
+      const segment = queryOptions.segmentId ? this.TARGET_SEGMENTS[queryOptions.segmentId] : null;
+
       // Person Job Titles
-      if (queryOptions.titles) {
-        const titleList = Array.isArray(queryOptions.titles)
-          ? queryOptions.titles
-          : String(queryOptions.titles).split(',').map(s => s.trim()).filter(Boolean);
+      let titles = queryOptions.titles || (segment ? segment.defaultTitles : null);
+      if (titles) {
+        const titleList = Array.isArray(titles)
+          ? titles
+          : String(titles).split(',').map(s => s.trim()).filter(Boolean);
         if (titleList.length > 0) {
           payload.person_titles = titleList;
         }
@@ -102,14 +150,17 @@ var ANTIGRAVITY_APOLLO = {
       // Organization Employee Headcount Ranges (Sweet spot: 200 - 5,000 employees for growing companies)
       if (queryOptions.employeeRanges && Array.isArray(queryOptions.employeeRanges) && queryOptions.employeeRanges.length > 0) {
         payload.organization_num_employees_ranges = queryOptions.employeeRanges;
+      } else if (segment && segment.defaultEmployeeRanges) {
+        payload.organization_num_employees_ranges = segment.defaultEmployeeRanges;
       } else {
         // Default: Strictly focus on mid-market growing companies in systems implementation stage
         payload.organization_num_employees_ranges = ['201,500', '501,1000', '1001,5000'];
       }
 
       // Optional Industry / Expansion Keywords (e.g., "Foundry", "Manufacturing", "Expansion")
-      if (queryOptions.keywords) {
-        payload.q_keywords = String(queryOptions.keywords).trim();
+      let keywords = queryOptions.keywords || (segment ? segment.defaultKeywords : null);
+      if (keywords) {
+        payload.q_keywords = String(keywords).trim();
       }
 
       // Locations (e.g. India, Odisha, etc.)

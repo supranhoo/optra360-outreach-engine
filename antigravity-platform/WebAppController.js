@@ -208,6 +208,128 @@ function apiGetOutreachQueue() {
 }
 
 /**
+ * Returns clean flat CRM data specifically tailored for the Simple CRM Pipeline:
+ * To whom we have shared what and if we have received any response from them.
+ */
+function apiGetSimpleCrmData() {
+  try {
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return { success: false, error: 'Database not initialized.' };
+
+    const contactSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CONTACTS);
+    const compSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.TARGET_COMPANIES);
+    const outreachSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OUTREACH_HISTORY);
+    const respSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.RESPONSES);
+
+    if (!contactSheet || !outreachSheet) {
+      return { success: false, error: 'Required CRM sheets missing.' };
+    }
+
+    const contacts = contactSheet.getDataRange().getValues().slice(1);
+    const companies = compSheet ? compSheet.getDataRange().getValues().slice(1) : [];
+    const outreaches = outreachSheet.getDataRange().getValues().slice(1);
+    const responses = respSheet ? respSheet.getDataRange().getValues().slice(1) : [];
+
+    // Index companies by companyId
+    const compMap = {};
+    companies.forEach(c => {
+      compMap[String(c[0])] = {
+        name: c[1] || '',
+        domain: c[2] || '',
+        industry: c[3] || '',
+        headcount: c[5] || c[4] || '500-1,000 workforce',
+        location: c[6] || 'India'
+      };
+    });
+
+    // Index contacts by contactId
+    const contactMap = {};
+    contacts.forEach(c => {
+      contactMap[String(c[0])] = {
+        contactId: c[0],
+        companyId: c[1],
+        name: ((c[3] || '') + ' ' + (c[4] || '')).trim() || 'Executive Leader',
+        email: c[5] || '',
+        role: c[8] || 'Decision Maker',
+        persona: c[7] || 'FOUNDER',
+        leadScore: c[11] || 85,
+        status: c[12] || 'DISCOVERED'
+      };
+    });
+
+    // Index responses by outreachId or contactId
+    const respMap = {};
+    responses.forEach(r => {
+      const outId = String(r[1] || '');
+      const cId = String(r[2] || '');
+      const data = {
+        responseId: r[0],
+        receivedAt: r[4] ? new Date(r[4]).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '',
+        snippet: r[5] || '',
+        sentiment: r[6] || 'AWAITING',
+        hoursToReply: r[7]
+      };
+      if (outId) respMap[outId] = data;
+      if (cId) respMap[cId] = data;
+    });
+
+    // Build Unified CRM items
+    const crmRows = [];
+
+    outreaches.forEach((o, idx) => {
+      const outId = String(o[0]);
+      const contactId = String(o[2]);
+      const contact = contactMap[contactId] || { name: 'Executive Leader', role: 'Decision Maker', email: '' };
+      const company = compMap[contact.companyId] || { name: 'Target Manufacturing', headcount: '500-1,000', location: 'India' };
+      const resp = respMap[outId] || respMap[contactId] || null;
+
+      // Determine template archetype from htmlBody
+      const html = String(o[6] || '');
+      let archetype = 'Classic Letterhead';
+      if (html.includes('Operations & Workforce Briefing')) archetype = 'Operations Brief';
+      else if (html.includes('Watch Video Case Study Walkthrough')) archetype = 'Video Spotlight';
+      else if (!html.includes('fluid-container')) archetype = 'Ultra-Human Note';
+
+      const status = String(o[11] || 'DRAFT_GENERATED').trim();
+      const sentDate = o[8] ? new Date(o[8]).toLocaleDateString('en-IN') : (o[7] ? 'Scheduled: ' + new Date(o[7]).toLocaleDateString('en-IN') : 'Draft Ready');
+
+      crmRows.push({
+        outreachId: outId,
+        contactId: contactId,
+        name: contact.name,
+        email: contact.email,
+        role: contact.role,
+        company: company.name,
+        headcount: company.headcount,
+        location: company.location,
+        leadScore: contact.leadScore,
+        templateStyle: archetype,
+        subject: o[5] || 'Workforce & Plant Systems Briefing',
+        status: status,
+        sentDate: sentDate,
+        cvAttached: true,
+        cvFileName: 'Ankit_Choudhary_Executive_HR_CV.pdf',
+        response: resp ? {
+          sentiment: resp.sentiment,
+          snippet: resp.snippet,
+          receivedAt: resp.receivedAt
+        } : null
+      });
+    });
+
+    return {
+      success: true,
+      crmData: crmRows,
+      totalContacts: contacts.length,
+      totalOutreaches: outreaches.length,
+      totalResponses: responses.length
+    };
+  } catch (err) {
+    return { success: false, error: 'Failed getting CRM data: ' + err.message };
+  }
+}
+
+/**
  * API 4: Action triggers from UI
  */
 function apiApproveOutreachRow(outreachId) {
@@ -493,6 +615,16 @@ function apiImportApolloLeads(leads) {
 
 function apiImportApolloCsv(csvText) {
   return ANTIGRAVITY_APOLLO.importCsvText(csvText);
+}
+
+/**
+ * Returns the defined targeting segments and presets.
+ */
+function apiGetTargetSegments() {
+  return {
+    success: true,
+    segments: ANTIGRAVITY_APOLLO.TARGET_SEGMENTS
+  };
 }
 
 /**

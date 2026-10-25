@@ -430,6 +430,41 @@ runTest('Calendar scheduling link in templates is free of 404 errors', () => {
 });
 
 // -------------------------------------------------------------
+// Test Suite 11: Apollo Target Segments & Simple CRM Pipeline
+// -------------------------------------------------------------
+console.log('\n--- Suite 11: Apollo Target Segments & Simple CRM Pipeline ---');
+
+runTest('Target Segments definition contains all 3 core manufacturing personas', () => {
+  assert.ok(ANTIGRAVITY_APOLLO.TARGET_SEGMENTS);
+  assert.ok(ANTIGRAVITY_APOLLO.TARGET_SEGMENTS.PROMOTER_MD);
+  assert.ok(ANTIGRAVITY_APOLLO.TARGET_SEGMENTS.PLANT_OPERATIONS);
+  assert.ok(ANTIGRAVITY_APOLLO.TARGET_SEGMENTS.HR_LEADERSHIP);
+});
+
+runTest('PROMOTER_MD segment targets mid-market growing manufacturing companies', () => {
+  const seg = ANTIGRAVITY_APOLLO.TARGET_SEGMENTS.PROMOTER_MD;
+  assert.ok(seg.defaultTitles.includes('Managing Director'));
+  assert.ok(seg.defaultTitles.includes('Promoter'));
+  assert.ok(seg.defaultEmployeeRanges.includes('201,500'));
+  assert.strictEqual(seg.recommendedArchetype, 'CLASSIC_LETTER');
+});
+
+runTest('PLANT_OPERATIONS segment targets shopfloor leadership & absenteeism control', () => {
+  const seg = ANTIGRAVITY_APOLLO.TARGET_SEGMENTS.PLANT_OPERATIONS;
+  assert.ok(seg.defaultTitles.includes('Plant Head'));
+  assert.ok(seg.defaultTitles.includes('COO'));
+  assert.ok(seg.whyWeTarget.includes('absenteeism'));
+  assert.strictEqual(seg.recommendedArchetype, 'MODERN_BRIEF');
+});
+
+runTest('HR_LEADERSHIP segment targets 0-to-1 PMS rollout and IR governance', () => {
+  const seg = ANTIGRAVITY_APOLLO.TARGET_SEGMENTS.HR_LEADERSHIP;
+  assert.ok(seg.defaultTitles.includes('CHRO'));
+  assert.ok(seg.whyWeTarget.includes('PMS'));
+  assert.strictEqual(seg.recommendedArchetype, 'VIDEO_SPOTLIGHT');
+});
+
+// -------------------------------------------------------------
 // Test Summary
 // -------------------------------------------------------------
 console.log('\n======================================================');
