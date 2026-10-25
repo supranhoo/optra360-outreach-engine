@@ -1,43 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Antigravity — Job Outreach Intelligence Platform</title>
+  <title>⚡ Antigravity — Executive Outreach Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-canvas: #080c14;
-      --bg-sidebar: #0d121f;
-      --bg-surface: #121826;
-      --bg-card: #182234;
-      --bg-card-hover: #1f2c42;
+    /* Executive Design Tokens: Light (Default) & Dark */
+    :root, [data-theme="light"] {
+      --bg-app: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --bg-active: #e0f2fe;
+      --border-subtle: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --border-focus: #0284c7;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-tertiary: #94a3b8;
+      --accent-blue: #0284c7;
+      --accent-blue-hover: #0369a1;
+      --accent-blue-light: #e0f2fe;
+      --accent-green: #059669;
+      --accent-green-light: #d1fae5;
+      --accent-amber: #d97706;
+      --accent-amber-light: #fef3c7;
+      --accent-purple: #7c3aed;
+      --accent-purple-light: #ede9fe;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    }
+
+    [data-theme="dark"] {
+      --bg-app: #090d16;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #26354a;
+      --bg-active: rgba(56, 189, 248, 0.15);
       --border-subtle: rgba(255, 255, 255, 0.08);
       --border-strong: rgba(255, 255, 255, 0.16);
-      --border-focus: #6366f1;
-      
+      --border-focus: #38bdf8;
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
       --text-tertiary: #64748b;
-      
-      --indigo: #6366f1;
-      --indigo-glow: rgba(99, 102, 241, 0.25);
-      --indigo-dark: #4338ca;
-      --cyan: #0ea5e9;
-      --emerald: #10b981;
-      --emerald-glow: rgba(16, 185, 129, 0.2);
-      --amber: #f59e0b;
-      --amber-glow: rgba(245, 158, 11, 0.2);
-      --rose: #f43f5e;
-      --purple: #a855f7;
-      
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-      --shadow-glow: 0 0 25px -5px var(--indigo-glow);
+      --accent-blue: #38bdf8;
+      --accent-blue-hover: #0284c7;
+      --accent-blue-light: rgba(56, 189, 248, 0.15);
+      --accent-green: #10b981;
+      --accent-green-light: rgba(16, 185, 129, 0.15);
+      --accent-amber: #f59e0b;
+      --accent-amber-light: rgba(245, 158, 11, 0.15);
+      --accent-purple: #a855f7;
+      --accent-purple-light: rgba(168, 85, 247, 0.15);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
     }
 
     * {
@@ -47,380 +68,93 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
-      background-color: var(--bg-canvas);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-app);
       color: var(--text-primary);
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
-      overflow-x: hidden;
+      flex-direction: column;
+      overflow: hidden;
       line-height: 1.5;
     }
 
-    /* Fixed Left Sidebar */
-    aside {
-      width: 260px;
-      background-color: var(--bg-sidebar);
-      border-right: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      z-index: 40;
-    }
-
-    .sidebar-brand {
-      padding: 1.35rem 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .brand-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: var(--radius-md);
-      background: linear-gradient(135deg, #4f46e5, #06b6d4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1.2rem;
-      color: white;
-      box-shadow: 0 0 16px rgba(79, 70, 229, 0.45);
-    }
-
-    .brand-title {
-      font-weight: 800;
-      font-size: 0.95rem;
-      letter-spacing: -0.02em;
-      color: white;
-    }
-
-    .brand-version {
-      font-size: 0.7rem;
-      color: var(--cyan);
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
-    }
-
-    .sidebar-nav {
-      padding: 1rem 0.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .nav-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-tertiary);
-      padding: 0.75rem 0.75rem 0.35rem 0.75rem;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.65rem 0.85rem;
-      border-radius: var(--radius-sm);
-      color: var(--text-secondary);
-      font-size: 0.86rem;
-      font-weight: 600;
-      background: transparent;
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      width: 100%;
-      text-align: left;
-    }
-
-    .nav-item svg {
-      width: 18px;
-      height: 18px;
-      stroke-width: 2;
-      opacity: 0.8;
-      transition: all 0.15s ease;
-    }
-
-    .nav-item:hover {
-      color: var(--text-primary);
-      background-color: rgba(255, 255, 255, 0.04);
-    }
-
-    .nav-item.active {
-      color: white;
-      background-color: var(--bg-card);
-      border-color: var(--border-subtle);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .nav-item.active svg {
-      stroke: var(--cyan);
-      opacity: 1;
-    }
-
-    .sidebar-footer {
-      padding: 1rem;
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-
-    .engine-status-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .pulse-indicator {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: var(--emerald);
-      box-shadow: 0 0 10px var(--emerald);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.4; }
-      100% { opacity: 1; }
-    }
-
-    /* Main Content Wrapper */
-    .app-main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    /* Top Application Bar */
-    .top-bar {
+    /* Top Navigation Bar */
+    header.app-header {
       height: 64px;
-      background-color: rgba(13, 18, 31, 0.85);
-      backdrop-filter: blur(12px);
+      background-color: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 1.75rem;
-      position: sticky;
-      top: 0;
-      z-index: 30;
+      padding: 0 1.5rem;
+      flex-shrink: 0;
+      z-index: 20;
     }
 
-    .breadcrumbs {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-
-    .breadcrumb-root { color: var(--text-tertiary); }
-    .breadcrumb-sep { color: var(--text-tertiary); font-size: 0.75rem; }
-    .breadcrumb-current { color: var(--text-primary); font-weight: 700; }
-
-    .top-actions {
+    .brand-group {
       display: flex;
       align-items: center;
       gap: 0.85rem;
     }
 
-    .btn-sheet {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.45rem 0.95rem;
-      background: linear-gradient(180deg, #1e293b, #0f172a);
-      border: 1px solid var(--border-subtle);
-      color: #38bdf8;
-      border-radius: var(--radius-sm);
-      font-size: 0.82rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-sheet:hover {
-      border-color: #38bdf8;
-      background: #1e293b;
-      color: white;
-      transform: translateY(-1px);
-    }
-
-    .user-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
-      padding: 0.35rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    /* Page View Containers */
-    .view-container {
-      padding: 1.75rem;
-      max-width: 1400px;
-      width: 100%;
-      margin: 0 auto;
-      display: none;
-    }
-
-    .view-container.active {
-      display: block;
-      animation: fadeIn 0.2s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* KPI Hero Cards */
-    .hero-kpis {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.15rem;
-      margin-bottom: 1.75rem;
-    }
-
-    .hero-card {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-card);
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .hero-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--border-strong);
-    }
-
-    .hero-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.6rem;
-    }
-
-    .hero-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-secondary);
-    }
-
-    .hero-icon-pill {
-      width: 28px;
-      height: 28px;
-      border-radius: var(--radius-sm);
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .hero-value {
-      font-size: 2rem;
+      color: #ffffff;
       font-weight: 800;
-      letter-spacing: -0.03em;
+      font-size: 1.15rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-meta h1 {
+      font-size: 0.98rem;
+      font-weight: 800;
       color: var(--text-primary);
-      display: flex;
-      align-items: baseline;
-      gap: 0.4rem;
-    }
-
-    .hero-sub {
-      font-size: 0.75rem;
-      color: var(--text-tertiary);
-      margin-top: 0.45rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .progress-track {
-      height: 6px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 3px;
-      margin-top: 0.65rem;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.4s ease;
-    }
-
-    /* Daily Workflow Action Banner */
-    .workflow-banner {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .workflow-info h2 {
-      font-size: 1.05rem;
-      font-weight: 700;
       letter-spacing: -0.01em;
-      margin-bottom: 0.25rem;
     }
 
-    .workflow-info p {
-      font-size: 0.8rem;
+    .brand-meta p {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .metric-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--bg-app);
+      border: 1px solid var(--border-subtle);
       color: var(--text-secondary);
     }
 
-    .workflow-buttons {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      padding: 0.55rem 1rem;
-      font-size: 0.84rem;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
       font-weight: 600;
-      border-radius: var(--radius-sm);
       cursor: pointer;
-      border: 1px solid var(--border-subtle);
-      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      background-color: var(--bg-surface);
       color: var(--text-primary);
       transition: all 0.15s ease;
       white-space: nowrap;
@@ -428,232 +162,340 @@
 
     .btn:hover {
       background-color: var(--bg-card-hover);
-      border-color: var(--border-strong);
-      transform: translateY(-1px);
+      border-color: var(--accent-blue);
     }
 
     .btn.primary {
-      background: linear-gradient(180deg, #4f46e5, #4338ca);
-      border-color: #6366f1;
-      color: white;
-      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.35);
+      background-color: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
     }
 
     .btn.primary:hover {
-      background: linear-gradient(180deg, #6366f1, #4f46e5);
+      background-color: var(--accent-blue-hover);
     }
 
     .btn.success {
-      background: linear-gradient(180deg, #059669, #047857);
-      border-color: #10b981;
-      color: white;
-      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+      background-color: var(--accent-green);
+      border-color: var(--accent-green);
+      color: #ffffff;
     }
 
-    .btn.success:hover {
-      background: linear-gradient(180deg, #10b981, #059669);
-    }
-
-    .btn.danger {
-      background: linear-gradient(180deg, #be123c, #9f1239);
-      border-color: #f43f5e;
-      color: white;
-    }
-
-    .btn.sm {
-      padding: 0.35rem 0.65rem;
-      font-size: 0.78rem;
-    }
-
-    /* Tables & Card Panels */
-    .panel {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-card);
+    /* Main Split-Screen Workspace */
+    .workspace-split {
+      flex: 1;
+      display: flex;
       overflow: hidden;
-      margin-bottom: 1.75rem;
+      min-height: 0;
     }
 
-    .panel-header {
-      padding: 1rem 1.25rem;
+    /* Left Panel: Target Decision Makers Roster */
+    .roster-panel {
+      width: 380px;
+      min-width: 320px;
+      max-width: 440px;
+      background-color: var(--bg-surface);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .roster-header {
+      padding: 1rem 1.15rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background-color: var(--bg-surface);
+    }
+
+    .roster-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .roster-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .search-input-wrapper {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem 0.5rem 2rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-size: 0.8rem;
+    }
+
+    .roster-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.65rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* Contact Card */
+    .contact-card {
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-card);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .contact-card:hover {
+      border-color: var(--accent-blue);
+      background-color: var(--bg-card-hover);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .contact-card.active {
+      border-color: var(--accent-blue);
+      background-color: var(--bg-active);
+      box-shadow: 0 0 0 1px var(--accent-blue);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .contact-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    .contact-company {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .contact-role {
+      font-size: 0.74rem;
+      color: var(--text-tertiary);
+      margin-top: 0.15rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.6rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .pill-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .pill-blue { background: var(--accent-blue-light); color: var(--accent-blue); }
+    .pill-green { background: var(--accent-green-light); color: var(--accent-green); }
+    .pill-amber { background: var(--accent-amber-light); color: var(--accent-amber); }
+    .pill-purple { background: var(--accent-purple-light); color: var(--accent-purple); }
+
+    /* Right Panel: Live Email Inspector & Responsive Studio */
+    .inspector-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-app);
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .inspector-header {
+      padding: 0.85rem 1.5rem;
+      background-color: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    .panel-title {
-      font-size: 0.92rem;
-      font-weight: 700;
+    .inspector-target-info h2 {
+      font-size: 1rem;
+      font-weight: 800;
       color: var(--text-primary);
+    }
+
+    .inspector-target-info p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .inspector-controls {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.65rem;
+      flex-wrap: wrap;
     }
 
-    .table-responsive {
-      width: 100%;
-      overflow-x: auto;
+    /* Viewport Switcher */
+    .viewport-toggle {
+      display: flex;
+      background-color: var(--bg-app);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 2px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.85rem;
-    }
-
-    thead th {
-      padding: 0.75rem 1.15rem;
-      background-color: rgba(255, 255, 255, 0.02);
-      border-bottom: 1px solid var(--border-subtle);
+    .viewport-btn {
+      border: none;
+      background: transparent;
       color: var(--text-secondary);
+      font-size: 0.75rem;
       font-weight: 600;
-      white-space: nowrap;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .viewport-btn.active {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    /* Subject Bar */
+    .subject-bar {
+      padding: 0.65rem 1.5rem;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .subject-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
       text-transform: uppercase;
-      font-size: 0.72rem;
       letter-spacing: 0.05em;
     }
 
-    tbody td {
-      padding: 0.85rem 1.15rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    .subject-input {
+      flex: 1;
+      padding: 0.45rem 0.65rem;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background-color: var(--bg-app);
       color: var(--text-primary);
-      vertical-align: middle;
+      font-size: 0.88rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.15s ease;
     }
 
-    tbody tr:hover {
-      background-color: rgba(255, 255, 255, 0.02);
+    .subject-input:focus {
+      border-color: var(--accent-blue);
     }
 
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    /* Status Badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.22rem 0.55rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.72rem;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-    }
-
-    .badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-    }
-
-    .badge.emerald { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .badge.emerald .badge-dot { background: #34d399; }
-    .badge.indigo { background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
-    .badge.indigo .badge-dot { background: #818cf8; }
-    .badge.amber { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .badge.amber .badge-dot { background: #fbbf24; }
-    .badge.rose { background: rgba(244, 63, 94, 0.12); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
-    .badge.rose .badge-dot { background: #fb7185; }
-    .badge.slate { background: rgba(148, 163, 184, 0.08); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.2); }
-    .badge.slate .badge-dot { background: #94a3b8; }
-
-    /* Interactive Slide-Over Drawer */
-    .drawer-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
-      z-index: 100;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.25s ease;
-    }
-
-    .drawer-overlay.active {
-      display: block;
-      opacity: 1;
-    }
-
-    .drawer-sheet {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 720px;
-      max-width: 96vw;
-      background-color: var(--bg-surface);
-      border-left: 1px solid var(--border-strong);
-      z-index: 101;
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
+    /* Email Stage (Center Preview Canvas) */
+    .email-stage {
+      flex: 1;
       overflow-y: auto;
-      box-shadow: -15px 0 40px rgba(0, 0, 0, 0.7);
-      transform: translateX(100%);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background-color: var(--bg-app);
     }
 
-    .drawer-overlay.active .drawer-sheet {
-      transform: translateX(0);
+    .email-canvas-wrapper {
+      width: 100%;
+      max-width: 620px;
+      transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
     }
 
-    .drawer-header {
+    .email-canvas-wrapper.mobile-mode {
+      max-width: 375px;
+      box-shadow: 0 0 35px rgba(2, 132, 199, 0.25);
+      border-radius: 12px;
+      border: 2px solid var(--border-strong);
+      overflow: hidden;
+    }
+
+    .email-render-box {
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-md);
+      outline: none;
+      min-height: 480px;
+      padding: 1rem;
+      cursor: text;
+    }
+
+    /* Action Footer */
+    .inspector-footer {
+      padding: 0.85rem 1.5rem;
+      background-color: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 1.15rem;
-      margin-bottom: 1.25rem;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    .drawer-close {
-      background: none;
-      border: none;
-      color: var(--text-tertiary);
-      font-size: 1.5rem;
-      cursor: pointer;
-      line-height: 1;
-      padding: 0.25rem;
-    }
-
-    .drawer-close:hover {
-      color: var(--text-primary);
-    }
-
-    .email-preview-envelope {
-      background: #ffffff;
-      color: #0f172a;
-      border-radius: var(--radius-sm);
-      padding: 1.5rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-      font-size: 0.92rem;
-      line-height: 1.6;
-      border: 1px solid #e2e8f0;
-      margin-top: 0.75rem;
-    }
-
-    .email-preview-envelope a {
-      color: #2563eb;
-      text-decoration: underline;
-    }
-
-    /* Centered Modal Overlays */
+    /* Modal Styling */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background-color: rgba(5, 8, 15, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 120;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 1.25rem;
+      padding: 1rem;
     }
 
     .modal-overlay.active {
@@ -661,20 +503,17 @@
     }
 
     .modal-box {
-      background-color: var(--bg-surface);
+      background: var(--bg-surface);
       border: 1px solid var(--border-strong);
-      border-radius: var(--radius-lg);
-      width: 820px;
-      max-width: 95vw;
-      max-height: 88vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-lg);
       overflow: hidden;
     }
 
     .modal-header {
-      padding: 1.25rem 1.5rem;
+      padding: 1.15rem 1.5rem;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
@@ -683,1105 +522,479 @@
 
     .modal-body {
       padding: 1.5rem;
-      overflow-y: auto;
-      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
     }
 
-    .modal-footer {
-      padding: 1rem 1.5rem;
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      background-color: rgba(15, 23, 42, 0.6);
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-app);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-blue);
     }
 
     /* Toast Notification */
     #toast {
       position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      padding: 0.85rem 1.25rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      font-size: 0.86rem;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text-primary);
+      color: var(--bg-surface);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      font-size: 0.85rem;
       font-weight: 600;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-      z-index: 200;
       display: none;
       align-items: center;
-      gap: 0.6rem;
-      color: white;
+      gap: 0.5rem;
+      z-index: 200;
     }
 
     .spinner {
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-top-color: var(--cyan);
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
       border-radius: 50%;
       width: 14px;
       height: 14px;
       animation: spin 0.6s linear infinite;
-      display: inline-block;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive Stacking for Small Laptops */
+    @media (max-width: 900px) {
+      .workspace-split { flex-direction: column; }
+      .roster-panel { width: 100%; max-width: 100%; height: 260px; }
+      .inspector-panel { flex: 1; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Left Sidebar Navigation -->
-  <aside>
-    <div class="sidebar-brand">
-      <div class="brand-icon">⚡</div>
-      <div>
-        <div class="brand-title">ANTIGRAVITY</div>
-        <div class="brand-version">OUTREACH V2.4</div>
+  <!-- Top Application Bar -->
+  <header class="app-header">
+    <div class="brand-group">
+      <div class="brand-logo">⚡</div>
+      <div class="brand-meta">
+        <h1>Executive Outreach Studio</h1>
+        <p>Ankit Choudhary • Plant HR & Industrial Relations (15 yrs exp • 3,850 plant workforce)</p>
       </div>
     </div>
 
-    <nav class="sidebar-nav">
-      <div class="nav-label">Core Operations</div>
-      <button class="nav-item active" onclick="navigate('tab-command')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
-        Command Center
+    <div class="header-actions">
+      <!-- CRM Sheet Link -->
+      <a id="sheet-link" href="#" target="_blank" class="metric-badge" style="text-decoration: none;" title="Open Master Google Sheets CRM">
+        📊 CRM Sheet ↗
+      </a>
+
+      <!-- Daily Quota Gauge -->
+      <div class="metric-badge" id="quota-badge">
+        🎯 Quota: <strong id="quota-val" style="color: var(--accent-blue);">0/100 Sent</strong>
+      </div>
+
+      <!-- Global Template Selector -->
+      <div style="display: flex; align-items: center; gap: 0.35rem; background: var(--bg-app); border: 1px solid var(--border-strong); border-radius: 6px; padding: 0.15rem 0.5rem;">
+        <span style="font-size: 0.72rem; color: var(--text-tertiary); font-weight: 700;">DEFAULT:</span>
+        <select id="global-archetype-select" style="background: transparent; border: none; color: var(--accent-blue); font-weight: 700; font-size: 0.78rem; padding: 0.3rem 0.2rem; outline: none; cursor: pointer;">
+          <option value="CLASSIC_LETTER">📄 Classic Executive Letter</option>
+          <option value="MODERN_BRIEF">📊 Modern Operations Brief</option>
+          <option value="VIDEO_SPOTLIGHT">🎬 Video Spotlight Showcase</option>
+          <option value="ULTRA_HUMAN">✉️ Ultra-Human 1-to-1 Note</option>
+        </select>
+      </div>
+
+      <!-- Synthesize Drafts Button -->
+      <button class="btn sm" onclick="runSynthesizeDrafts()" title="Synthesize drafts for all eligible contacts">
+        ✍️ Synthesize Drafts
       </button>
 
-      <button class="nav-item" onclick="navigate('tab-contacts')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
-        Decision Makers & Leads
+      <!-- Quick Add Lead Button -->
+      <button class="btn primary sm" onclick="openAddLeadModal()">
+        + Add Decision Maker
       </button>
 
-      <button class="nav-item" onclick="navigate('tab-drafts')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
-        Campaign Queue & Drafts
+      <!-- Theme Toggle -->
+      <button class="btn sm" onclick="toggleTheme()" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+        🌙
       </button>
-
-      <button class="nav-item" onclick="navigate('tab-dispatcher')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
-        Dispatcher & Quotas
-      </button>
-
-      <button class="nav-item" onclick="navigate('tab-replies')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
-        Inbound Responses
-      </button>
-
-      <div class="nav-label" style="margin-top: 0.5rem;">Governance & Setup</div>
-      <button class="nav-item" onclick="navigate('tab-settings')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        AI Keys & Triggers
-      </button>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="engine-status-card">
-        <div class="pulse-indicator"></div>
-        <div>
-          <div style="font-size: 0.75rem; font-weight: 700;">Engine Automated</div>
-          <div style="font-size: 0.68rem; color: var(--text-tertiary);">15m Cron Polling Active</div>
-        </div>
-      </div>
     </div>
-  </aside>
+  </header>
 
-  <!-- Main Content View -->
-  <div class="app-main">
-    <!-- Top Header -->
-    <header class="top-bar">
-      <div class="breadcrumbs">
-        <span class="breadcrumb-root">Antigravity</span>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-current" id="current-view-title">Command Center</span>
-      </div>
-
-      <div class="top-actions">
-        <div class="user-badge">
-          <span style="width: 7px; height: 7px; border-radius: 50%; background: #38bdf8;"></span>
-          <span id="user-email-display">Ankit Choudhary (ankitchoudharymba@gmail.com)</span>
+  <!-- Main Split-Screen Workspace -->
+  <main class="workspace-split">
+    
+    <!-- LEFT PANE: Target Decision Makers Roster ("Whom We Connect To") -->
+    <aside class="roster-panel">
+      <div class="roster-header">
+        <div class="roster-title-row">
+          <span class="roster-title">Target Decision Makers</span>
+          <span class="pill-badge pill-blue" id="roster-count-badge">0 Contacts</span>
         </div>
-        <a id="sheet-link" href="#" target="_blank" class="btn-sheet">
-          <svg style="width: 15px; height: 15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-          Open CRM Database
-        </a>
-        <button class="btn sm primary" onclick="forceSyncAnkitProfile()" title="Force overwrite CRM sheets with Ankit Choudhary's CV & Proof-of-Work">
-          ⚡ Sync Ankit's CV to Sheet
-        </button>
-        <button class="btn sm" onclick="refreshDashboardData()">
-          <svg style="width: 14px; height: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
-          Sync
-        </button>
-      </div>
-    </header>
-
-    <!-- TAB 1: Command Center -->
-    <div id="tab-command" class="view-container active">
-      <!-- KPI Ribbon -->
-      <div class="hero-kpis">
-        <!-- Daily Quota Card -->
-        <div class="hero-card">
-          <div class="hero-card-header">
-            <span class="hero-title">Daily Send Quota</span>
-            <span class="badge indigo">100 Max</span>
-          </div>
-          <div class="hero-value">
-            <span id="kpi-quota-sent">0</span>
-            <span style="font-size: 1rem; color: var(--text-tertiary); font-weight: 500;">/ 100</span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-fill" id="quota-progress-bar" style="width: 0%; background: linear-gradient(90deg, #6366f1, #06b6d4);"></div>
-          </div>
-          <div class="hero-sub" id="quota-subtext">Google API Buffer: 15 emails reserved</div>
-        </div>
-
-        <!-- Total Dispatched Card -->
-        <div class="hero-card">
-          <div class="hero-card-header">
-            <span class="hero-title">Outbound Dispatched</span>
-            <span class="badge emerald">Total Sent</span>
-          </div>
-          <div class="hero-value" id="kpi-total-sent">0</div>
-          <div class="hero-sub" id="kpi-queue-status">0 Queued • 0 Drafts Ready</div>
-        </div>
-
-        <!-- Overall Reply Rate -->
-        <div class="hero-card">
-          <div class="hero-card-header">
-            <span class="hero-title">Overall Reply Rate</span>
-            <span class="badge amber">Target: 12–22%</span>
-          </div>
-          <div class="hero-value" id="kpi-reply-rate">0.0%</div>
-          <div class="hero-sub" id="kpi-replies-sub">0 Verified Human Replies</div>
-        </div>
-
-        <!-- Active Deals Card -->
-        <div class="hero-card">
-          <div class="hero-card-header">
-            <span class="hero-title">Interview Pipeline</span>
-            <span class="badge emerald">Hot Deals</span>
-          </div>
-          <div class="hero-value" id="kpi-pipeline-deals">0</div>
-          <div class="hero-sub" id="kpi-pos-conversion">Positive Conversion: 0.0%</div>
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="roster-search" onkeyup="filterRoster()" placeholder="Search by name, company, or role..." class="search-input">
         </div>
       </div>
 
-      <!-- Interactive Daily Operating Cadence Stepper -->
-      <div class="workflow-banner" style="display: flex; flex-direction: column; gap: 1rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 0.75rem;">
-          <div>
-            <h2 style="font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
-              <span>⚡ 20-Minute Daily Operating Cadence</span>
-              <span class="badge indigo" style="font-size: 0.68rem;">Mid-Market Sourcing Active</span>
-            </h2>
-            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem;">
-              Follow the 4-step sequence daily to discover growing manufacturing leads, review personalized drafts, and dispatch safe batches.
-            </p>
-          </div>
-          <button class="btn sm" onclick="refreshDashboardData()">🔄 Refresh Live Pipeline</button>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.75rem; width: 100%;">
-          <!-- Step 1: Sourcing -->
-          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; font-weight: 800; color: #38bdf8;">STEP 1: SOURCING</span>
-              <span class="badge slate" style="font-size: 0.65rem;" id="cadence-contacts-badge">Leads</span>
-            </div>
-            <div style="font-size: 0.82rem; font-weight: 600;">Discover Executives</div>
-            <div style="display: flex; gap: 0.4rem; margin-top: auto;">
-              <button class="btn primary sm" onclick="openApolloModal()" style="flex: 1; font-size: 0.75rem; padding: 0.4rem;">🚀 Apollo Sourcing</button>
-              <button class="btn sm success" onclick="openQuickAddModal()" style="font-size: 0.75rem; padding: 0.4rem;" title="Quick add single prospect">+ Lead</button>
-            </div>
-          </div>
-
-          <!-- Step 2: Scoring -->
-          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; font-weight: 800; color: #a855f7;">STEP 2: QUALIFICATION</span>
-              <span class="badge slate" style="font-size: 0.65rem;">DNS & Fit</span>
-            </div>
-            <div style="font-size: 0.82rem; font-weight: 600;">100-Point Scorer</div>
-            <button class="btn sm" onclick="runScoring()" style="margin-top: auto; font-size: 0.75rem; padding: 0.4rem;">🎯 Verify & Score</button>
-          </div>
-
-          <!-- Step 3: Synthesis & Review -->
-          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; font-weight: 800; color: #f59e0b;">STEP 3: DRAFT STUDIO</span>
-              <span class="badge amber" style="font-size: 0.65rem;" id="cadence-drafts-badge">Drafts</span>
-            </div>
-            <div style="font-size: 0.82rem; font-weight: 600;">Review & Test Pitch</div>
-            <div style="display: flex; gap: 0.4rem; margin-top: auto;">
-              <button class="btn sm" onclick="runDraftGen()" style="flex: 1; font-size: 0.75rem; padding: 0.4rem;">✍️ Synthesize</button>
-              <button class="btn primary sm" onclick="navigate('tab-drafts')" style="font-size: 0.75rem; padding: 0.4rem;">Review ↗</button>
-            </div>
-          </div>
-
-          <!-- Step 4: Quota-Safe Dispatch -->
-          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem; display: flex; flex-direction: column; gap: 0.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.72rem; font-weight: 800; color: #10b981;">STEP 4: DISPATCH</span>
-              <span class="badge emerald" style="font-size: 0.65rem;" id="cadence-queued-badge">Queued</span>
-            </div>
-            <div style="font-size: 0.82rem; font-weight: 600;">Safe Batch Sending</div>
-            <button class="btn success sm" onclick="runDispatcher()" style="margin-top: auto; font-size: 0.75rem; padding: 0.4rem;">🚀 Dispatch Batch</button>
-          </div>
+      <div class="roster-list" id="roster-list">
+        <div style="text-align: center; color: var(--text-tertiary); padding: 2.5rem 1rem; font-size: 0.85rem;">
+          <span class="spinner" style="display: inline-block; margin-bottom: 0.5rem;"></span><br>
+          Loading decision makers & verified drafts...
         </div>
       </div>
+    </aside>
 
-      <!-- Actionable Deals & Warm Leads -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <svg style="width: 18px; height: 18px; color: #f59e0b;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/></svg>
-            Active Deals & Positive Responses in Pipeline
+    <!-- RIGHT PANE: Live Email Inspector & Responsive Studio -->
+    <section class="inspector-panel">
+      
+      <!-- Inspector Header -->
+      <div class="inspector-header">
+        <div class="inspector-target-info">
+          <h2 id="inspector-name">Select a Decision Maker</h2>
+          <p id="inspector-company-meta">Choose any contact from the left roster to inspect their customized email pitch.</p>
+        </div>
+
+        <div class="inspector-controls">
+          <!-- Per-Draft Archetype Switcher -->
+          <div style="display: flex; align-items: center; gap: 0.35rem;">
+            <span style="font-size: 0.72rem; color: var(--text-tertiary); font-weight: 700;">STYLE:</span>
+            <select id="draft-archetype-select" onchange="changeDraftStyle(this.value)" style="background: var(--bg-surface); border: 1px solid var(--border-strong); border-radius: 6px; color: var(--accent-blue); font-weight: 700; font-size: 0.78rem; padding: 0.35rem 0.5rem; outline: none; cursor: pointer;">
+              <option value="CLASSIC_LETTER">📄 Archetype 1: Classic Letterhead</option>
+              <option value="MODERN_BRIEF">📊 Archetype 2: Operations Brief</option>
+              <option value="VIDEO_SPOTLIGHT">🎬 Archetype 3: Video Spotlight</option>
+              <option value="ULTRA_HUMAN">✉️ Archetype 4: Ultra-Human 1-to-1</option>
+            </select>
           </div>
-          <span class="badge emerald">Auto-Promoted</span>
-        </div>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Pipeline ID</th>
-                <th>Company</th>
-                <th>Opportunity</th>
-                <th>Contact</th>
-                <th>Current Stage</th>
-                <th>Win Prob %</th>
-                <th>AI Interview Dossier</th>
-              </tr>
-            </thead>
-            <tbody id="pipeline-table-body">
-              <tr>
-                <td colspan="7" style="text-align: center; color: var(--text-tertiary); padding: 2rem;">
-                  No active interview deals yet. Dispatched campaigns automatically promote positive replies here!
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
 
-      <!-- Recent Outbound Telemetry Activity -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <svg style="width: 18px; height: 18px; color: #38bdf8;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Recent Outbound Activity Stream
-          </div>
-        </div>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Outreach ID</th>
-                <th>Campaign</th>
-                <th>Contact ID</th>
-                <th>Subject Line</th>
-                <th>Scheduled Timestamp</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="recent-dispatches-body">
-              <tr>
-                <td colspan="6" style="text-align: center; color: var(--text-tertiary); padding: 2rem;">
-                  No recent activity logged.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 2: Decision Makers & Scorer -->
-    <div id="tab-contacts" class="view-container">
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">👥 Sourced Decision-Makers & 100-Point Scoring Studio</div>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="btn success sm" onclick="openQuickAddModal()">
-              <svg style="width: 14px; height: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-              + Quick Add Lead
-            </button>
-            <button class="btn primary sm" onclick="openApolloModal()">
-              <svg style="width: 14px; height: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-              🚀 Search Apollo.io
-            </button>
-            <button class="btn sm" onclick="openCsvModal()">
-              <svg style="width: 14px; height: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
-              📄 Paste CSV
-            </button>
-            <button class="btn sm" onclick="runScoring()">🎯 Verify MX & Score</button>
-          </div>
-        </div>
-
-        <!-- Quick Search Bar -->
-        <div style="padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 0.75rem; background: rgba(15, 23, 42, 0.4);">
-          <svg style="width: 14px; height: 14px; color: var(--text-tertiary);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-          <input type="text" id="contacts-search-input" onkeyup="filterContactsTable()" placeholder="Filter decision-makers by name, email, company, persona, or status..." style="background: none; border: none; outline: none; color: white; font-size: 0.82rem; width: 100%;">
-        </div>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Contact ID</th>
-                <th>Full Name</th>
-                <th>Email Address</th>
-                <th>MX Status</th>
-                <th>Persona</th>
-                <th>Role Title</th>
-                <th>Fit Score</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="contacts-table-body">
-              <tr>
-                <td colspan="8" style="text-align: center; color: var(--text-tertiary); padding: 2rem;">
-                  Loading contacts from relational database...
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 3: Campaign Queue & Drafts -->
-    <div id="tab-drafts" class="view-container">
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">✍️ Outreach Campaign Drafts & Personalization Studio</div>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 0.35rem; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.15rem 0.5rem;">
-              <span style="font-size: 0.72rem; color: var(--text-tertiary); font-weight: 700;">TEMPLATE:</span>
-              <select id="campaign-template-select" style="background: transparent; border: none; color: #38bdf8; font-weight: 700; font-size: 0.8rem; padding: 0.35rem 0.25rem; outline: none; cursor: pointer;">
-                <option value="CLASSIC_LETTER">📄 Archetype 1: Classic Executive Letter</option>
-                <option value="MODERN_BRIEF">📊 Archetype 2: Modern Operations Brief</option>
-                <option value="VIDEO_SPOTLIGHT">🎬 Archetype 3: Video Spotlight Showcase</option>
-                <option value="ULTRA_HUMAN">✉️ Archetype 4: Ultra-Human 1-to-1 Note</option>
-              </select>
-            </div>
-            <button class="btn sm" onclick="runDraftGen()">✍️ Synthesize Drafts (CMPG-01)</button>
-            <button class="btn success sm" onclick="approveAllDrafts()">✅ Approve All Ready Drafts</button>
-          </div>
-        </div>
-
-        <!-- Quick Filter for Drafts -->
-        <div style="padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 0.75rem; background: rgba(15, 23, 42, 0.4);">
-          <svg style="width: 14px; height: 14px; color: var(--text-tertiary);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-          <input type="text" id="drafts-search-input" onkeyup="filterDraftsTable()" placeholder="Filter drafts by subject, outreach ID, contact, project, or status..." style="background: none; border: none; outline: none; color: white; font-size: 0.82rem; width: 100%;">
-        </div>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Outreach ID</th>
-                <th>Campaign</th>
-                <th>Contact ID</th>
-                <th>Matched Project</th>
-                <th>Subject Line</th>
-                <th>Scheduled Slot</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="drafts-table-body">
-              <tr>
-                <td colspan="8" style="text-align: center; color: var(--text-tertiary); padding: 2rem;">
-                  Loading drafts...
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 4: Dispatcher & Quotas -->
-    <div id="tab-dispatcher" class="view-container">
-      <div class="hero-kpis">
-        <div class="hero-card">
-          <div class="hero-title">Batch Ceiling</div>
-          <div class="hero-value">8 Emails</div>
-          <div class="hero-sub">Per 15-minute cron run</div>
-        </div>
-        <div class="hero-card">
-          <div class="hero-title">Random Jitter Window</div>
-          <div class="hero-value">15s – 30s</div>
-          <div class="hero-sub">Human anti-detection delay</div>
-        </div>
-        <div class="hero-card">
-          <div class="hero-title">Thread Tracking</div>
-          <div class="hero-value">RFC 2822</div>
-          <div class="hero-sub">In-Reply-To preserved</div>
-        </div>
-      </div>
-
-      <div class="panel" style="padding: 1.5rem; text-align: center;">
-        <h3 style="margin-bottom: 0.5rem;">🚀 Quota-Safe Outbound Execution Engine</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 1.25rem; font-size: 0.88rem;">
-          Emails are dispatched in randomized micro-batches with atomic row locking (<code style="color: var(--cyan);">SENDING_LOCKED</code>).
-        </p>
-        <button class="btn success" style="padding: 0.75rem 1.75rem; font-size: 0.92rem;" onclick="runDispatcher()">
-          🚀 Trigger Outbound Batch Now
-        </button>
-      </div>
-    </div>
-
-    <!-- TAB 5: Inbound Responses -->
-    <div id="tab-replies" class="view-container">
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">📥 Inbound Replies & Sentiment Intelligence</div>
-          <button class="btn primary" onclick="runReplySync()">📥 Poll Gmail & Sync Responses</button>
-        </div>
-        <div style="padding: 2.5rem; text-align: center; color: var(--text-secondary);">
-          <p style="font-size: 0.95rem; margin-bottom: 0.5rem;">
-            Replies are automatically intercepted and classified by the 15-minute background cron trigger.
-          </p>
-          <p style="font-size: 0.82rem; color: var(--text-tertiary);">
-            Positive replies trigger an immediate cancellation of pending follow-ups, a +30 boost to contact lead scores, and an auto-promoted row in the Interview Pipeline.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 6: Settings & Triggers -->
-    <div id="tab-settings" class="view-container">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
-        
-        <!-- Gemini API Key -->
-        <div class="panel" style="padding: 1.5rem;">
-          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem;">🤖 Gemini 1.5 Pro REST API</h3>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
-            Powers JD bottleneck extraction, custom ROI hypotheses, and automated 3-page Google Docs Interview Prep Dossiers.
-          </p>
-          <input type="password" id="gemini-key-input" placeholder="Enter Google AI Studio Key..." style="width: 100%; padding: 0.6rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; margin-bottom: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
-          <button class="btn primary sm" onclick="saveApiKey()">Save API Key</button>
-        </div>
-
-        <!-- Apollo.io API Key & Discovery Engine -->
-        <div class="panel" style="padding: 1.5rem; border: 1px solid rgba(14, 165, 233, 0.4); background: rgba(14, 165, 233, 0.05);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <h3 style="font-size: 0.95rem; font-weight: 700; color: #38bdf8;">🚀 Apollo.io Lead Discovery API</h3>
-            <span id="apollo-status-badge" class="badge slate">Checking...</span>
-          </div>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
-            Enables 1-click executive lead discovery, verified email enrichment, and automated CRM ingestion directly from Apollo.io.
-          </p>
-          <input type="password" id="apollo-key-input" placeholder="Paste Apollo API Key (e.g., apollo_api_...)" style="width: 100%; padding: 0.6rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; margin-bottom: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
-          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-            <button class="btn primary sm" onclick="saveApolloKey()">Save Apollo Key</button>
-            <button class="btn sm" onclick="testApolloConnection()">Test Connection</button>
-            <a href="https://developer.apollo.io/keys/" target="_blank" style="font-size: 0.75rem; color: #38bdf8; margin-left: auto; text-decoration: none;">Get API Key ↗</a>
-          </div>
-        </div>
-
-        <!-- Automation Triggers -->
-        <div class="panel" style="padding: 1.5rem;">
-          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem;">⏰ Automation Cron Schedulers</h3>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
-            Installs 15-minute time-driven triggers for mail dispatch and response polling, plus nightly 23:45 KPI rollup.
-          </p>
-          <div style="display: flex; gap: 0.5rem;">
-            <button class="btn success sm" onclick="installTriggers()">Install Triggers</button>
-            <button class="btn danger sm" onclick="uninstallTriggers()">Uninstall Triggers</button>
-          </div>
-        </div>
-
-        <!-- Master Database Bootstrap -->
-        <div class="panel" style="padding: 1.5rem;">
-          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem;">🛠 Master Database Provisioning</h3>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
-            Provisions or resets the 14 relational tables, data validation rules, and Command Center formulas in Google Sheets.
-          </p>
-          <button class="btn sm" onclick="bootstrapDb()">Bootstrap / Reset Database</button>
-        </div>
-
-        <!-- Ankit Profile Force Sync -->
-        <div class="panel" style="padding: 1.5rem; border: 1px solid rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.06);">
-          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; color: #818cf8;">👤 Candidate Profile & Proof-of-Work Sync</h3>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
-            Overwrites the CRM spreadsheet with Ankit Choudhary's exact CV records (15 yrs exp, 3,850 workforce, PMS/LMS platform, industrial relations governance), real manufacturing targets (Jindal Steel & Power, Tata Steel, Vedanta), and active opportunities.
-          </p>
-          <button class="btn primary sm" onclick="forceSyncAnkitProfile()">⚡ Force-Sync Ankit's Profile & Proof-of-Work to Sheet Now</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive Slide-Over Email Preview Drawer & Review Studio -->
-  <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()">
-    <div class="drawer-sheet" onclick="event.stopPropagation()">
-      <div class="drawer-header">
-        <div>
-          <div style="font-weight: 800; font-size: 1.1rem;" id="drawer-title">Draft Review & Personalization Studio</div>
-          <div style="font-size: 0.75rem; color: var(--text-tertiary); font-family: 'JetBrains Mono', monospace;" id="drawer-sub">OUT-9001</div>
-        </div>
-        <button class="drawer-close" onclick="closeDrawer()">&times;</button>
-      </div>
-
-      <!-- Template Switcher & Viewport Controls -->
-      <div style="display: flex; gap: 0.75rem; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap;">
-        <div>
-          <label style="font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">
-            Design Archetype
-          </label>
-          <select id="drawer-archetype-select" onchange="changeDraftArchetype(this.value)" style="background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); color: #38bdf8; font-weight: 700; font-size: 0.82rem; padding: 0.45rem 0.65rem; outline: none; cursor: pointer;">
-            <option value="CLASSIC_LETTER">📄 Archetype 1: Classic Executive Letter</option>
-            <option value="MODERN_BRIEF">📊 Archetype 2: Modern Operations Brief</option>
-            <option value="VIDEO_SPOTLIGHT">🎬 Archetype 3: Video Spotlight Showcase</option>
-            <option value="ULTRA_HUMAN">✉️ Archetype 4: Ultra-Human 1-to-1 Note</option>
-          </select>
-        </div>
-
-        <div>
-          <label style="font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">
-            Preview Viewport
-          </label>
-          <div style="display: flex; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 2px;">
-            <button type="button" id="btn-viewport-desktop" onclick="setDrawerViewport('desktop')" style="border: none; background: #38bdf8; color: #0f172a; font-weight: 700; font-size: 0.74rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s ease;">
+          <!-- Viewport Switcher (Desktop vs Mobile) -->
+          <div class="viewport-toggle">
+            <button type="button" id="vp-desktop" class="viewport-btn active" onclick="setViewport('desktop')">
               🖥️ Desktop (620px)
             </button>
-            <button type="button" id="btn-viewport-mobile" onclick="setDrawerViewport('mobile')" style="border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.74rem; padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s ease;">
+            <button type="button" id="vp-mobile" class="viewport-btn" onclick="setViewport('mobile')">
               📱 Mobile (375px)
             </button>
           </div>
         </div>
       </div>
 
-      <div style="margin-bottom: 0.85rem;">
-        <label style="font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; display: block; margin-bottom: 0.35rem;">
-          Subject Line (Editable)
-        </label>
-        <input type="text" id="drawer-subject-input" style="width: 100%; padding: 0.6rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); color: #38bdf8; font-weight: 700; font-size: 0.92rem;">
+      <!-- Subject Line Bar -->
+      <div class="subject-bar">
+        <span class="subject-label">Subject:</span>
+        <input type="text" id="draft-subject-input" placeholder="Subject line will appear here..." class="subject-input">
       </div>
 
-      <div style="margin-bottom: 0.85rem; display: flex; flex-direction: column; flex: 1;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-          <span style="font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">
-            Email Pitch Copy (Editable in Place & Responsive)
-          </span>
-          <span style="font-size: 0.7rem; color: #38bdf8;">✏️ Click inside to edit text before sending</span>
-        </div>
-        <div id="drawer-body-container" style="width: 100%; max-width: 100%; transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;">
-          <div class="email-preview-envelope" id="drawer-body" contenteditable="true" style="outline: none; min-height: 420px; max-height: 580px; overflow-y: auto; border: 1px solid var(--border-strong); cursor: text; padding: 1.25rem; transition: padding 0.3s ease;">
-            Email content...
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top: auto; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
-        <button class="btn sm" onclick="sendTestEmailFromDrawer()" title="Send this exact draft to your personal Gmail inbox for review" style="border-color: #38bdf8; color: #38bdf8;">
-          📤 Send Test Email to Me
-        </button>
-        <div style="display: flex; gap: 0.5rem;">
-          <button class="btn sm" onclick="saveDraftEdits()">💾 Save Edits</button>
-          <button class="btn success sm" id="drawer-approve-btn">✅ Approve & Queue</button>
-          <button class="btn sm" onclick="closeDrawer()">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Apollo.io Lead Search & Ingestion Modal -->
-  <div id="apollo-search-modal" class="modal-overlay" onclick="closeApolloModal()">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 0.6rem;">
-          <div style="width: 28px; height: 28px; border-radius: 6px; background: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">🚀</div>
-          <div>
-            <div style="font-weight: 800; font-size: 1.05rem;">Apollo.io Executive Sourcing Studio</div>
-            <div style="font-size: 0.72rem; color: var(--text-tertiary);">Search & import decision-makers directly into Antigravity CRM</div>
-          </div>
-        </div>
-        <button class="drawer-close" onclick="closeApolloModal()">&times;</button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Sourcing Presets for Growing Companies in Systems Implementation Stage -->
-        <div style="margin-bottom: 1.15rem; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-sm); padding: 0.85rem;">
-          <div style="font-size: 0.72rem; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
-            🎯 Sweet-Spot Presets (Growing Mid-Market Companies in Systems Implementation Phase)
-          </div>
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button type="button" class="btn sm" onclick="applyApolloPreset('foundry')" style="font-size: 0.75rem;">
-              🏭 Foundry & Forging (200–4k)
-            </button>
-            <button type="button" class="btn sm" onclick="applyApolloPreset('auto')" style="font-size: 0.75rem;">
-              🚗 Auto Components & Engineering
-            </button>
-            <button type="button" class="btn sm" onclick="applyApolloPreset('chemicals')" style="font-size: 0.75rem;">
-              🧪 Specialty Chemicals & Materials
-            </button>
-            <button type="button" class="btn sm" onclick="applyApolloPreset('promoter')" style="font-size: 0.75rem;">
-              👑 Promoter & MD Track
-            </button>
-          </div>
-        </div>
-
-        <!-- Search Filters Form -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Target Job Titles (Promoters, COOs & HR Leaders)</label>
-            <input type="text" id="apollo-titles-input" value="Managing Director, Promoter, Chief Operating Officer, Plant Head, Director Operations, Head Plant HR, VP HR" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Target Company Domains (leave blank to search all India)</label>
-            <input type="text" id="apollo-domains-input" value="ramkrishnaforgings.com, mmforgings.com, electrasteel.com, balrampur.com, himadri.com" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Workforce Scale Filter (Excludes Mega-Corps)</label>
-            <select id="apollo-headcount-select" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-              <option value="mid_market" selected>Mid-Market Sweet Spot (201 to 5,000 Employees)</option>
-              <option value="early_growth">Early Scale (51 to 500 Employees)</option>
-              <option value="all">All Sizes (Include Mega-Corps 10,000+)</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Geographic Location & Batch Limit</label>
-            <div style="display: flex; gap: 0.5rem;">
-              <input type="text" id="apollo-locations-input" value="India" style="flex: 1; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-              <select id="apollo-limit-select" style="width: 100px; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-                <option value="5">5 Leads</option>
-                <option value="10" selected>10 Leads</option>
-                <option value="15">15 Leads</option>
-                <option value="25">25 Leads</option>
-              </select>
+      <!-- Center Preview Stage -->
+      <div class="email-stage">
+        <div id="email-canvas-wrapper" class="email-canvas-wrapper">
+          <div class="email-render-box" id="email-render-box" contenteditable="true">
+            <div style="text-align: center; color: var(--text-tertiary); padding: 4rem 1rem;">
+              👈 Click on any executive on the left to preview their hyper-personalized pitch here.
             </div>
           </div>
         </div>
+      </div>
 
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 1.25rem;">
-          <button class="btn primary sm" onclick="executeApolloSearch()">
-            <svg style="width: 14px; height: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-            Search Apollo Leads
+      <!-- Action Footer -->
+      <div class="inspector-footer">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+          <button class="btn primary" onclick="sendTestEmailToMe()" id="btn-send-test" title="Delivers this exact email draft to your Gmail for verification">
+            📤 Send Test Email to Me
+          </button>
+          <span style="font-size: 0.75rem; color: var(--text-tertiary);" id="test-target-label">Delivering to: ankitchoudharymba@gmail.com</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <button class="btn" onclick="saveActiveDraftEdits()" title="Save your edited subject and body to the CRM spreadsheet">
+            💾 Save Edits
+          </button>
+          <button class="btn success" onclick="approveActiveDraft()" id="btn-approve-draft" title="Approve this draft into QUEUED state for automated dispatch">
+            ✅ Approve & Queue
           </button>
         </div>
-
-        <!-- Live Results Container -->
-        <div id="apollo-results-container" style="display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary);">PROSPECTS DISCOVERED (<span id="apollo-found-count">0</span>)</span>
-            <label style="font-size: 0.75rem; color: var(--text-tertiary); cursor: pointer; display: flex; align-items: center; gap: 0.3rem;">
-              <input type="checkbox" id="apollo-select-all" onchange="toggleSelectAllApollo(this.checked)" checked> Select All
-            </label>
-          </div>
-          <div class="table-responsive" style="max-height: 280px; overflow-y: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width: 40px;"></th>
-                  <th>Name & Title</th>
-                  <th>Company</th>
-                  <th>Email</th>
-                  <th>Persona</th>
-                </tr>
-              </thead>
-              <tbody id="apollo-results-tbody">
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
 
-      <div class="modal-footer">
-        <button class="btn sm" onclick="closeApolloModal()">Cancel</button>
-        <button class="btn success sm" id="apollo-import-btn" onclick="importSelectedApolloLeads()" disabled>
-          📥 Import Selected Leads (0)
-        </button>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Apollo.io CSV Paste Modal -->
-  <div id="apollo-csv-modal" class="modal-overlay" onclick="closeCsvModal()">
+  </main>
+
+  <!-- Quick Add Decision Maker Modal -->
+  <div id="modal-add-lead" class="modal-overlay" onclick="closeAddLeadModal()">
     <div class="modal-box" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 0.6rem;">
-          <div style="width: 28px; height: 28px; border-radius: 6px; background: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">📄</div>
-          <div>
-            <div style="font-weight: 800; font-size: 1.05rem;">Import Apollo.io CSV Export</div>
-            <div style="font-size: 0.72rem; color: var(--text-tertiary);">Zero-API fallback: Paste raw CSV export from Apollo</div>
-          </div>
-        </div>
-        <button class="drawer-close" onclick="closeCsvModal()">&times;</button>
+        <h3 style="font-size: 1rem; font-weight: 700;">+ Add Target Decision Maker</h3>
+        <button style="background: none; border: none; font-size: 1.25rem; color: var(--text-tertiary); cursor: pointer;" onclick="closeAddLeadModal()">&times;</button>
       </div>
-
       <div class="modal-body">
-        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-          Export a CSV from Apollo.io and paste its text below. Columns detected automatically: First Name, Last Name, Title, Company, Email, LinkedIn URL.
-        </p>
-        <textarea id="apollo-csv-input" placeholder="First Name,Last Name,Title,Company,Email,Person Linkedin Url...&#10;Rajesh,Sharma,Executive VP Plant Operations,Jindal Steel & Power,rajesh.sharma@jindalsteelpower.com,..." style="width: 100%; height: 180px; padding: 0.75rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; resize: vertical;"></textarea>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn sm" onclick="closeCsvModal()">Cancel</button>
-        <button class="btn primary sm" onclick="importApolloCsvData()">📥 Parse & Ingest Leads</button>
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="lead-name" placeholder="e.g. Rajesh Sharma" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Work Email Address *</label>
+          <input type="email" id="lead-email" placeholder="e.g. rajesh.sharma@ramkrishnaforgings.com" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Company Name *</label>
+          <input type="text" id="lead-company" placeholder="e.g. Ramkrishna Forgings Ltd" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Job Title / Role *</label>
+          <input type="text" id="lead-title" placeholder="e.g. Managing Director & Promoter" class="form-control">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+          <button class="btn" onclick="closeAddLeadModal()">Cancel</button>
+          <button class="btn primary" onclick="submitQuickAddLead()">Save & Synthesize Draft</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Quick Add Single Lead Modal -->
-  <div id="quick-add-lead-modal" class="modal-overlay" onclick="closeQuickAddModal()">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 0.6rem;">
-          <div style="width: 28px; height: 28px; border-radius: 6px; background: #10b981; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">👤</div>
-          <div>
-            <div style="font-weight: 800; font-size: 1.05rem;">Quick Add Single Decision-Maker</div>
-            <div style="font-size: 0.72rem; color: var(--text-tertiary);">Add a prospect from LinkedIn or referral for instant DNS verification & scoring</div>
-          </div>
-        </div>
-        <button class="drawer-close" onclick="closeQuickAddModal()">&times;</button>
-      </div>
-
-      <div class="modal-body">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">First Name *</label>
-            <input type="text" id="qa-firstname" placeholder="e.g. Rajesh" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Last Name</label>
-            <input type="text" id="qa-lastname" placeholder="e.g. Sharma" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Work Email Address *</label>
-            <input type="email" id="qa-email" placeholder="rajesh@ramkrishnaforgings.com" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Company Name *</label>
-            <input type="text" id="qa-company" placeholder="e.g. Ramkrishna Forgings" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Role Title *</label>
-            <input type="text" id="qa-role" placeholder="e.g. Managing Director / Plant Head" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Persona Track</label>
-            <select id="qa-persona" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-              <option value="FOUNDER" selected>👑 Promoter / Managing Director / Owner</option>
-              <option value="TECH_LEAD">🏭 COO / Plant Head / Director Operations</option>
-              <option value="HIRING_MGR">💼 CHRO / Head HR / VP Human Resources</option>
-              <option value="RECRUITER">🎯 Talent Acquisition / Recruiter</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">LinkedIn Profile URL (Optional)</label>
-          <input type="url" id="qa-linkedin" placeholder="https://linkedin.com/in/..." style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn sm" onclick="closeQuickAddModal()">Cancel</button>
-        <button class="btn primary sm" onclick="submitQuickAddLead()">+ Save, Verify & Score Lead</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Notification -->
-  <div id="toast">
-    <span id="toast-message">Notification</span>
-  </div>
+  <!-- Toast Notification Container -->
+  <div id="toast"></div>
 
   <script>
-    let globalDrafts = [];
+    // State Store
     let globalContacts = [];
-    let currentPreviewIndex = -1;
+    let globalDrafts = [];
+    let selectedDraftIndex = -1;
+    let currentTheme = 'light';
+    let currentViewport = 'desktop';
 
-    const viewTitles = {
-      'tab-command': 'Command Center & Telemetry',
-      'tab-contacts': 'Decision Makers & 100-Point Scorer',
-      'tab-drafts': 'Campaign Queue & Personalization Studio',
-      'tab-dispatcher': 'Quota-Safe Dispatcher Control',
-      'tab-replies': 'Inbound Replies & Sentiment',
-      'tab-settings': 'System Settings, AI Keys & Triggers'
-    };
-
-    function navigate(viewId) {
-      document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-      const target = document.getElementById(viewId);
-      if (target) target.classList.add('active');
-
-      document.getElementById('current-view-title').innerText = viewTitles[viewId] || 'Command Center';
-
-      // Mark active nav
-      const navs = Array.from(document.querySelectorAll('.nav-item'));
-      const activeIdx = ['tab-command', 'tab-contacts', 'tab-drafts', 'tab-dispatcher', 'tab-replies', 'tab-settings'].indexOf(viewId);
-      if (activeIdx >= 0 && navs[activeIdx]) navs[activeIdx].classList.add('active');
-
-      if (viewId === 'tab-contacts') loadContacts();
-      if (viewId === 'tab-drafts') loadDrafts();
-    }
-
-    function showToast(msg, duration = 3500) {
+    // UI Helper: Toast Notifications
+    function showToast(html, duration = 4000) {
       const toast = document.getElementById('toast');
-      document.getElementById('toast-message').innerHTML = msg;
+      toast.innerHTML = html;
       toast.style.display = 'flex';
       setTimeout(() => { toast.style.display = 'none'; }, duration);
     }
 
-    function refreshDashboardData() {
-      showToast('<span class="spinner"></span> Syncing telemetry...');
-      google.script.run
-        .withSuccessHandler(onOverviewLoaded)
-        .withFailureHandler(onError)
-        .apiGetOverview();
+    function onError(err) {
+      showToast('⚠️ Error: ' + (err.message || err));
     }
 
-    function onOverviewLoaded(data) {
-      if (!data || !data.success) {
-        showToast('⚠️ Error: ' + (data ? data.error : 'Unknown error'));
-        return;
-      }
-
-      document.getElementById('user-email-display').innerText = data.userEmail;
-      const sheetLink = document.getElementById('sheet-link');
-      if (data.spreadsheetUrl) {
-        sheetLink.href = data.spreadsheetUrl;
-        sheetLink.style.display = 'inline-flex';
-      }
-
-      // KPIs
-      document.getElementById('kpi-quota-sent').innerText = data.quota.sentToday;
-      const pct = Math.min(100, (data.quota.sentToday / 100) * 100);
-      document.getElementById('quota-progress-bar').style.width = pct + '%';
-      document.getElementById('quota-subtext').innerText = (100 - data.quota.sentToday) + ' slots remaining today • 15 safety buffer';
-
-      document.getElementById('kpi-total-sent').innerText = data.kpis.totalSent;
-      document.getElementById('kpi-queue-status').innerText = data.quota.queuedCount + ' Queued • ' + data.quota.draftCount + ' Drafts Ready';
-      document.getElementById('kpi-reply-rate').innerText = data.kpis.replyRate;
-      document.getElementById('kpi-replies-sub').innerText = data.kpis.totalReplies + ' Total Human Responses';
-      document.getElementById('kpi-pipeline-deals').innerText = data.kpis.interviewsCount;
-      document.getElementById('kpi-pos-conversion').innerText = 'Positive Conversion: ' + data.kpis.positiveReplyRate;
-
-      // Cadence Stepper live badges
-      if (document.getElementById('cadence-contacts-badge')) {
-        document.getElementById('cadence-contacts-badge').innerText = (data.kpis.contactsCount || 0) + ' Leads';
-      }
-      if (document.getElementById('cadence-drafts-badge')) {
-        document.getElementById('cadence-drafts-badge').innerText = (data.quota.draftCount || 0) + ' Drafts';
-      }
-      if (document.getElementById('cadence-queued-badge')) {
-        document.getElementById('cadence-queued-badge').innerText = (data.quota.queuedCount || 0) + ' Queued';
-      }
-
-      // Pipeline Table
-      const pipeTbody = document.getElementById('pipeline-table-body');
-      if (data.activeDeals && data.activeDeals.length > 0) {
-        pipeTbody.innerHTML = data.activeDeals.map(d => `
-          <tr>
-            <td><code style="color: #38bdf8;">${d.pipelineId}</code></td>
-            <td><strong>${d.companyId}</strong></td>
-            <td>${d.opportunityId}</td>
-            <td>${d.contactId}</td>
-            <td><span class="badge indigo"><span class="badge-dot"></span>${d.stage}</span></td>
-            <td><strong>${d.winProb}%</strong></td>
-            <td>
-              ${d.prepDocUrl ? `<a href="${d.prepDocUrl}" target="_blank" class="btn sm primary" style="font-size: 0.75rem;">📄 Open AI Dossier ↗</a>` : '<span style="color: var(--text-tertiary);">Pending Generation</span>'}
-            </td>
-          </tr>
-        `).join('');
-      }
-
-      // Recent Dispatches
-      const recentTbody = document.getElementById('recent-dispatches-body');
-      if (data.recentDispatches && data.recentDispatches.length > 0) {
-        recentTbody.innerHTML = data.recentDispatches.map(r => `
-          <tr>
-            <td><code style="color: #818cf8;">${r.outreachId}</code></td>
-            <td>${r.campaignId}</td>
-            <td>${r.contactId}</td>
-            <td>${r.subject}</td>
-            <td>${r.scheduledAt ? new Date(r.scheduledAt).toLocaleTimeString() : '-'}</td>
-            <td><span class="badge ${r.status === 'SENT' ? 'emerald' : (r.status === 'APPROVED_QUEUED' ? 'indigo' : 'amber')}"><span class="badge-dot"></span>${r.status}</span></td>
-          </tr>
-        `).join('');
-      }
-
-      showToast('Telemetry updated.');
+    // Theme Switcher (Light / Dark)
+    function toggleTheme() {
+      currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      document.getElementById('theme-toggle-btn').innerText = currentTheme === 'light' ? '🌙' : '☀️';
     }
 
-    function loadContacts() {
-      showToast('<span class="spinner"></span> Loading decision makers...');
+    // Viewport Switcher (Desktop 620px vs Mobile 375px)
+    function setViewport(mode) {
+      currentViewport = mode;
+      const wrapper = document.getElementById('email-canvas-wrapper');
+      const btnDesk = document.getElementById('vp-desktop');
+      const btnMob = document.getElementById('vp-mobile');
+
+      if (mode === 'mobile') {
+        wrapper.classList.add('mobile-mode');
+        btnMob.classList.add('active');
+        btnDesk.classList.remove('active');
+      } else {
+        wrapper.classList.remove('mobile-mode');
+        btnDesk.classList.add('active');
+        btnMob.classList.remove('active');
+      }
+    }
+
+    // Data Loading & Hydration
+    function loadStudioData() {
+      showToast('<span class="spinner"></span> Loading decision-makers and drafts...');
+      
+      // 1. Fetch Overview & Quota
       google.script.run
-        .withSuccessHandler(function(resp) {
-          if (!resp.success) { showToast('Error: ' + resp.error); return; }
-          globalContacts = resp.contacts || [];
-          renderContactsTable(globalContacts);
-          showToast('Loaded ' + globalContacts.length + ' decision-makers.');
+        .withSuccessHandler(function(res) {
+          if (!res || !res.success) return;
+          if (res.spreadsheetUrl) {
+            document.getElementById('sheet-link').href = res.spreadsheetUrl;
+          }
+          if (res.quota) {
+            document.getElementById('quota-val').innerText = res.quota.sentToday + ' / 100 Sent';
+          }
         })
-        .withFailureHandler(onError)
-        .apiGetContacts();
-    }
+        .apiGetOverview();
 
-    function renderContactsTable(contacts) {
-      const tbody = document.getElementById('contacts-table-body');
-      if (!tbody) return;
-      if (contacts.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-tertiary); padding: 2rem;">No contacts found in CRM. Click "+ Quick Add Lead" or Apollo Sourcing!</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = contacts.map(c => `
-        <tr>
-          <td><code>${c.contactId}</code></td>
-          <td><strong>${c.name}</strong></td>
-          <td>${c.email}</td>
-          <td><span class="badge ${c.verification === 'VERIFIED_VALID' ? 'emerald' : 'rose'}"><span class="badge-dot"></span>${c.verification}</span></td>
-          <td><span class="badge indigo"><span class="badge-dot"></span>${c.persona}</span></td>
-          <td>${c.role}</td>
-          <td><strong style="color: #38bdf8;">${c.leadScore}</strong> <span style="color: var(--text-tertiary); font-size: 0.75rem;">/ 100</span></td>
-          <td><span class="badge ${c.status === 'QUEUED' ? 'emerald' : (c.status === 'NEW' ? 'indigo' : 'slate')}"><span class="badge-dot"></span>${c.status}</span></td>
-        </tr>
-      `).join('');
-    }
-
-    function filterContactsTable() {
-      const q = (document.getElementById('contacts-search-input')?.value || '').toLowerCase().trim();
-      if (!q) {
-        renderContactsTable(globalContacts);
-        return;
-      }
-      const filtered = globalContacts.filter(c => 
-        (c.name && c.name.toLowerCase().includes(q)) ||
-        (c.email && c.email.toLowerCase().includes(q)) ||
-        (c.role && c.role.toLowerCase().includes(q)) ||
-        (c.persona && c.persona.toLowerCase().includes(q)) ||
-        (c.contactId && c.contactId.toLowerCase().includes(q))
-      );
-      renderContactsTable(filtered);
-    }
-
-    function loadDrafts() {
-      showToast('<span class="spinner"></span> Loading campaign drafts...');
+      // 2. Fetch Contacts & Drafts
       google.script.run
         .withSuccessHandler(function(resp) {
-          if (!resp.success) { showToast('Error: ' + resp.error); return; }
+          if (!resp.success) { showToast('⚠️ ' + resp.error); return; }
           globalDrafts = resp.drafts || [];
-          renderDraftsTable(globalDrafts);
-          showToast('Loaded ' + globalDrafts.length + ' outreach drafts.');
+          
+          // Also fetch contacts for rich details
+          google.script.run
+            .withSuccessHandler(function(cResp) {
+              globalContacts = cResp.contacts || [];
+              renderRoster(globalDrafts);
+              
+              // Automatically select first draft if available
+              if (globalDrafts.length > 0) {
+                selectDraft(0);
+              }
+            })
+            .apiGetContacts();
         })
         .withFailureHandler(onError)
         .apiGetOutreachQueue();
     }
 
-    function renderDraftsTable(drafts) {
-      const tbody = document.getElementById('drafts-table-body');
-      if (!tbody) return;
+    // Render Left Roster List
+    function renderRoster(drafts) {
+      const rosterList = document.getElementById('roster-list');
+      document.getElementById('roster-count-badge').innerText = drafts.length + ' Drafts';
+
       if (drafts.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-tertiary); padding: 2.5rem 1rem;">
-          <div style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #f1f5f9;">📭 No Drafts in Campaign Queue</div>
-          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">Click below to synthesize personalized outreach pitches matching Ankit's 3,850 workforce turnaround.</div>
-          <button class="btn primary sm" onclick="runDraftGen()">✍️ Synthesize Drafts Now</button>
-        </td></tr>`;
+        rosterList.innerHTML = `
+          <div style="text-align: center; color: var(--text-tertiary); padding: 3rem 1rem;">
+            <p style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem;">No Drafts in Queue</p>
+            <p style="font-size: 0.78rem; margin-bottom: 1rem;">Click "Synthesize Drafts" above or add a decision maker to begin!</p>
+            <button class="btn primary sm" onclick="runSynthesizeDrafts()">✍️ Synthesize Drafts Now</button>
+          </div>
+        `;
         return;
       }
-      tbody.innerHTML = drafts.map((d) => {
-        const realIdx = globalDrafts.indexOf(d);
+
+      rosterList.innerHTML = drafts.map((d, idx) => {
+        const contact = globalContacts.find(c => c.contactId === d.contactId) || {};
+        const isActive = idx === selectedDraftIndex;
+        const statusClass = d.status === 'SENT' ? 'pill-green' : (d.status === 'APPROVED_QUEUED' ? 'pill-blue' : 'pill-amber');
+
         return `
-          <tr onclick="openPreview(${realIdx})" style="cursor: pointer; transition: background 0.15s ease;" onmouseover="this.style.background='rgba(56, 189, 248, 0.06)'" onmouseout="this.style.background='none'">
-            <td><code>${d.outreachId}</code></td>
-            <td>${d.campaignId}</td>
-            <td>${d.contactId}</td>
-            <td><span class="badge slate">${d.projectId}</span></td>
-            <td><span style="color: #38bdf8; font-weight: 600;">${d.subject}</span></td>
-            <td>${d.scheduledSendAt ? new Date(d.scheduledSendAt).toLocaleString() : '-'}</td>
-            <td><span class="badge ${d.status === 'APPROVED_QUEUED' ? 'indigo' : (d.status === 'SENT' ? 'emerald' : 'amber')}"><span class="badge-dot"></span>${d.status}</span></td>
-            <td>
-              <div style="display: flex; gap: 0.35rem;" onclick="event.stopPropagation()">
-                <button class="btn sm" onclick="openPreview(${realIdx})" title="Review & Edit Draft" style="font-size: 0.72rem; padding: 0.3rem 0.55rem; border-color: #38bdf8; color: #38bdf8;">✏️ Review</button>
-                <button class="btn sm" onclick="sendTestEmailDirect('${d.outreachId}')" title="Send test preview directly to your Gmail" style="font-size: 0.72rem; padding: 0.3rem 0.55rem;">📤 Test</button>
-                ${d.status === 'DRAFT_READY' ? `<button class="btn sm success" onclick="approveDraft('${d.outreachId}')" style="font-size: 0.72rem; padding: 0.3rem 0.55rem;">Approve</button>` : ''}
-              </div>
-            </td>
-          </tr>
+          <div class="contact-card ${isActive ? 'active' : ''}" onclick="selectDraft(${idx})">
+            <div class="card-top">
+              <span class="contact-name">${contact.name || d.contactId}</span>
+              <span class="pill-badge ${statusClass}">${d.status}</span>
+            </div>
+            <div class="contact-company">${contact.company || 'Manufacturing Organization'}</div>
+            <div class="contact-role">${contact.role || 'Executive Leader'}</div>
+            <div class="card-meta-row">
+              <span style="font-size: 0.72rem; color: var(--text-tertiary); font-family: monospace;">${d.outreachId}</span>
+              <button class="btn sm" onclick="event.stopPropagation(); sendTestDirect('${d.outreachId}')" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" title="Send test email to your Gmail">
+                📤 Test
+              </button>
+            </div>
+          </div>
         `;
       }).join('');
     }
 
-    function sendTestEmailDirect(outreachId) {
-      if (!outreachId) return;
-      showToast('<span class="spinner"></span> Sending test preview directly to your Gmail inbox...');
+    // Select Active Draft and Populate Right Inspector
+    function selectDraft(index) {
+      selectedDraftIndex = index;
+      const d = globalDrafts[index];
+      if (!d) return;
+
+      const contact = globalContacts.find(c => c.contactId === d.contactId) || {};
+
+      // Update Inspector Header
+      document.getElementById('inspector-name').innerText = contact.name || d.contactId;
+      document.getElementById('inspector-company-meta').innerText = 
+        (contact.role || 'Executive Leader') + ' • ' + (contact.company || 'Target Organization') + ' • ' + d.outreachId;
+
+      // Update Subject & Body
+      document.getElementById('draft-subject-input').value = d.subject || '';
+      document.getElementById('email-render-box').innerHTML = d.htmlBody || '';
+
+      // Detect & set style dropdown
+      const styleSelect = document.getElementById('draft-archetype-select');
+      if (d.htmlBody) {
+        if (d.htmlBody.includes('Operations & Workforce Briefing')) {
+          styleSelect.value = 'MODERN_BRIEF';
+        } else if (d.htmlBody.includes('Watch Video Case Study Walkthrough')) {
+          styleSelect.value = 'VIDEO_SPOTLIGHT';
+        } else if (!d.htmlBody.includes('fluid-container')) {
+          styleSelect.value = 'ULTRA_HUMAN';
+        } else {
+          styleSelect.value = 'CLASSIC_LETTER';
+        }
+      }
+
+      // Re-render active highlight on left roster
+      const cards = document.querySelectorAll('.contact-card');
+      cards.forEach((c, idx) => {
+        if (idx === index) c.classList.add('active');
+        else c.classList.remove('active');
+      });
+    }
+
+    // Filter Left Roster
+    function filterRoster() {
+      const q = (document.getElementById('roster-search').value || '').toLowerCase().trim();
+      if (!q) {
+        renderRoster(globalDrafts);
+        return;
+      }
+      const filtered = globalDrafts.filter(d => {
+        const contact = globalContacts.find(c => c.contactId === d.contactId) || {};
+        return (contact.name && contact.name.toLowerCase().includes(q)) ||
+               (contact.company && contact.company.toLowerCase().includes(q)) ||
+               (contact.role && contact.role.toLowerCase().includes(q)) ||
+               (d.outreachId && d.outreachId.toLowerCase().includes(q)) ||
+               (d.subject && d.subject.toLowerCase().includes(q));
+      });
+      renderRoster(filtered);
+    }
+
+    // Send Test Email directly to Ankit's Gmail
+    function sendTestEmailToMe() {
+      if (selectedDraftIndex < 0 || !globalDrafts[selectedDraftIndex]) {
+        showToast('⚠️ Please select a draft from the left roster first.');
+        return;
+      }
+      const d = globalDrafts[selectedDraftIndex];
+      showToast('<span class="spinner"></span> Dispatching test preview to your Gmail...');
+      
       google.script.run
         .withSuccessHandler(function(resp) {
           if (!resp.success) {
-            showToast('⚠️ Test Send Failed: ' + resp.error);
+            showToast('⚠️ Test Send Failed: ' + resp.error, 6000);
             return;
           }
-          showToast('📤 ' + resp.message, 5000);
+          showToast('📤 ' + resp.message, 6000);
+        })
+        .withFailureHandler(onError)
+        .apiSendTestEmail(d.outreachId);
+    }
+
+    function sendTestDirect(outreachId) {
+      showToast('<span class="spinner"></span> Sending test preview to your Gmail...');
+      google.script.run
+        .withSuccessHandler(function(resp) {
+          if (!resp.success) {
+            showToast('⚠️ Test Send Failed: ' + resp.error, 6000);
+            return;
+          }
+          showToast('📤 ' + resp.message, 6000);
         })
         .withFailureHandler(onError)
         .apiSendTestEmail(outreachId);
     }
 
-    function filterDraftsTable() {
-      const q = (document.getElementById('drafts-search-input')?.value || '').toLowerCase().trim();
-      if (!q) {
-        renderDraftsTable(globalDrafts);
-        return;
-      }
-      const filtered = globalDrafts.filter(d => 
-        (d.subject && d.subject.toLowerCase().includes(q)) ||
-        (d.outreachId && d.outreachId.toLowerCase().includes(q)) ||
-        (d.contactId && d.contactId.toLowerCase().includes(q)) ||
-        (d.status && d.status.toLowerCase().includes(q))
-      );
-      renderDraftsTable(filtered);
-    }
+    // Change Design Style / Archetype for this specific contact
+    function changeDraftStyle(newArchetype) {
+      if (selectedDraftIndex < 0 || !globalDrafts[selectedDraftIndex]) return;
+      const d = globalDrafts[selectedDraftIndex];
+      showToast('<span class="spinner"></span> Re-rendering in ' + newArchetype + ' style...');
 
-    function openPreview(index) {
-      currentPreviewIndex = index;
-      const d = globalDrafts[index];
-      if (!d) return;
-      document.getElementById('drawer-title').innerText = 'Personalized Draft Review Studio';
-      document.getElementById('drawer-sub').innerText = d.outreachId + ' • Campaign: ' + d.campaignId + ' • Contact: ' + d.contactId;
-      
-      const subjInput = document.getElementById('drawer-subject-input');
-      if (subjInput) subjInput.value = d.subject || '';
-      
-      const bodyEl = document.getElementById('drawer-body');
-      if (bodyEl) bodyEl.innerHTML = d.htmlBody || '';
-
-      // Reset to Desktop Viewport
-      setDrawerViewport('desktop');
-
-      // Detect current archetype if possible
-      const archSelect = document.getElementById('drawer-archetype-select');
-      if (archSelect) {
-        if (d.htmlBody && d.htmlBody.includes('Operations & Workforce Briefing')) {
-          archSelect.value = 'MODERN_BRIEF';
-        } else if (d.htmlBody && d.htmlBody.includes('Watch Video Case Study Walkthrough')) {
-          archSelect.value = 'VIDEO_SPOTLIGHT';
-        } else if (d.htmlBody && !d.htmlBody.includes('fluid-container')) {
-          archSelect.value = 'ULTRA_HUMAN';
-        } else {
-          archSelect.value = 'CLASSIC_LETTER';
-        }
-      }
-
-      const approveBtn = document.getElementById('drawer-approve-btn');
-      if (approveBtn) {
-        approveBtn.onclick = function() {
-          approveDraft(d.outreachId);
-          closeDrawer();
-        };
-      }
-      document.getElementById('drawer-overlay').classList.add('active');
-    }
-
-    function changeDraftArchetype(newArchetype) {
-      if (currentPreviewIndex < 0 || !globalDrafts[currentPreviewIndex]) return;
-      const d = globalDrafts[currentPreviewIndex];
-      showToast('<span class="spinner"></span> Re-rendering draft in ' + newArchetype + ' style...');
       google.script.run
         .withSuccessHandler(function(resp) {
           if (!resp.success) {
@@ -1790,69 +1003,20 @@
           }
           d.subject = resp.subject;
           d.htmlBody = resp.htmlBody;
-          const subjInput = document.getElementById('drawer-subject-input');
-          if (subjInput) subjInput.value = resp.subject;
-          const bodyEl = document.getElementById('drawer-body');
-          if (bodyEl) bodyEl.innerHTML = resp.htmlBody;
-          showToast('✨ Re-rendered in ' + newArchetype + ' layout!');
-          loadDrafts();
+          document.getElementById('draft-subject-input').value = resp.subject;
+          document.getElementById('email-render-box').innerHTML = resp.htmlBody;
+          showToast('✨ Re-rendered as ' + newArchetype + '!');
         })
         .withFailureHandler(onError)
         .apiReRenderDraftWithTemplate(d.outreachId, newArchetype);
     }
 
-    function setDrawerViewport(mode) {
-      const container = document.getElementById('drawer-body-container');
-      const bodyEl = document.getElementById('drawer-body');
-      const btnDesk = document.getElementById('btn-viewport-desktop');
-      const btnMob = document.getElementById('btn-viewport-mobile');
-      if (!container) return;
-
-      if (mode === 'mobile') {
-        container.style.maxWidth = '375px';
-        container.style.margin = '0 auto';
-        container.style.boxShadow = '0 0 25px rgba(56, 189, 248, 0.3)';
-        if (bodyEl) bodyEl.style.padding = '0.75rem';
-        if (btnMob) {
-          btnMob.style.background = '#38bdf8';
-          btnMob.style.color = '#0f172a';
-          btnMob.style.fontWeight = '700';
-        }
-        if (btnDesk) {
-          btnDesk.style.background = 'transparent';
-          btnDesk.style.color = 'var(--text-secondary)';
-          btnDesk.style.fontWeight = '600';
-        }
-      } else {
-        container.style.maxWidth = '100%';
-        container.style.margin = '0';
-        container.style.boxShadow = 'none';
-        if (bodyEl) bodyEl.style.padding = '1.25rem';
-        if (btnDesk) {
-          btnDesk.style.background = '#38bdf8';
-          btnDesk.style.color = '#0f172a';
-          btnDesk.style.fontWeight = '700';
-        }
-        if (btnMob) {
-          btnMob.style.background = 'transparent';
-          btnMob.style.color = 'var(--text-secondary)';
-          btnMob.style.fontWeight = '600';
-        }
-      }
-    }
-
-    function closeDrawer() {
-      document.getElementById('drawer-overlay').classList.remove('active');
-    }
-
-    function saveDraftEdits() {
-      if (currentPreviewIndex < 0 || !globalDrafts[currentPreviewIndex]) {
-        showToast('⚠️ No active draft selected to save.');
-        return;
-      }
-      const d = globalDrafts[currentPreviewIndex];
-      const newSubj = document.getElementById('drawer-subject-input').value.trim();
-      const newBody = document.getElementById('drawer-body').innerHTML.trim();
+    // Save In-Place Edits
+    function saveActiveDraftEdits() {
+      if (selectedDraftIndex < 0 || !globalDrafts[selectedDraftIndex]) return;
+      const d = globalDrafts[selectedDraftIndex];
+      const newSubj = document.getElementById('draft-subject-input').value.trim();
+      const newBody = document.getElementById('email-render-box').innerHTML.trim();
 
       if (!newSubj || !newBody) {
         showToast('⚠️ Subject line and email body cannot be empty.');
@@ -1868,141 +1032,42 @@
           }
           d.subject = newSubj;
           d.htmlBody = newBody;
-          showToast('💾 ' + resp.message);
-          renderDraftsTable(globalDrafts);
+          showToast('💾 Draft edits saved successfully!');
         })
         .withFailureHandler(onError)
         .apiUpdateOutreachDraft(d.outreachId, newSubj, newBody);
     }
 
-    function sendTestEmailFromDrawer() {
-      if (currentPreviewIndex < 0 || !globalDrafts[currentPreviewIndex]) {
-        showToast('⚠️ No draft selected.');
-        return;
-      }
-      const d = globalDrafts[currentPreviewIndex];
-      showToast('<span class="spinner"></span> Sending test preview directly to your Gmail inbox...');
+    // Approve & Queue Active Draft
+    function approveActiveDraft() {
+      if (selectedDraftIndex < 0 || !globalDrafts[selectedDraftIndex]) return;
+      const d = globalDrafts[selectedDraftIndex];
+      showToast('<span class="spinner"></span> Approving draft into QUEUED state...');
+
       google.script.run
         .withSuccessHandler(function(resp) {
           if (!resp.success) {
-            showToast('⚠️ Test Send Failed: ' + resp.error);
+            showToast('⚠️ Approval Failed: ' + resp.error);
             return;
           }
-          showToast('📤 ' + resp.message, 5000);
+          d.status = 'APPROVED_QUEUED';
+          showToast('✅ Draft ' + d.outreachId + ' queued for dispatch!');
+          renderRoster(globalDrafts);
         })
         .withFailureHandler(onError)
-        .apiSendTestEmail(d.outreachId);
+        .apiApproveOutreachRow(d.outreachId);
     }
 
-    function openQuickAddModal() {
-      document.getElementById('quick-add-lead-modal').classList.add('active');
-    }
+    // Run Batch Draft Synthesis
+    function runSynthesizeDrafts() {
+      const archetype = document.getElementById('global-archetype-select').value;
+      showToast('<span class="spinner"></span> Synthesizing drafts using ' + archetype + '...');
 
-    function closeQuickAddModal() {
-      document.getElementById('quick-add-lead-modal').classList.remove('active');
-    }
-
-    function submitQuickAddLead() {
-      const firstName = document.getElementById('qa-firstname').value.trim();
-      const lastName = document.getElementById('qa-lastname').value.trim();
-      const email = document.getElementById('qa-email').value.trim();
-      const company = document.getElementById('qa-company').value.trim();
-      const role = document.getElementById('qa-role').value.trim();
-      const persona = document.getElementById('qa-persona').value;
-      const linkedin = document.getElementById('qa-linkedin').value.trim();
-
-      if (!firstName || !email || !company || !role) {
-        alert('Please fill out First Name, Work Email, Company Name, and Role Title.');
-        return;
-      }
-
-      const fullName = lastName ? (firstName + ' ' + lastName) : firstName;
-      const leadData = {
-        fullName: fullName,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        companyName: company,
-        companyDomain: email.split('@')[1] || '',
-        title: role,
-        persona: persona,
-        linkedinUrl: linkedin,
-        source: 'QUICK_ADD'
-      };
-
-      showToast('<span class="spinner"></span> Verifying MX DNS & ingesting lead...');
-      google.script.run
-        .withSuccessHandler(function(resp) {
-          if (!resp.success) {
-            showToast('⚠️ Error adding lead: ' + resp.error);
-            return;
-          }
-          showToast('✅ ' + resp.message, 4500);
-          closeQuickAddModal();
-          // Reset form fields
-          document.getElementById('qa-firstname').value = '';
-          document.getElementById('qa-lastname').value = '';
-          document.getElementById('qa-email').value = '';
-          document.getElementById('qa-company').value = '';
-          document.getElementById('qa-role').value = '';
-          document.getElementById('qa-linkedin').value = '';
-          loadContacts();
-          refreshDashboardData();
-        })
-        .withFailureHandler(onError)
-        .apiQuickAddSingleLead(leadData);
-    }
-
-    function approveDraft(outreachId) {
-      showToast('<span class="spinner"></span> Approving outreach draft...');
-      google.script.run
-        .withSuccessHandler(function(resp) {
-          if (resp.success) {
-            showToast('✅ Draft ' + outreachId + ' approved into QUEUED state!');
-            loadDrafts();
-            refreshDashboardData();
-          } else {
-            showToast('Error: ' + resp.error);
-          }
-        })
-        .withFailureHandler(onError)
-        .apiApproveOutreachRow(outreachId);
-    }
-
-    function approveAllDrafts() {
-      showToast('<span class="spinner"></span> Approving all drafts in batch...');
-      google.script.run
-        .withSuccessHandler(function(resp) {
-          if (resp.success) {
-            showToast('✅ Approved ' + resp.approvedCount + ' drafts into QUEUED state!');
-            loadDrafts();
-            refreshDashboardData();
-          } else {
-            showToast('Error: ' + resp.error);
-          }
-        })
-        .withFailureHandler(onError)
-        .apiApproveAllDrafts();
-    }
-
-    function runScoring() {
-      showToast('<span class="spinner"></span> Verifying DNS MX & computing 100-pt lead scores...');
-      google.script.run
-        .withSuccessHandler(function(r) { showToast('🎯 ' + r.message); refreshDashboardData(); })
-        .withFailureHandler(onError)
-        .apiRunLeadScoring();
-    }
-
-    function runDraftGen() {
-      const archetype = document.getElementById('campaign-template-select')?.value || 'CLASSIC_LETTER';
-      showToast('<span class="spinner"></span> Synthesizing drafts using ' + archetype + ' archetype...');
       google.script.run
         .withSuccessHandler(function(r) {
           if (r.success) {
             showToast('✍️ ' + r.message, 5000);
-            navigate('tab-drafts');
-            loadDrafts();
-            refreshDashboardData();
+            loadStudioData();
           } else {
             showToast('⚠️ ' + r.error, 5000);
           }
@@ -2011,301 +1076,60 @@
         .apiGenerateDrafts('CMPG-01', archetype);
     }
 
-    function runDispatcher() {
-      showToast('<span class="spinner"></span> Executing quota-safe batch dispatch...');
-      google.script.run
-        .withSuccessHandler(function(r) { showToast('🚀 ' + r.message); refreshDashboardData(); })
-        .withFailureHandler(onError)
-        .apiRunDispatcher();
+    // Quick Add Modal Logic
+    function openAddLeadModal() {
+      document.getElementById('modal-add-lead').classList.add('active');
     }
 
-    function runReplySync() {
-      showToast('<span class="spinner"></span> Scanning Gmail sent threads for replies & bounces...');
-      google.script.run
-        .withSuccessHandler(function(r) { showToast('📥 ' + r.message); refreshDashboardData(); })
-        .withFailureHandler(onError)
-        .apiSyncReplies();
+    function closeAddLeadModal() {
+      document.getElementById('modal-add-lead').classList.remove('active');
     }
 
-    function bootstrapDb() {
-      showToast('<span class="spinner"></span> Provisioning 14-table relational architecture...');
-      google.script.run
-        .withSuccessHandler(function(r) { showToast('🛠 Database provisioned successfully!'); refreshDashboardData(); })
-        .withFailureHandler(onError)
-        .apiBootstrapDb();
-    }
+    function submitQuickAddLead() {
+      const name = document.getElementById('lead-name').value.trim();
+      const email = document.getElementById('lead-email').value.trim();
+      const company = document.getElementById('lead-company').value.trim();
+      const title = document.getElementById('lead-title').value.trim();
 
-    function installTriggers() {
-      showToast('<span class="spinner"></span> Installing 15-minute cron schedulers...');
-      google.script.run
-        .withSuccessHandler(function(r) { showToast('⏰ ' + r.message); })
-        .withFailureHandler(onError)
-        .apiInstallTriggers();
-    }
-
-    function uninstallTriggers() {
-      showToast('<span class="spinner"></span> Removing automation triggers...');
-      google.script.run
-        .withSuccessHandler(function(r) { showToast('🛑 ' + r.message); })
-        .withFailureHandler(onError)
-        .apiUninstallTriggers();
-    }
-
-    function saveApiKey() {
-      const key = document.getElementById('gemini-key-input').value;
-      if (!key) { alert('Please enter an API key'); return; }
-      showToast('<span class="spinner"></span> Saving key to PropertiesService...');
-      google.script.run
-        .withSuccessHandler(function(r) {
-          showToast('🤖 ' + r.message);
-          document.getElementById('gemini-key-input').value = '';
-        })
-        .withFailureHandler(onError)
-        .apiSaveSettings({ geminiApiKey: key });
-    }
-
-    function forceSyncAnkitProfile() {
-      showToast('<span class="spinner"></span> Syncing Ankit Choudhary CV & Proof-of-Work to Sheet...');
-      google.script.run
-        .withSuccessHandler(function(r) {
-          if (r && r.success) {
-            showToast('✅ ' + r.message);
-            refreshDashboardData();
-          } else {
-            showToast('⚠️ Error: ' + (r ? r.error : 'Unknown error'));
-          }
-        })
-        .withFailureHandler(onError)
-        .apiSyncAnkitProfile();
-    }
-
-    // --- Apollo.io Integration UI Handlers ---
-    let globalApolloResults = [];
-
-    function openApolloModal() {
-      document.getElementById('apollo-search-modal').classList.add('active');
-    }
-
-    function closeApolloModal() {
-      document.getElementById('apollo-search-modal').classList.remove('active');
-    }
-
-    function openCsvModal() {
-      document.getElementById('apollo-csv-modal').classList.add('active');
-    }
-
-    function closeCsvModal() {
-      document.getElementById('apollo-csv-modal').classList.remove('active');
-    }
-
-    function applyApolloPreset(type) {
-      const titlesInput = document.getElementById('apollo-titles-input');
-      const domainsInput = document.getElementById('apollo-domains-input');
-      const headcountSelect = document.getElementById('apollo-headcount-select');
-
-      headcountSelect.value = 'mid_market';
-
-      if (type === 'foundry') {
-        titlesInput.value = 'Managing Director, Promoter, Chief Operating Officer, Plant Head, Director Operations, Head Plant HR, VP HR';
-        domainsInput.value = 'ramkrishnaforgings.com, mmforgings.com, electrasteel.com, simplexcastings.com, bfcl.in, himadri.com';
-      } else if (type === 'auto') {
-        titlesInput.value = 'Managing Director, Chief Operating Officer, Plant Head, Director Operations, VP Manufacturing, Head Plant HR';
-        domainsInput.value = 'lumaxworld.in, subros.com, varroc.com, sandhargroup.com, pricol.com, gabrielindia.com';
-      } else if (type === 'chemicals') {
-        titlesInput.value = 'Managing Director, Promoter, Plant Head, VP Operations, Head Human Resources, Director';
-        domainsInput.value = 'aarti-industries.com, vinatiorganics.com, bodal.com, dorfketal.com, finolexwater.com';
-      } else if (type === 'promoter') {
-        titlesInput.value = 'Managing Director, Joint Managing Director, Promoter, Executive Director, Owner, Founder';
-        domainsInput.value = '';
-      }
-      showToast('Applied ' + type.toUpperCase() + ' mid-market sourcing preset!');
-    }
-
-    function executeApolloSearch() {
-      const titles = document.getElementById('apollo-titles-input').value;
-      const domains = document.getElementById('apollo-domains-input').value;
-      const locations = document.getElementById('apollo-locations-input').value;
-      const limit = Number(document.getElementById('apollo-limit-select').value || 10);
-      const headcountMode = document.getElementById('apollo-headcount-select').value;
-
-      let ranges = ['201,500', '501,1000', '1001,5000'];
-      if (headcountMode === 'early_growth') ranges = ['51,200', '201,500'];
-      if (headcountMode === 'all') ranges = [];
-
-      showToast('<span class="spinner"></span> Querying Apollo.io API (Sweet spot: 200–5,000 workforce)...');
-      google.script.run
-        .withSuccessHandler(function(resp) {
-          if (!resp.success) {
-            showToast('⚠️ Apollo Error: ' + resp.error, 5000);
-            return;
-          }
-          globalApolloResults = resp.people || [];
-          renderApolloResults(globalApolloResults);
-          showToast('Found ' + globalApolloResults.length + ' matching executives in Apollo!');
-        })
-        .withFailureHandler(onError)
-        .apiSearchApollo({
-          titles: titles,
-          domains: domains,
-          locations: locations,
-          employeeRanges: ranges,
-          perPage: limit
-        });
-    }
-
-    function renderApolloResults(people) {
-      const container = document.getElementById('apollo-results-container');
-      const tbody = document.getElementById('apollo-results-tbody');
-      const countSpan = document.getElementById('apollo-found-count');
-      
-      container.style.display = 'block';
-      countSpan.innerText = people.length;
-
-      if (people.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-tertiary); padding: 1.5rem;">No people found matching filters. Try broader titles or domains.</td></tr>';
-        updateApolloImportCount();
+      if (!name || !email || !company) {
+        showToast('⚠️ Please enter name, email, and company.');
         return;
       }
 
-      tbody.innerHTML = people.map((p, idx) => `
-        <tr>
-          <td><input type="checkbox" class="apollo-lead-check" data-index="${idx}" onchange="updateApolloImportCount()" checked></td>
-          <td>
-            <strong>${p.fullName}</strong>
-            <div style="font-size: 0.72rem; color: var(--text-tertiary);">${p.title}</div>
-          </td>
-          <td>
-            <span>${p.companyName}</span>
-            <div style="font-size: 0.7rem; color: var(--text-tertiary);">${p.companyDomain}</div>
-          </td>
-          <td>
-            ${p.email ? `<span style="color: #38bdf8; font-size: 0.8rem;">${p.email}</span>` : '<span class="badge slate">Locked / No Email</span>'}
-          </td>
-          <td><span class="badge indigo">${p.persona}</span></td>
-        </tr>
-      `).join('');
+      const parts = name.split(' ');
+      const leadData = {
+        fullName: name,
+        firstName: parts[0] || name,
+        lastName: parts.slice(1).join(' ') || '',
+        email: email,
+        companyName: company,
+        companyDomain: email.split('@')[1] || '',
+        title: title || 'Executive Leader'
+      };
 
-      updateApolloImportCount();
-    }
-
-    function toggleSelectAllApollo(checked) {
-      document.querySelectorAll('.apollo-lead-check').forEach(cb => { cb.checked = checked; });
-      updateApolloImportCount();
-    }
-
-    function updateApolloImportCount() {
-      const checkedBoxes = document.querySelectorAll('.apollo-lead-check:checked');
-      const count = checkedBoxes.length;
-      const btn = document.getElementById('apollo-import-btn');
-      btn.innerText = '📥 Import Selected Leads (' + count + ')';
-      btn.disabled = (count === 0);
-    }
-
-    function importSelectedApolloLeads() {
-      const checkedBoxes = Array.from(document.querySelectorAll('.apollo-lead-check:checked'));
-      const selected = checkedBoxes.map(cb => {
-        const idx = Number(cb.getAttribute('data-index'));
-        return globalApolloResults[idx];
-      }).filter(Boolean);
-
-      if (selected.length === 0) return;
-
-      showToast('<span class="spinner"></span> Ingesting & scoring ' + selected.length + ' leads in CRM...');
+      showToast('<span class="spinner"></span> Adding lead & synthesizing draft...');
       google.script.run
         .withSuccessHandler(function(resp) {
           if (!resp.success) {
-            showToast('⚠️ Import Error: ' + resp.error);
+            showToast('⚠️ Failed: ' + resp.error);
             return;
           }
-          showToast('✅ ' + resp.message, 4500);
-          closeApolloModal();
-          loadContacts();
-          refreshDashboardData();
+          closeAddLeadModal();
+          showToast('✅ Added ' + name + '! Synthesizing draft...');
+          const archetype = document.getElementById('global-archetype-select').value;
+          google.script.run
+            .withSuccessHandler(function() {
+              loadStudioData();
+            })
+            .apiGenerateDrafts('CMPG-01', archetype);
         })
         .withFailureHandler(onError)
-        .apiImportApolloLeads(selected);
+        .apiQuickAddSingleLead(leadData);
     }
 
-    function importApolloCsvData() {
-      const text = document.getElementById('apollo-csv-input').value.trim();
-      if (!text) {
-        alert('Please paste CSV text first.');
-        return;
-      }
-
-      showToast('<span class="spinner"></span> Parsing and ingesting CSV leads...');
-      google.script.run
-        .withSuccessHandler(function(resp) {
-          if (!resp.success) {
-            showToast('⚠️ CSV Error: ' + resp.error);
-            return;
-          }
-          showToast('✅ ' + resp.message, 4500);
-          document.getElementById('apollo-csv-input').value = '';
-          closeCsvModal();
-          loadContacts();
-          refreshDashboardData();
-        })
-        .withFailureHandler(onError)
-        .apiImportApolloCsv(text);
-    }
-
-    function saveApolloKey() {
-      const key = document.getElementById('apollo-key-input').value;
-      if (!key) { alert('Please enter an Apollo API key'); return; }
-      showToast('<span class="spinner"></span> Saving Apollo key...');
-      google.script.run
-        .withSuccessHandler(function(r) {
-          showToast('🚀 ' + r.message);
-          document.getElementById('apollo-key-input').value = '';
-          loadSettings();
-        })
-        .withFailureHandler(onError)
-        .apiSaveSettings({ apolloApiKey: key });
-    }
-
-    function testApolloConnection() {
-      const key = document.getElementById('apollo-key-input').value;
-      showToast('<span class="spinner"></span> Testing Apollo.io connection...');
-      google.script.run
-        .withSuccessHandler(function(r) {
-          if (r.success) {
-            showToast('✅ ' + r.message);
-            const badge = document.getElementById('apollo-status-badge');
-            if (badge) { badge.className = 'badge emerald'; badge.innerText = 'Connected'; }
-          } else {
-            showToast('⚠️ Apollo Test Failed: ' + r.error, 5000);
-          }
-        })
-        .withFailureHandler(onError)
-        .apiTestApolloConnection(key || undefined);
-    }
-
-    function loadSettings() {
-      google.script.run
-        .withSuccessHandler(function(data) {
-          if (!data || !data.success) return;
-          const badge = document.getElementById('apollo-status-badge');
-          if (badge) {
-            if (data.hasApolloKey) {
-              badge.className = 'badge emerald';
-              badge.innerText = 'Connected (' + data.maskedApolloKey + ')';
-            } else {
-              badge.className = 'badge slate';
-              badge.innerText = 'Not Configured';
-            }
-          }
-        })
-        .apiGetSettings();
-    }
-
-    function onError(err) {
-      showToast('⚠️ Execution Error: ' + (err.message || err));
-    }
-
+    // Initialize Studio on Page Load
     window.addEventListener('load', function() {
-      refreshDashboardData();
-      loadSettings();
+      loadStudioData();
     });
   </script>
 </body>

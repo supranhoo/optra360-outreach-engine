@@ -12,6 +12,8 @@
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('🚀 Antigravity Platform')
+    .addItem('🖥️ Open Executive Outreach Studio', 'openAntigravityUi')
+    .addSeparator()
     .addItem('⚡ Sync Ankit Choudhary Profile to Sheet', 'syncAnkitProfileNow')
     .addItem('🛠 1. Bootstrap 14-Table CRM & Command Center', 'bootstrapAntigravityArchitecture')
     .addSeparator()
