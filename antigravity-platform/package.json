@@ -1,0 +1,20 @@
+{
+  "name": "antigravity-job-outreach-intelligence-platform",
+  "version": "1.0.0",
+  "description": "Project Antigravity: End-to-End Job Outreach Intelligence Platform built on Google Workspace (Google Sheets, Apps Script V8, Gmail, Drive, Looker Studio, Gemini API)",
+  "main": "00_Config.js",
+  "scripts": {
+    "test": "node tests/test_antigravity.js",
+    "push": "clasp push",
+    "status": "clasp status"
+  },
+  "keywords": [
+    "antigravity",
+    "apps-script",
+    "gmail-outreach",
+    "job-intelligence",
+    "recruiting-crm"
+  ],
+  "author": "Ankit Choudhary",
+  "license": "MIT"
+}
