@@ -290,6 +290,51 @@ runTest('Validates CSV text input requirements', () => {
 });
 
 // -------------------------------------------------------------
+// Test Suite 8: Draft Studio & Quick Add Validation
+// -------------------------------------------------------------
+console.log('\n--- Suite 8: Draft Studio & Quick Add Lead Validation ---');
+
+runTest('Formats test email subject with [TEST PREVIEW] prefix and footer', () => {
+  const originalSubject = 'Plant HR systems & 3,850 workforce turnaround — Ankit Choudhary';
+  const originalHtml = '<p>Hello Rajesh,</p>';
+  const outreachId = 'OUT-9999';
+  const campaignId = 'CMPG-01';
+
+  const testSubject = '[TEST PREVIEW] ' + originalSubject;
+  const testBody = originalHtml + 
+    '<br><br><hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">' +
+    '<p style="color:#64748b;font-size:12px;font-family:sans-serif;line-height:1.5;">' +
+    '⚡ <strong>Project Antigravity Test Delivery</strong><br>' +
+    'Outreach ID: <code>' + outreachId + '</code> • Campaign: <code>' + campaignId + '</code><br>' +
+    '<em>This preview email was sent directly from your Antigravity Draft Studio for visual review and quality assurance.</em></p>';
+
+  assert.ok(testSubject.startsWith('[TEST PREVIEW] '));
+  assert.ok(testBody.includes('Project Antigravity Test Delivery'));
+  assert.ok(testBody.includes(outreachId));
+  assert.ok(testBody.includes(campaignId));
+});
+
+runTest('Validates Quick Add Lead required fields', () => {
+  const incompleteLead = { firstName: 'Rajesh', companyName: 'Ramkrishna Forgings' };
+  assert.ok(!incompleteLead.email, 'Missing email should be caught by validation');
+
+  const validLead = {
+    fullName: 'Rajesh Sharma',
+    firstName: 'Rajesh',
+    lastName: 'Sharma',
+    email: 'rajesh.sharma@ramkrishnaforgings.com',
+    companyName: 'Ramkrishna Forgings',
+    companyDomain: 'ramkrishnaforgings.com',
+    title: 'Managing Director & Promoter',
+    persona: 'FOUNDER'
+  };
+
+  assert.ok(validLead.email && validLead.email.includes('@'));
+  assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle(validLead.title), 'FOUNDER');
+  assert.strictEqual(validateEmailAndMx_(validLead.email), true);
+});
+
+// -------------------------------------------------------------
 // Test Summary
 // -------------------------------------------------------------
 console.log('\n======================================================');

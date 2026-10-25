@@ -381,3 +381,88 @@ function apiImportApolloLeads(leads) {
 function apiImportApolloCsv(csvText) {
   return ANTIGRAVITY_APOLLO.importCsvText(csvText);
 }
+
+/**
+ * Draft Review Studio: Dispatches a single test email directly to candidate for review.
+ */
+function apiSendTestEmail(outreachId, recipientOverride) {
+  try {
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return { success: false, error: 'Database not initialized.' };
+    const sheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OUTREACH_HISTORY);
+    if (!sheet) return { success: false, error: 'Outreach_History table not found.' };
+
+    const data = sheet.getDataRange().getValues();
+    let draftRow = null;
+
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === String(outreachId)) {
+        draftRow = data[i];
+        break;
+      }
+    }
+
+    if (!draftRow) return { success: false, error: 'Draft ID ' + outreachId + ' not found.' };
+
+    const targetEmail = recipientOverride || ANTIGRAVITY_CONFIG.getCandidateEmail() || (typeof Session !== 'undefined' ? Session.getActiveUser().getEmail() : 'ankitchoudharymba@gmail.com');
+    const testSubject = '[TEST PREVIEW] ' + draftRow[5];
+    const testBody = draftRow[6] + 
+      '<br><br><hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">' +
+      '<p style="color:#64748b;font-size:12px;font-family:sans-serif;line-height:1.5;">' +
+      '⚡ <strong>Project Antigravity Test Delivery</strong><br>' +
+      'Outreach ID: <code>' + outreachId + '</code> • Campaign: <code>' + draftRow[1] + '</code><br>' +
+      '<em>This preview email was sent directly from your Antigravity Draft Studio for visual review and quality assurance.</em></p>';
+
+    MailApp.sendEmail({
+      to: targetEmail,
+      subject: testSubject,
+      htmlBody: testBody
+    });
+
+    return {
+      success: true,
+      message: 'Test draft delivered to ' + targetEmail + '! Check your inbox.',
+      targetEmail: targetEmail
+    };
+  } catch (e) {
+    return { success: false, error: 'Failed sending test email: ' + e.message };
+  }
+}
+
+/**
+ * Draft Review Studio: Updates subject and HTML body after in-place editing.
+ */
+function apiUpdateOutreachDraft(outreachId, updatedSubject, updatedHtmlBody) {
+  try {
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return { success: false, error: 'Database not initialized.' };
+    const sheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OUTREACH_HISTORY);
+    if (!sheet) return { success: false, error: 'Outreach_History table not found.' };
+
+    const data = sheet.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === String(outreachId)) {
+        if (updatedSubject) sheet.getRange(i + 1, 6).setValue(updatedSubject.trim());
+        if (updatedHtmlBody) sheet.getRange(i + 1, 7).setValue(updatedHtmlBody.trim());
+        return { success: true, message: 'Draft ' + outreachId + ' updated in CRM spreadsheet.' };
+      }
+    }
+    return { success: false, error: 'Draft ID ' + outreachId + ' not found.' };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+/**
+ * Sourcing Studio: Ingests a single decision-maker lead from LinkedIn or referral.
+ */
+function apiQuickAddSingleLead(leadData) {
+  try {
+    if (!leadData || !leadData.email) {
+      return { success: false, error: 'Lead email address is required.' };
+    }
+    return ANTIGRAVITY_APOLLO.importLeadsToCrm([leadData]);
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
