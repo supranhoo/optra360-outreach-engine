@@ -1638,26 +1638,49 @@
       const tbody = document.getElementById('drafts-table-body');
       if (!tbody) return;
       if (drafts.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-tertiary); padding: 2rem;">No drafts found. Click Generate Drafts to synthesize copy!</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-tertiary); padding: 2.5rem 1rem;">
+          <div style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #f1f5f9;">📭 No Drafts in Campaign Queue</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">Click below to synthesize personalized outreach pitches matching Ankit's 3,850 workforce turnaround.</div>
+          <button class="btn primary sm" onclick="runDraftGen()">✍️ Synthesize Drafts Now</button>
+        </td></tr>`;
         return;
       }
       tbody.innerHTML = drafts.map((d) => {
         const realIdx = globalDrafts.indexOf(d);
         return `
-          <tr>
+          <tr onclick="openPreview(${realIdx})" style="cursor: pointer; transition: background 0.15s ease;" onmouseover="this.style.background='rgba(56, 189, 248, 0.06)'" onmouseout="this.style.background='none'">
             <td><code>${d.outreachId}</code></td>
             <td>${d.campaignId}</td>
             <td>${d.contactId}</td>
             <td><span class="badge slate">${d.projectId}</span></td>
-            <td><a href="javascript:void(0)" onclick="openPreview(${realIdx})" style="color: #38bdf8; font-weight: 600; text-decoration: none;">${d.subject}</a></td>
+            <td><span style="color: #38bdf8; font-weight: 600;">${d.subject}</span></td>
             <td>${d.scheduledSendAt ? new Date(d.scheduledSendAt).toLocaleString() : '-'}</td>
             <td><span class="badge ${d.status === 'APPROVED_QUEUED' ? 'indigo' : (d.status === 'SENT' ? 'emerald' : 'amber')}"><span class="badge-dot"></span>${d.status}</span></td>
             <td>
-              ${d.status === 'DRAFT_READY' ? `<button class="btn sm success" onclick="approveDraft('${d.outreachId}')">Approve</button>` : '—'}
+              <div style="display: flex; gap: 0.35rem;" onclick="event.stopPropagation()">
+                <button class="btn sm" onclick="openPreview(${realIdx})" title="Review & Edit Draft" style="font-size: 0.72rem; padding: 0.3rem 0.55rem; border-color: #38bdf8; color: #38bdf8;">✏️ Review</button>
+                <button class="btn sm" onclick="sendTestEmailDirect('${d.outreachId}')" title="Send test preview directly to your Gmail" style="font-size: 0.72rem; padding: 0.3rem 0.55rem;">📤 Test</button>
+                ${d.status === 'DRAFT_READY' ? `<button class="btn sm success" onclick="approveDraft('${d.outreachId}')" style="font-size: 0.72rem; padding: 0.3rem 0.55rem;">Approve</button>` : ''}
+              </div>
             </td>
           </tr>
         `;
       }).join('');
+    }
+
+    function sendTestEmailDirect(outreachId) {
+      if (!outreachId) return;
+      showToast('<span class="spinner"></span> Sending test preview directly to your Gmail inbox...');
+      google.script.run
+        .withSuccessHandler(function(resp) {
+          if (!resp.success) {
+            showToast('⚠️ Test Send Failed: ' + resp.error);
+            return;
+          }
+          showToast('📤 ' + resp.message, 5000);
+        })
+        .withFailureHandler(onError)
+        .apiSendTestEmail(outreachId);
     }
 
     function filterDraftsTable() {
@@ -1853,7 +1876,16 @@
     function runDraftGen() {
       showToast('<span class="spinner"></span> Synthesizing personalized copy & proof-of-work hooks...');
       google.script.run
-        .withSuccessHandler(function(r) { showToast('✍️ ' + r.message); loadDrafts(); refreshDashboardData(); })
+        .withSuccessHandler(function(r) {
+          if (r.success) {
+            showToast('✍️ ' + r.message, 5000);
+            navigate('tab-drafts');
+            loadDrafts();
+            refreshDashboardData();
+          } else {
+            showToast('⚠️ ' + r.error, 5000);
+          }
+        })
         .withFailureHandler(onError)
         .apiGenerateDrafts('CMPG-01');
     }

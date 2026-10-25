@@ -258,8 +258,15 @@ function apiRunLeadScoring() {
 
 function apiGenerateDrafts(campaignId) {
   try {
-    generateCampaignOutreachDrafts(campaignId || 'CMPG-01');
-    return { success: true, message: 'Draft generation completed.' };
+    const res = generateCampaignOutreachDrafts(campaignId || 'CMPG-01');
+    const count = (res && typeof res.count === 'number') ? res.count : 0;
+    return {
+      success: true,
+      count: count,
+      message: count > 0 
+        ? ('Synthesized ' + count + ' outreach draft(s) ready for review!')
+        : 'All eligible contacts already have drafts synthesized in the queue.'
+    };
   } catch (e) {
     return { success: false, error: e.message };
   }

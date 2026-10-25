@@ -41,26 +41,45 @@ function generateCampaignOutreachDrafts(campaignId) {
   const newOutreachRows = [];
   const now = new Date();
 
+  // Auto-verify & score any unhandled contacts first so newly added leads are immediately eligible
+  if (typeof processAndScoreNewContacts === 'function') {
+    try {
+      processAndScoreNewContacts();
+    } catch (e) {
+      console.warn('Auto-scoring note: ' + e.message);
+    }
+  }
+
   // Campaign parameters
   const campPersona = String(activeCamp[2]).trim().toUpperCase();
   const sendStartHr = Number(activeCamp[5]) || ANTIGRAVITY_CONFIG.BUSINESS_HOURS_START;
   const sendEndHr = Number(activeCamp[6]) || ANTIGRAVITY_CONFIG.BUSINESS_HOURS_END;
+
+  // Re-read contacts in case scoring modified them
+  const currentContacts = contactSheet.getDataRange().getValues();
 
   // Track contacts already drafted in this batch or Outreach_History
   const existingOutreachContacts = new Set(
     outreachSheet.getDataRange().getValues().slice(1).map(r => String(r[2]))
   );
 
-  for (let i = 1; i < contacts.length; i++) {
-    const c = contacts[i];
+  for (let i = 1; i < currentContacts.length; i++) {
+    const c = currentContacts[i];
     const contactId = String(c[0]);
     const outreachStatus = String(c[12] || '').trim();
     const verificationStatus = String(c[6] || '').trim();
     const contactPersona = String(c[7] || '').trim().toUpperCase();
 
-    // Verification & Persona Match Gate
-    if (outreachStatus !== 'QUEUED' || verificationStatus !== 'VERIFIED_VALID') continue;
-    if (campPersona && contactPersona !== campPersona) continue;
+    // Verification & Eligibility Gate:
+    // Eligible if status is QUEUED, or if newly added with verified email
+    const isEligible = (outreachStatus === 'QUEUED') || 
+      (verificationStatus === 'VERIFIED_VALID' && outreachStatus !== 'BOUNCED' && outreachStatus !== 'OPT_OUT');
+    if (!isEligible) continue;
+
+    // Multi-Persona Campaign Filter: CMPG-01 is multi-persona; otherwise match campPersona
+    const isMultiPersonaCampaign = !campPersona || campPersona === 'ALL' || campPersona === 'ANY' || campaignId === 'CMPG-01';
+    if (!isMultiPersonaCampaign && contactPersona !== campPersona) continue;
+
     if (existingOutreachContacts.has(contactId)) continue;
 
     const comp = companies[c[1]] || [];
@@ -148,6 +167,14 @@ function generateCampaignOutreachDrafts(campaignId) {
     } catch (e) {}
     console.log('No eligible QUEUED contacts found matching campaign criteria.');
   }
+
+  return {
+    success: true,
+    count: newOutreachRows.length,
+    message: newOutreachRows.length > 0 
+      ? ('Synthesized ' + newOutreachRows.length + ' outreach drafts in DRAFT_READY status.')
+      : 'No new drafts synthesized (all eligible contacts already have drafts).'
+  };
 }
 
 /**
