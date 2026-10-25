@@ -36,7 +36,8 @@ function runQuotaSafeMailDispatcher() {
       return;
     }
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return;
     const outreachSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OUTREACH_HISTORY);
     const contactSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CONTACTS);
     const followupSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.FOLLOW_UPS);
@@ -176,7 +177,8 @@ function scheduleFollowUpRows_(followupSheet, outreachId, contactId, threadId, f
  * Executes due multi-touch follow-up emails, strictly replying inside the original Gmail thread.
  */
 function executePendingFollowUps() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+  if (!ss) return;
   const fupSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.FOLLOW_UPS);
   const contactSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CONTACTS);
   if (!fupSheet || !contactSheet) return;

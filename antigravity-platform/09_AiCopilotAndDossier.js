@@ -58,7 +58,8 @@ function callGeminiJsonApi_(systemInstruction, userPrompt) {
  * Extracts core mission, top 3 bottlenecks, must-have tech stack, and hidden KPIs.
  */
 function deconstructJobDescription(opportunityId) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+  if (!ss) return;
   const oppSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OPPORTUNITIES);
   if (!oppSheet) return;
 
@@ -94,7 +95,8 @@ function deconstructJobDescription(opportunityId) {
  * containing system design talking points, STAR stories, and reverse-interview questions.
  */
 function generateInterviewPrepDossier(pipelineId, companyId, opportunityId, contactId) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+  if (!ss) return;
   const compSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.TARGET_COMPANIES);
   const oppSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OPPORTUNITIES);
   const contactSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CONTACTS);

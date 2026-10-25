@@ -9,7 +9,8 @@
  * enrolled in an active campaign cohort, and appends them to Outreach_History with DRAFT_READY status.
  */
 function generateCampaignOutreachDrafts(campaignId) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+  if (!ss) return;
   const profileSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CANDIDATE_PROFILE);
   const contactSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CONTACTS);
   const compSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.TARGET_COMPANIES);
@@ -133,9 +134,19 @@ function generateCampaignOutreachDrafts(campaignId) {
 
   if (newOutreachRows.length > 0) {
     outreachSheet.getRange(outreachSheet.getLastRow() + 1, 1, newOutreachRows.length, 12).setValues(newOutreachRows);
-    SpreadsheetApp.getActiveSpreadsheet().toast('Generated ' + newOutreachRows.length + ' outreach drafts in DRAFT_READY status.', 'Success', 5);
+    try {
+      if (SpreadsheetApp.getActiveSpreadsheet()) {
+        SpreadsheetApp.getActiveSpreadsheet().toast('Generated ' + newOutreachRows.length + ' outreach drafts in DRAFT_READY status.', 'Success', 5);
+      }
+    } catch (e) {}
+    console.log('Generated ' + newOutreachRows.length + ' outreach drafts.');
   } else {
-    SpreadsheetApp.getActiveSpreadsheet().toast('No eligible QUEUED contacts found matching campaign criteria.', 'Info', 4);
+    try {
+      if (SpreadsheetApp.getActiveSpreadsheet()) {
+        SpreadsheetApp.getActiveSpreadsheet().toast('No eligible QUEUED contacts found matching campaign criteria.', 'Info', 4);
+      }
+    } catch (e) {}
+    console.log('No eligible QUEUED contacts found matching campaign criteria.');
   }
 }
 

@@ -32,6 +32,52 @@ var ANTIGRAVITY_CONFIG = {
     }
   },
 
+  // Dynamic Relational Spreadsheet Resolution (Standalone Apps Script Compatible)
+  getSpreadsheet: function() {
+    if (typeof PropertiesService === 'undefined' || !PropertiesService.getScriptProperties) {
+      return null;
+    }
+    const props = PropertiesService.getScriptProperties();
+    let sheetId = props.getProperty('SPREADSHEET_ID');
+
+    if (sheetId && typeof SpreadsheetApp !== 'undefined') {
+      try {
+        return SpreadsheetApp.openById(sheetId);
+      } catch (e) {
+        console.warn('Could not open spreadsheet by ID ' + sheetId + ': ' + e.message);
+      }
+    }
+
+    if (typeof SpreadsheetApp !== 'undefined' && SpreadsheetApp.getActiveSpreadsheet) {
+      try {
+        const active = SpreadsheetApp.getActiveSpreadsheet();
+        if (active) {
+          props.setProperty('SPREADSHEET_ID', active.getId());
+          return active;
+        }
+      } catch (e) {}
+    }
+
+    // Auto-create standalone CRM database spreadsheet if none exists
+    if (typeof SpreadsheetApp !== 'undefined' && SpreadsheetApp.create) {
+      const newSs = SpreadsheetApp.create('⚡ Project Antigravity CRM Database');
+      props.setProperty('SPREADSHEET_ID', newSs.getId());
+      console.log('Created dedicated Antigravity CRM Spreadsheet: ' + newSs.getUrl());
+      return newSs;
+    }
+
+    return null;
+  },
+
+  getSpreadsheetUrl: function() {
+    try {
+      const ss = this.getSpreadsheet();
+      return ss ? ss.getUrl() : '';
+    } catch (e) {
+      return '';
+    }
+  },
+
   // 14 Relational Sheets + Tab 0 Command Center
   SHEETS: {
     COMMAND_CENTER: 'Command_Center',

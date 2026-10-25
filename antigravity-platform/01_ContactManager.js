@@ -16,7 +16,8 @@ function processAndScoreNewContacts() {
   }
 
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return;
     const contactSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CONTACTS);
     const oppSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OPPORTUNITIES);
     const projSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.PROJECTS);
@@ -77,7 +78,12 @@ function processAndScoreNewContacts() {
 
     // Single atomic batch write back to sheet
     contactSheet.getRange(1, 1, contacts.length, contacts[0].length).setValues(contacts);
-    SpreadsheetApp.getActiveSpreadsheet().toast('Processed and scored ' + processedCount + ' contacts.', 'Antigravity Lead Scoring', 4);
+    try {
+      if (SpreadsheetApp.getActiveSpreadsheet()) {
+        SpreadsheetApp.getActiveSpreadsheet().toast('Processed and scored ' + processedCount + ' contacts.', 'Antigravity Lead Scoring', 4);
+      }
+    } catch (e) {}
+    console.log('Processed and scored ' + processedCount + ' contacts.');
   } finally {
     lock.releaseLock();
   }

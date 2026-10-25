@@ -17,7 +17,8 @@ function syncGmailResponsesAndKPIs() {
   }
 
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+    if (!ss) return;
     const outreachSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OUTREACH_HISTORY);
     const contactSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.CONTACTS);
     const fupSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.FOLLOW_UPS);
@@ -227,7 +228,8 @@ function delayPendingFollowUps_(fupSheet, fupData, threadId, extraDays) {
  * Aggregates daily telemetry counts and upserts today's row in KPI_Metrics.
  */
 function updateDailyKpiMetrics_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+  if (!ss) return;
   const todayStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
 
   const outreachSheet = ss.getSheetByName(ANTIGRAVITY_CONFIG.SHEETS.OUTREACH_HISTORY);

@@ -28,11 +28,18 @@ function onOpen() {
  * formulas, and blueprint seed records.
  */
 function bootstrapAntigravityArchitecture() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = ANTIGRAVITY_CONFIG.getSpreadsheet();
+  if (!ss) {
+    throw new Error('Unable to initialize master CRM spreadsheet.');
+  }
   const schemas = ANTIGRAVITY_CONFIG.SCHEMAS;
   const enums = ANTIGRAVITY_CONFIG.ENUMS;
 
-  SpreadsheetApp.getActiveSpreadsheet().toast('Bootstrapping 14-table relational architecture...', 'Antigravity Platform', 5);
+  try {
+    if (SpreadsheetApp.getActiveSpreadsheet()) {
+      SpreadsheetApp.getActiveSpreadsheet().toast('Bootstrapping 14-table relational architecture...', 'Antigravity Platform', 5);
+    }
+  } catch (e) {}
 
   // 1. Build Tab 0: Command_Center
   setupCommandCenterTab_(ss);
@@ -75,7 +82,12 @@ function bootstrapAntigravityArchitecture() {
   // 4. Seed Blueprint Initial Records if Tables are Fresh
   seedBlueprintSampleData_(ss);
 
-  SpreadsheetApp.getActiveSpreadsheet().toast('Architecture bootstrap complete! 14 Relational Tabs + Command Center ready.', 'Success', 6);
+  try {
+    if (SpreadsheetApp.getActiveSpreadsheet()) {
+      SpreadsheetApp.getActiveSpreadsheet().toast('Architecture bootstrap complete! 14 Relational Tabs + Command Center ready.', 'Success', 6);
+    }
+  } catch (e) {}
+  console.log('Architecture bootstrap complete for spreadsheet: ' + ss.getUrl());
 }
 
 /**

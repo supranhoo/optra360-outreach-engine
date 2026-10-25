@@ -1,7 +1,6 @@
 {
-  "scriptId": "1-6OCJtJ_0ZM3_DFJg33YdsovT2MzJhcE5Ba1dayBXry3ayF-nGdCbpa9",
-  "rootDir": ".",
-  "parentId": "1KEJfOBK8PobuGQ6TI-91AKebXehOphDD3LwQw_zaXwU",
+  "scriptId": "1b1oJEtAVGcB1FeVFJ7V7tWV-Lo-beGkoQgreIryArcDmD9rSfV6Powqf",
+  "rootDir": "",
   "scriptExtensions": [
     ".js",
     ".gs"
@@ -12,15 +11,6 @@
   "jsonExtensions": [
     ".json"
   ],
-  "filePushOrder": [
-    "00_Config.js",
-    "00_BootstrapAndMenu.js",
-    "01_ContactManager.js",
-    "02_03_CampaignAndPersonalizer.js",
-    "04_05_SchedulerAndFollowUp.js",
-    "06_07_08_ResponseAndKPIEngine.js",
-    "09_AiCopilotAndDossier.js",
-    "10_TriggersAndAutomations.js"
-  ],
+  "filePushOrder": [],
   "skipSubdirectories": false
 }

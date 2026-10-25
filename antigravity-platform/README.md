@@ -12,7 +12,14 @@ Antigravity transforms a candidate's static portfolio—Resume/CV, LinkedIn Prof
 
 ---
 
-## 1. System Architecture
+## 1. System Architecture & Web App UI
+
+Antigravity operates as an **independent standalone Google Apps Script Web Application** with an integrated HTML/CSS/JS Command Center:
+
+* **Apps Script Web App**: Runs directly in Google Apps Script via `doGet(e)` / `HtmlService`.
+* **Automated CRM Database Binding**: Automatically initializes and connects to its own dedicated Google Sheets CRM (`⚡ Project Antigravity CRM Database`) or any designated spreadsheet ID.
+* **Direct Web App URL**: [Open Web App](https://script.google.com/macros/s/AKfycbw3ZJDuex74gJWR1s_brxaDAelpWI_PZVeB4SBsJ9REP_ty8x-cEOyO3ZLm4du57LMkew/exec)
+* **Script Editor**: [Open Script Project](https://script.google.com/d/1b1oJEtAVGcB1FeVFJ7V7tWV-Lo-beGkoQgreIryArcDmD9rSfV6Powqf/edit)
 
 ```
 +--------------------------------------------------------------------------------------------------+

@@ -31,11 +31,16 @@ function installPlatformTriggers() {
     .everyDays(1)
     .create();
 
-  SpreadsheetApp.getActiveSpreadsheet().toast(
-    'Automation triggers successfully installed! Mail dispatcher & reply sync will run every 15 minutes.',
-    'Triggers Configured',
-    6
-  );
+  try {
+    if (SpreadsheetApp.getActiveSpreadsheet()) {
+      SpreadsheetApp.getActiveSpreadsheet().toast(
+        'Automation triggers successfully installed! Mail dispatcher & reply sync will run every 15 minutes.',
+        'Triggers Configured',
+        6
+      );
+    }
+  } catch (e) {}
+  console.log('Automation triggers installed (15m mail, 15m replies, 23:45 KPI).');
 }
 
 /**
@@ -52,11 +57,16 @@ function uninstallPlatformTriggers() {
     }
   });
 
-  SpreadsheetApp.getActiveSpreadsheet().toast(
-    'Removed ' + count + ' active Antigravity automation triggers.',
-    'Triggers Cleaned',
-    4
-  );
+  try {
+    if (SpreadsheetApp.getActiveSpreadsheet()) {
+      SpreadsheetApp.getActiveSpreadsheet().toast(
+        'Removed ' + count + ' active Antigravity automation triggers.',
+        'Triggers Cleaned',
+        4
+      );
+    }
+  } catch (e) {}
+  console.log('Removed ' + count + ' active Antigravity automation triggers.');
 }
 
 /**
