@@ -747,6 +747,7 @@ function apiGetCandidateSettings() {
         }
       };
     }
+    const defaultCalUrl = ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL || ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL;
     const sheet = ss.getSheetByName('Candidate_Profile');
     if (!sheet || sheet.getLastRow() < 2) {
       return {
@@ -754,7 +755,7 @@ function apiGetCandidateSettings() {
         settings: {
           fullName: 'Ankit Choudhary',
           headline: 'Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation',
-          calendarBookingUrl: ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL,
+          calendarBookingUrl: defaultCalUrl,
           resumeDriveId: ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID,
           linkedinUrl: 'https://linkedin.com/in/ankit-choudhary-human-resources',
           hasApolloKey: !!apolloKey,
@@ -763,8 +764,9 @@ function apiGetCandidateSettings() {
       };
     }
     const row = sheet.getRange(2, 1, 1, 11).getValues()[0];
-    const calUrl = (row[9] && row[9].length > 5 && !row[9].includes('ankitchoudharymba/hr-leadership-discussion'))
-      ? row[9] : ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL;
+    const rawCalUrl = row[9] ? String(row[9]).trim() : '';
+    const calUrl = (rawCalUrl && rawCalUrl.length > 10 && !rawCalUrl.includes('ankitchoudharymba/hr-leadership-discussion') && !rawCalUrl.startsWith('mailto:'))
+      ? rawCalUrl : defaultCalUrl;
     const resId = (row[8] && row[8].length > 10 && !row[8].includes('1AnkitChoudhary_Resume_DriveID'))
       ? row[8] : ANTIGRAVITY_CONFIG.DEFAULT_RESUME_DRIVE_ID;
 

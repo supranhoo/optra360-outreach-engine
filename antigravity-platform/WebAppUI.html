@@ -1208,10 +1208,26 @@
           <input type="text" id="setting-headline" class="form-control" placeholder="Manufacturing HR Leader">
         </div>
         <div class="form-group">
-          <label style="font-size: 0.75rem; font-weight: 700;">Calendar Booking URL (Calendly, Google Calendar, or mailto) *</label>
-          <input type="text" id="setting-calendar-url" class="form-control" placeholder="https://calendly.com/... or mailto:...">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0;">Google Calendar Scheduler URL *</label>
+            <span style="font-size: 0.7rem; color: var(--accent-blue); font-weight: 600;">Google Ecosystem</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="setting-calendar-url" class="form-control" placeholder="https://calendar.app.google/... or https://calendar.google.com/...">
+            <button class="btn sm" type="button" onclick="testCalendarLink()" style="white-space: nowrap;">
+              👁️ Preview Link
+            </button>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
+            <a href="https://calendar.google.com/calendar/r/settings/appointment-schedules" target="_blank" class="btn sm" style="text-decoration: none; font-size: 0.72rem; padding: 4px 8px; background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-primary);">
+              📅 Open Google Calendar (Create Appointment Schedule) ↗
+            </a>
+            <button class="btn sm" type="button" onclick="useDefaultGoogleCalendarUrl()" style="font-size: 0.72rem; padding: 4px 8px;">
+              ⚡ 1-Click Direct Meeting Invite
+            </button>
+          </div>
           <small style="display: block; font-size: 0.72rem; color: var(--text-tertiary); margin-top: 4px;">
-            Powers the <code>[📅 Schedule 15-Min Discussion]</code> CTA. Use your Calendly link, Google Calendar appointment schedule, or direct mailto.
+            Powers the <code>[📅 Book on Google Calendar (15 Min)]</code> button in all outreach emails. You can paste your Google Appointment Schedule link (<code>calendar.app.google/...</code>) or use the pre-built 1-click meeting invite.
           </small>
         </div>
         <div class="form-group">
@@ -1899,6 +1915,21 @@
         statusDiv.style.color = 'var(--accent-green)';
         statusDiv.innerHTML = '✅ Simulated connection successful (Local Dev Mode)';
       }
+    }
+
+    function testCalendarLink() {
+      const url = document.getElementById('setting-calendar-url').value.trim();
+      if (!url) {
+        showToast('Please enter or generate a Google Calendar link first.');
+        return;
+      }
+      window.open(url, '_blank');
+    }
+
+    function useDefaultGoogleCalendarUrl() {
+      const gcalUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=HR+Transformation+%26+Operations+Discussion+-+Ankit+Choudhary&details=15-minute+strategic+discussion+on+manufacturing+workforce+strategy%2C+PMS+and+plant+operations.+Candidate%3A+Ankit+Choudhary+(ankitchoudharymba%40gmail.com)&add=ankitchoudharymba@gmail.com';
+      document.getElementById('setting-calendar-url').value = gcalUrl;
+      showToast('⚡ Pre-filled direct 1-click Google Calendar meeting invite!');
     }
 
     function closeSettingsModal() { document.getElementById('modal-settings').classList.remove('active'); }

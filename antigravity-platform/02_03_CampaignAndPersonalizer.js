@@ -210,9 +210,12 @@ function getResponsiveEmailStyles_() {
 function buildClassicLetterEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
   const cvUrl = t.resume_drive_url || (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL : 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view');
-  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion'))
+  const defaultCalUrl = (typeof ANTIGRAVITY_CONFIG !== 'undefined' && ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL)
+    ? ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL
+    : 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=HR+Transformation+%26+Operations+Discussion+-+Ankit+Choudhary&details=15-minute+discussion+on+manufacturing+workforce+strategy%2C+PMS+and+plant+operations.+Candidate%3A+Ankit+Choudhary+(ankitchoudharymba%40gmail.com)&add=ankitchoudharymba@gmail.com';
+  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion') && !t.calendar_booking_url.startsWith('mailto:'))
     ? t.calendar_booking_url
-    : (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL : 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary');
+    : defaultCalUrl;
 
   return getResponsiveEmailStyles_() +
     '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; color: #1e293b; line-height: 1.6; box-sizing: border-box;">' +
@@ -285,13 +288,12 @@ function buildClassicLetterEmail_(cfg, t) {
         '</div>' +
 
         '<!-- Dual Action Buttons (Fluid-Hybrid Full Width on Mobile) -->' +
-        <!-- Dual Action Buttons (Fluid-Hybrid Full Width on Mobile) -->' +
         '<div style="margin: 18px 0 16px 0; text-align: left;">' +
           '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 600; font-size: 12px; padding: 11px 18px; border-radius: 5px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
             '📄 View Full Executive CV (PDF) →' +
           '</a>' +
-          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 11px 18px; border-radius: 5px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
-            '📅 Schedule 15-Min Discussion →' +
+          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #1a73e8; color: #ffffff; font-weight: 600; font-size: 12px; padding: 11px 18px; border-radius: 5px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+            '📅 Book on Google Calendar (15 Min) →' +
           '</a>' +
         '</div>' +
 
@@ -320,9 +322,12 @@ function buildClassicLetterEmail_(cfg, t) {
 function buildModernBriefEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
   const cvUrl = t.resume_drive_url || (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL : 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view');
-  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion'))
+  const defaultCalUrl = (typeof ANTIGRAVITY_CONFIG !== 'undefined' && ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL)
+    ? ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL
+    : 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=HR+Transformation+%26+Operations+Discussion+-+Ankit+Choudhary&details=15-minute+discussion+on+manufacturing+workforce+strategy%2C+PMS+and+plant+operations.+Candidate%3A+Ankit+Choudhary+(ankitchoudharymba%40gmail.com)&add=ankitchoudharymba@gmail.com';
+  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion') && !t.calendar_booking_url.startsWith('mailto:'))
     ? t.calendar_booking_url
-    : (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL : 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary');
+    : defaultCalUrl;
 
   return getResponsiveEmailStyles_() +
     '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; color: #0f172a; line-height: 1.6; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-sizing: border-box;">' +
@@ -378,8 +383,8 @@ function buildModernBriefEmail_(cfg, t) {
           '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
             '📄 Download CV (PDF)' +
           '</a>' +
-          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0284c7; color: #ffffff; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
-            '📅 Schedule Discussion' +
+          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #1a73e8; color: #ffffff; font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 6px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+            '📅 Book on Google Calendar (15 Min)' +
           '</a>' +
         '</div>' +
 
@@ -406,9 +411,12 @@ function buildModernBriefEmail_(cfg, t) {
 function buildVideoSpotlightEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
   const cvUrl = t.resume_drive_url || (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL : 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view');
-  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion'))
+  const defaultCalUrl = (typeof ANTIGRAVITY_CONFIG !== 'undefined' && ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL)
+    ? ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL
+    : 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=HR+Transformation+%26+Operations+Discussion+-+Ankit+Choudhary&details=15-minute+discussion+on+manufacturing+workforce+strategy%2C+PMS+and+plant+operations.+Candidate%3A+Ankit+Choudhary+(ankitchoudharymba%40gmail.com)&add=ankitchoudharymba@gmail.com';
+  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion') && !t.calendar_booking_url.startsWith('mailto:'))
     ? t.calendar_booking_url
-    : (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL : 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary');
+    : defaultCalUrl;
 
   return getResponsiveEmailStyles_() +
     '<div class="fluid-container" style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; color: #1e293b; line-height: 1.6; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-sizing: border-box;">' +
@@ -466,8 +474,8 @@ function buildVideoSpotlightEmail_(cfg, t) {
           '<a href="' + cvUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0f172a; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none; margin: 4px 8px 4px 0; box-sizing: border-box;">' +
             '📄 Open Attached CV (PDF) →' +
           '</a>' +
-          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #0284c7; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
-            '📅 Schedule 15-Min Intro Call' +
+          '<a href="' + calendarUrl + '" target="_blank" class="mobile-full-btn" style="display: inline-block; background: #1a73e8; color: #ffffff; font-weight: 600; font-size: 12px; padding: 10px 18px; border-radius: 5px; text-decoration: none; margin: 4px 0; box-sizing: border-box;">' +
+            '📅 Book on Google Calendar (15 Min)' +
           '</a>' +
         '</div>' +
 
@@ -495,9 +503,12 @@ function buildVideoSpotlightEmail_(cfg, t) {
 function buildUltraHumanEmail_(cfg, t) {
   const videoUrl = t.portfolio_video_url || t.case_study_url_utm || t.portfolio_base_url || 'https://linkedin.com/in/ankit-choudhary-human-resources';
   const cvUrl = t.resume_drive_url || (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_RESUME_URL : 'https://drive.google.com/file/d/1FCyxOqXRGDnxBHugiJzRcy1OnJjbbckb/view');
-  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion'))
+  const defaultCalUrl = (typeof ANTIGRAVITY_CONFIG !== 'undefined' && ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL)
+    ? ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL
+    : 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=HR+Transformation+%26+Operations+Discussion+-+Ankit+Choudhary&details=15-minute+discussion+on+manufacturing+workforce+strategy%2C+PMS+and+plant+operations.+Candidate%3A+Ankit+Choudhary+(ankitchoudharymba%40gmail.com)&add=ankitchoudharymba@gmail.com';
+  const calendarUrl = (t.calendar_booking_url && !t.calendar_booking_url.includes('ankitchoudharymba/hr-leadership-discussion') && !t.calendar_booking_url.startsWith('mailto:'))
     ? t.calendar_booking_url
-    : (typeof ANTIGRAVITY_CONFIG !== 'undefined' ? ANTIGRAVITY_CONFIG.DEFAULT_CALENDLY_URL : 'mailto:ankitchoudharymba@gmail.com?subject=Plant%20HR%20Leadership%20Discussion%20-%20Ankit%20Choudhary');
+    : defaultCalUrl;
 
   return '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; width: 100%; margin: 0 auto; background: #ffffff; color: #222222; line-height: 1.65; padding: 12px 6px; box-sizing: border-box;">' +
     '<p style="font-size: 15px; margin-top: 0;">Hi <strong>' + t.first_name + '</strong>,</p>' +
@@ -521,7 +532,7 @@ function buildUltraHumanEmail_(cfg, t) {
       cfg.closingAsk +
     '</p>' +
     '<p style="font-size: 14px; margin-bottom: 18px;">' +
-      '📅 If you are open to a brief introductory conversation, feel free to reply with a time that works for you or schedule directly here: <strong><a href="' + calendarUrl + '" style="color: #0066cc; text-decoration: underline;">Schedule 15-Min Discussion</a></strong>' +
+      '📅 If you are open to a brief introductory conversation, feel free to reply with a time that works for you or book directly on Google Calendar here: <strong><a href="' + calendarUrl + '" style="color: #1a73e8; text-decoration: underline;">Book on Google Calendar (15 Min)</a></strong>' +
     '</p>' +
     '<p style="font-size: 14px; margin-bottom: 24px;">' +
       'Best regards,' +

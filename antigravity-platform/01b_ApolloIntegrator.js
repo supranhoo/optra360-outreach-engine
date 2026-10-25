@@ -5,7 +5,7 @@
  */
 
 var ANTIGRAVITY_APOLLO = {
-  API_BASE_URL: 'https://api.apollo.io/v1',
+  API_BASE_URL: 'https://api.apollo.io/api/v1',
 
   /**
    * Defined Target Segments: Exactly who we target and how we pitch them.
@@ -72,7 +72,7 @@ var ANTIGRAVITY_APOLLO = {
     }
 
     try {
-      const url = this.API_BASE_URL + '/mixed_people/search';
+      const url = this.API_BASE_URL + '/mixed_people/api_search';
       const payload = {
         api_key: key,
         page: 1,
@@ -178,7 +178,7 @@ var ANTIGRAVITY_APOLLO = {
         }
       }
 
-      const url = this.API_BASE_URL + '/mixed_people/search';
+      const url = this.API_BASE_URL + '/mixed_people/api_search';
       const options = {
         method: 'post',
         contentType: 'application/json',
@@ -400,7 +400,38 @@ var ANTIGRAVITY_APOLLO = {
     const newContactRows = [];
 
     leads.forEach(lead => {
-      const email = String(lead.email || '').trim().toLowerCase();
+      let email = String(lead.email || '').trim().toLowerCase();
+      // If email is hidden in skeletal search, attempt automatic enrichment using Apollo match
+      if (!email && lead.id) {
+        try {
+          const matchRes = this.enrichPerson({
+            id: lead.id,
+            firstName: lead.firstName,
+            lastName: lead.lastName,
+            companyDomain: lead.companyDomain,
+            companyName: lead.companyName
+          });
+          if (matchRes && matchRes.success && matchRes.email) {
+            email = matchRes.email.trim().toLowerCase();
+            lead.email = email;
+            lead.emailStatus = matchRes.emailStatus || 'verified';
+          }
+        } catch (enrichErr) {
+          // Fall back gracefully if Apollo enrichment fails or credits are depleted
+        }
+      }
+
+      // If still missing, infer a professional email pattern from names and corporate domain
+      if (!email && lead.firstName && (lead.companyDomain || lead.companyName)) {
+        const dom = (lead.companyDomain || (lead.companyName.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com'))
+          .replace(/^https?:\/\//, '').replace(/\/.*$/, '').trim();
+        const f = lead.firstName.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const l = (lead.lastName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        email = (l ? (f + '.' + l) : f) + '@' + dom;
+        lead.email = email;
+        lead.emailStatus = 'inferred';
+      }
+
       if (!email || existingEmails.has(email)) {
         skippedDuplicates++;
         return;

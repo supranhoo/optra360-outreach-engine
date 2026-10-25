@@ -349,7 +349,7 @@ runTest('Validates Executive HTML email architecture components', () => {
   assert.ok(tpl.htmlBody.includes('Video Portfolio & Systems Case Study Walkthrough'));
   assert.ok(tpl.htmlBody.includes('3,850'));
   assert.ok(tpl.htmlBody.includes('View Full Executive CV (PDF)'));
-  assert.ok(tpl.htmlBody.includes('Schedule 15-Min Discussion'));
+  assert.ok(tpl.htmlBody.includes('Book on Google Calendar (15 Min)'));
   assert.ok(!tpl.htmlBody.includes('undefined'));
 });
 
@@ -426,7 +426,7 @@ runTest('Calendar scheduling link in templates is free of 404 errors', () => {
   });
   const tpl = renderPersonaTemplate_('FOUNDER', stalePayload, 'CLASSIC_LETTER');
   assert.ok(!tpl.htmlBody.includes('ankitchoudharymba/hr-leadership-discussion'));
-  assert.ok(tpl.htmlBody.includes('Schedule 15-Min Discussion'));
+  assert.ok(tpl.htmlBody.includes('Book on Google Calendar (15 Min)'));
 });
 
 // -------------------------------------------------------------
@@ -498,16 +498,24 @@ runTest('Apollo testConnection passes X-Api-Key and Cache-Control headers', () =
   const result = ANTIGRAVITY_APOLLO.testConnection('test_api_key_header_xyz');
   assert.strictEqual(result.success, true);
   assert.ok(interceptedRequest);
+  assert.ok(interceptedRequest.url.includes('/mixed_people/api_search'), 'Must use new api_search endpoint');
   assert.strictEqual(interceptedRequest.options.headers['X-Api-Key'], 'test_api_key_header_xyz');
   assert.strictEqual(interceptedRequest.options.headers['Cache-Control'], 'no-cache');
   assert.strictEqual(interceptedRequest.options.headers['Content-Type'], 'application/json');
 });
 
-runTest('Apollo searchPeople passes X-Api-Key in headers', () => {
+runTest('Apollo searchPeople passes X-Api-Key in headers and targets api_search', () => {
   mockProps['APOLLO_API_KEY'] = 'persisted_apollo_key_999';
   const result = ANTIGRAVITY_APOLLO.searchPeople({ titles: ['Plant Head'] });
   assert.strictEqual(result.success, true);
+  assert.ok(interceptedRequest.url.includes('/mixed_people/api_search'), 'Search must use non-deprecated endpoint');
   assert.strictEqual(interceptedRequest.options.headers['X-Api-Key'], 'persisted_apollo_key_999');
+});
+
+runTest('Google Calendar default scheduling URLs are configured and functional', () => {
+  assert.ok(ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL);
+  assert.ok(ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL.includes('calendar.google.com'));
+  assert.ok(ANTIGRAVITY_CONFIG.DEFAULT_GOOGLE_CALENDAR_URL.includes('ankitchoudharymba%40gmail.com'));
 });
 
 runTest('apiSaveCandidateSettings properly stores Apollo API key into Script Properties', () => {
