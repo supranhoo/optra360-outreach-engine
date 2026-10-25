@@ -30,6 +30,7 @@ const { validateEmailAndMx_, matchBestProject_, calculateLeadScore_ } = require(
 const { renderPersonaTemplate_, appendUtm_, computeNextSendSlot_ } = require('../02_03_CampaignAndPersonalizer.js');
 const { addBusinessDays_ } = require('../04_05_SchedulerAndFollowUp.js');
 const { classifyReplySentiment_ } = require('../06_07_08_ResponseAndKPIEngine.js');
+const { ANTIGRAVITY_APOLLO } = require('../01b_ApolloIntegrator.js');
 
 let passedTests = 0;
 let totalTests = 0;
@@ -232,6 +233,40 @@ runTest('Detects POSITIVE_INTERVIEW meeting intent', () => {
 
 runTest('Categorizes non-committal or generic replies as NOT_NOW', () => {
   assert.strictEqual(classifyReplySentiment_('Thanks for reaching out. We don\'t have budget right now.'), 'NOT_NOW');
+});
+
+// -------------------------------------------------------------
+// Test Suite 7: Apollo.io Lead Discovery & Ingestion Integrator
+// -------------------------------------------------------------
+console.log('\n--- Suite 7: Apollo.io Lead Discovery & Parsing ---');
+
+runTest('Classifies executive personas accurately from Apollo job titles', () => {
+  assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Chief Human Resources Officer'), 'HIRING_MGR');
+  assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Executive VP - Plant Operations'), 'TECH_LEAD');
+  assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Plant Head & Works Director'), 'TECH_LEAD');
+  assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Co-Founder & Chief Executive Officer'), 'FOUNDER');
+  assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Head of Executive Talent Acquisition'), 'RECRUITER');
+});
+
+runTest('Maps role titles to relevant manufacturing HR/Operations tags', () => {
+  const hrTags = ANTIGRAVITY_APOLLO.getOpportunityTagsForRole('Head Plant HR & Industrial Relations');
+  assert.ok(hrTags.includes('plant-hr'));
+  assert.ok(hrTags.includes('ir'));
+  assert.ok(hrTags.includes('statutory-compliance'));
+
+  const opsTags = ANTIGRAVITY_APOLLO.getOpportunityTagsForRole('Vice President - Manufacturing & Plant Operations');
+  assert.ok(opsTags.includes('plant-operations'));
+  assert.ok(opsTags.includes('workforce-productivity'));
+});
+
+runTest('Validates CSV text input requirements', () => {
+  const invalidRes = ANTIGRAVITY_APOLLO.importCsvText('');
+  assert.strictEqual(invalidRes.success, false);
+  assert.ok(invalidRes.error.includes('Empty'));
+
+  const noEmailRes = ANTIGRAVITY_APOLLO.importCsvText('First Name,Last Name,Company\nRajesh,Sharma,Tata Steel');
+  assert.strictEqual(noEmailRes.success, false);
+  assert.ok(noEmailRes.error.includes('Email'));
 });
 
 // -------------------------------------------------------------

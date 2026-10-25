@@ -329,6 +329,9 @@ function apiSaveSettings(settings) {
     if (settings.geminiApiKey) {
       props.setProperty('GEMINI_API_KEY', settings.geminiApiKey.trim());
     }
+    if (settings.apolloApiKey) {
+      props.setProperty('APOLLO_API_KEY', settings.apolloApiKey.trim());
+    }
     if (settings.spreadsheetId) {
       props.setProperty('SPREADSHEET_ID', settings.spreadsheetId.trim());
     }
@@ -343,15 +346,38 @@ function apiGetSettings() {
     const props = PropertiesService.getScriptProperties();
     const apiKey = props.getProperty('GEMINI_API_KEY') || '';
     const maskedKey = apiKey ? (apiKey.slice(0, 4) + '••••••••' + apiKey.slice(-4)) : '';
+    const apolloKey = props.getProperty('APOLLO_API_KEY') || '';
+    const maskedApolloKey = apolloKey ? (apolloKey.slice(0, 4) + '••••••••' + apolloKey.slice(-4)) : '';
     const sheetId = props.getProperty('SPREADSHEET_ID') || '';
     return {
       success: true,
       hasApiKey: !!apiKey,
       maskedApiKey: maskedKey,
+      hasApolloKey: !!apolloKey,
+      maskedApolloKey: maskedApolloKey,
       spreadsheetId: sheetId,
       spreadsheetUrl: ANTIGRAVITY_CONFIG.getSpreadsheetUrl()
     };
   } catch (e) {
     return { success: false, error: e.message };
   }
+}
+
+/**
+ * Apollo.io Integration API Bridges
+ */
+function apiTestApolloConnection(customKey) {
+  return ANTIGRAVITY_APOLLO.testConnection(customKey);
+}
+
+function apiSearchApollo(queryOptions) {
+  return ANTIGRAVITY_APOLLO.searchPeople(queryOptions);
+}
+
+function apiImportApolloLeads(leads) {
+  return ANTIGRAVITY_APOLLO.importLeadsToCrm(leads);
+}
+
+function apiImportApolloCsv(csvText) {
+  return ANTIGRAVITY_APOLLO.importCsvText(csvText);
 }

@@ -70,6 +70,7 @@ Experienced senior software engineers, systems architects, engineering leaders, 
 * **FR-04 Thread-Locked Follow-Up Engine**: Dispatches multi-stage follow-ups (Stage 1 Day +3 architecture benchmark; Stage 2 Day +7 soft breakup) inside the exact same Gmail thread via `thread.reply()`, maintaining RFC 2822 `In-Reply-To` and `References` headers.
 * **FR-05 Bidirectional Response Detection & Bounce Guard**: Automatically polls Gmail sent threads every 15 minutes to detect prospect replies, vacation auto-responders, and NDR bounces (`mailer-daemon`), immediately cancelling pending follow-ups.
 * **FR-06 Standalone Apps Script Web App UI**: A standalone browser-based Command Center running via `HtmlService.createHtmlOutputFromFile('WebAppUI')` providing real-time telemetry, lead scoring controls, draft preview drawer, and trigger management.
+* **FR-07 Apollo.io Executive Lead Discovery & Ingestion Engine**: Native integration with Apollo.io REST API (`/mixed_people/search`, `/people/match`) and CSV ingestion parser, allowing 1-click executive discovery across target companies and roles, verified email extraction, automatic relational CRM ingestion, and immediate 100-point lead fit scoring.
 
 ---
 
