@@ -99,6 +99,19 @@ var ANTIGRAVITY_APOLLO = {
         }
       }
 
+      // Organization Employee Headcount Ranges (Sweet spot: 200 - 5,000 employees for growing companies)
+      if (queryOptions.employeeRanges && Array.isArray(queryOptions.employeeRanges) && queryOptions.employeeRanges.length > 0) {
+        payload.organization_num_employees_ranges = queryOptions.employeeRanges;
+      } else {
+        // Default: Strictly focus on mid-market growing companies in systems implementation stage
+        payload.organization_num_employees_ranges = ['201,500', '501,1000', '1001,5000'];
+      }
+
+      // Optional Industry / Expansion Keywords (e.g., "Foundry", "Manufacturing", "Expansion")
+      if (queryOptions.keywords) {
+        payload.q_keywords = String(queryOptions.keywords).trim();
+      }
+
       // Locations (e.g. India, Odisha, etc.)
       if (queryOptions.locations) {
         const locList = Array.isArray(queryOptions.locations)
@@ -205,39 +218,62 @@ var ANTIGRAVITY_APOLLO = {
 
   /**
    * Automatically classifies executive persona from job title.
+   * Tailored for mid-market manufacturing companies in systems implementation stage.
    */
   classifyPersonaFromTitle: function(title) {
     const t = String(title || '').toLowerCase();
-    if (t.includes('founder') || t.includes('ceo') || t.includes('managing director') || t.includes('partner')) {
+    
+    // 1. Promoter & Business Owner Track (MD, Joint MD, Owner, Founder, CEO)
+    if (t.includes('founder') || t.includes('ceo') || t.includes('managing director') || 
+        t.includes('joint md') || t.includes('promoter') || t.includes('executive director') || 
+        t.includes('owner') || t.includes('partner') || t.includes('chairman')) {
       return 'FOUNDER';
     }
-    if (t.includes('plant head') || t.includes('operations') || t.includes('manufacturing') || t.includes('works') || t.includes('factory head')) {
-      return 'TECH_LEAD'; // Plant leadership / Operational executive
+
+    // 2. Plant Operations & Shopfloor Leadership (COO, Plant Head, VP Operations, Works Director)
+    if (t.includes('plant head') || t.includes('coo') || t.includes('chief operating officer') || 
+        t.includes('operations') || t.includes('manufacturing') || t.includes('works') || 
+        t.includes('factory head') || t.includes('unit head') || t.includes('general manager works')) {
+      return 'TECH_LEAD'; // Operational / Technical Plant Leadership
     }
+
+    // 3. Talent Acquisition / Recruiting
     if (t.includes('recruiter') || t.includes('talent acquisition') || t.includes('head ta') || t.includes('recruitment')) {
       return 'RECRUITER';
     }
-    if (t.includes('chro') || t.includes('human resources') || t.includes('hr') || t.includes('people') || t.includes('ir') || t.includes('industrial relations')) {
-      return 'HIRING_MGR'; // CHRO / Group HR / Plant HR Lead
+
+    // 4. HR Leadership & Systems Transformation (CHRO, VP HR, Head HR, GM HR, IR Head)
+    if (t.includes('chro') || t.includes('human resources') || t.includes('hr') || 
+        t.includes('people') || t.includes('ir') || t.includes('industrial relations')) {
+      return 'HIRING_MGR';
     }
+
     return 'HIRING_MGR';
   },
 
   /**
    * Determines default skill & pain-point tags based on role and industry.
+   * Focuses on 0-to-1 systems building, attendance governance, and PMS implementation.
    */
   getOpportunityTagsForRole: function(roleTitle) {
     const t = String(roleTitle || '').toLowerCase();
-    if (t.includes('operations') || t.includes('manufacturing') || t.includes('works') || t.includes('production')) {
-      return 'plant-operations, manufacturing-excellence, workforce-productivity, safety-governance, time-office, plant-hr';
+
+    // Promoter / MD: Looking for total plant systems, EBITDA leakage arrest, and institutional governance
+    if (t.includes('managing director') || t.includes('promoter') || t.includes('founder') || t.includes('ceo') || t.includes('director')) {
+      return 'systems-implementation, pms-rollout, attendance-governance, absenteeism-control, ir, workforce-productivity, statutory-compliance';
     }
-    if (t.includes('plant') || t.includes('ir') || t.includes('industrial') || t.includes('factory')) {
-      return 'plant-hr, ir, statutory-compliance, pms, contract-labour, absenteeism-control';
+
+    // Operations / COO / Plant Head: Focus on shopfloor absenteeism, shift productivity, biometric integrity, IR peace
+    if (t.includes('operations') || t.includes('manufacturing') || t.includes('works') || t.includes('production') || t.includes('coo') || t.includes('plant head')) {
+      return 'plant-operations, absenteeism-control, attendance-governance, time-office, shift-deployment, ir, safety-governance, workforce-productivity, plant-hr';
     }
-    if (t.includes('chro') || t.includes('vp hr') || t.includes('people')) {
-      return 'pms-rollout, kra-kpi, lms, plant-digitization, workforce-analytics, executive-governance';
+
+    // HR Leadership: Focus on PMS rollout, KRA/KPI framework, LMS, contract-labour compliance
+    if (t.includes('chro') || t.includes('vp hr') || t.includes('human resources') || t.includes('hr') || t.includes('people')) {
+      return 'pms-rollout, kra-kpi, lms, digital-hr, plant-hr, contract-labour, statutory-compliance, ir';
     }
-    return 'plant-hr, ir, statutory-compliance, pms, contract-labour';
+
+    return 'plant-hr, ir, statutory-compliance, pms, contract-labour, absenteeism-control';
   },
 
   /**

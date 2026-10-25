@@ -1197,28 +1197,56 @@
       </div>
 
       <div class="modal-body">
+        <!-- Sourcing Presets for Growing Companies in Systems Implementation Stage -->
+        <div style="margin-bottom: 1.15rem; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-sm); padding: 0.85rem;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+            🎯 Sweet-Spot Presets (Growing Mid-Market Companies in Systems Implementation Phase)
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn sm" onclick="applyApolloPreset('foundry')" style="font-size: 0.75rem;">
+              🏭 Foundry & Forging (200–4k)
+            </button>
+            <button type="button" class="btn sm" onclick="applyApolloPreset('auto')" style="font-size: 0.75rem;">
+              🚗 Auto Components & Engineering
+            </button>
+            <button type="button" class="btn sm" onclick="applyApolloPreset('chemicals')" style="font-size: 0.75rem;">
+              🧪 Specialty Chemicals & Materials
+            </button>
+            <button type="button" class="btn sm" onclick="applyApolloPreset('promoter')" style="font-size: 0.75rem;">
+              👑 Promoter & MD Track
+            </button>
+          </div>
+        </div>
+
         <!-- Search Filters Form -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
           <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Target Job Titles (comma-separated)</label>
-            <input type="text" id="apollo-titles-input" value="CHRO, Chief Human Resources Officer, VP Human Resources, Head Plant HR, Plant Head, VP Operations" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Target Job Titles (Promoters, COOs & HR Leaders)</label>
+            <input type="text" id="apollo-titles-input" value="Managing Director, Promoter, Chief Operating Officer, Plant Head, Director Operations, Head Plant HR, VP HR" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
           </div>
           <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Target Company Domains (comma-separated)</label>
-            <input type="text" id="apollo-domains-input" value="jindalsteelpower.com, tatasteel.com, vedantalimited.com, jsw.in" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Target Company Domains (leave blank to search all India)</label>
+            <input type="text" id="apollo-domains-input" value="ramkrishnaforgings.com, mmforgings.com, electrasteel.com, balrampur.com, himadri.com" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
           </div>
           <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Geographic Location</label>
-            <input type="text" id="apollo-locations-input" value="India" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-          </div>
-          <div>
-            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Batch Limit</label>
-            <select id="apollo-limit-select" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
-              <option value="5">5 Executives</option>
-              <option value="10" selected>10 Executives</option>
-              <option value="15">15 Executives</option>
-              <option value="25">25 Executives</option>
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Workforce Scale Filter (Excludes Mega-Corps)</label>
+            <select id="apollo-headcount-select" style="width: 100%; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
+              <option value="mid_market" selected>Mid-Market Sweet Spot (201 to 5,000 Employees)</option>
+              <option value="early_growth">Early Scale (51 to 500 Employees)</option>
+              <option value="all">All Sizes (Include Mega-Corps 10,000+)</option>
             </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Geographic Location & Batch Limit</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="apollo-locations-input" value="India" style="flex: 1; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
+              <select id="apollo-limit-select" style="width: 100px; padding: 0.55rem; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: white; font-size: 0.82rem;">
+                <option value="5">5 Leads</option>
+                <option value="10" selected>10 Leads</option>
+                <option value="15">15 Leads</option>
+                <option value="25">25 Leads</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -1617,13 +1645,41 @@
       document.getElementById('apollo-csv-modal').classList.remove('active');
     }
 
+    function applyApolloPreset(type) {
+      const titlesInput = document.getElementById('apollo-titles-input');
+      const domainsInput = document.getElementById('apollo-domains-input');
+      const headcountSelect = document.getElementById('apollo-headcount-select');
+
+      headcountSelect.value = 'mid_market';
+
+      if (type === 'foundry') {
+        titlesInput.value = 'Managing Director, Promoter, Chief Operating Officer, Plant Head, Director Operations, Head Plant HR, VP HR';
+        domainsInput.value = 'ramkrishnaforgings.com, mmforgings.com, electrasteel.com, simplexcastings.com, bfcl.in, himadri.com';
+      } else if (type === 'auto') {
+        titlesInput.value = 'Managing Director, Chief Operating Officer, Plant Head, Director Operations, VP Manufacturing, Head Plant HR';
+        domainsInput.value = 'lumaxworld.in, subros.com, varroc.com, sandhargroup.com, pricol.com, gabrielindia.com';
+      } else if (type === 'chemicals') {
+        titlesInput.value = 'Managing Director, Promoter, Plant Head, VP Operations, Head Human Resources, Director';
+        domainsInput.value = 'aarti-industries.com, vinatiorganics.com, bodal.com, dorfketal.com, finolexwater.com';
+      } else if (type === 'promoter') {
+        titlesInput.value = 'Managing Director, Joint Managing Director, Promoter, Executive Director, Owner, Founder';
+        domainsInput.value = '';
+      }
+      showToast('Applied ' + type.toUpperCase() + ' mid-market sourcing preset!');
+    }
+
     function executeApolloSearch() {
       const titles = document.getElementById('apollo-titles-input').value;
       const domains = document.getElementById('apollo-domains-input').value;
       const locations = document.getElementById('apollo-locations-input').value;
       const limit = Number(document.getElementById('apollo-limit-select').value || 10);
+      const headcountMode = document.getElementById('apollo-headcount-select').value;
 
-      showToast('<span class="spinner"></span> Querying Apollo.io API...');
+      let ranges = ['201,500', '501,1000', '1001,5000'];
+      if (headcountMode === 'early_growth') ranges = ['51,200', '201,500'];
+      if (headcountMode === 'all') ranges = [];
+
+      showToast('<span class="spinner"></span> Querying Apollo.io API (Sweet spot: 200–5,000 workforce)...');
       google.script.run
         .withSuccessHandler(function(resp) {
           if (!resp.success) {
@@ -1639,6 +1695,7 @@
           titles: titles,
           domains: domains,
           locations: locations,
+          employeeRanges: ranges,
           perPage: limit
         });
     }

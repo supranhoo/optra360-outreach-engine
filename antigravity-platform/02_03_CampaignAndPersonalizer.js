@@ -69,14 +69,14 @@ function generateCampaignOutreachDrafts(campaignId) {
     const proj = projects[projId] || (Object.keys(projects).length > 0 ? projects[Object.keys(projects)[0]] : []);
 
     // Parse pain points safely
-    let primaryPain = 'platform scalability & throughput';
+    let primaryPain = 'shopfloor absenteeism and plant workforce governance';
     try {
       if (opp[6]) {
         const parsed = JSON.parse(opp[6]);
         if (Array.isArray(parsed) && parsed.length > 0) primaryPain = parsed[0];
       }
     } catch (e) {
-      primaryPain = String(opp[6] || 'infrastructure scaling');
+      primaryPain = String(opp[6] || 'shopfloor absenteeism and plant workforce governance');
     }
 
     const skillsArray = String(opp[7] || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -84,23 +84,23 @@ function generateCampaignOutreachDrafts(campaignId) {
     const tokenPayload = {
       first_name: c[3] || 'there',
       last_name: c[4] || '',
-      company_name: comp[1] || 'your team',
-      funding_stage_headcount: comp[4] || 'high-growth stage',
-      recent_trigger_event_short: comp[5] || 'scaling your technical roadmap',
-      role_title_opp: opp[2] || 'Engineering Leadership',
+      company_name: comp[1] || 'your organization',
+      funding_stage_headcount: comp[4] || 'growing manufacturing operations',
+      recent_trigger_event_short: comp[5] || 'scaling plant operations and workforce capacity',
+      role_title_opp: opp[2] || 'Plant HR & Industrial Relations Leadership',
       primary_pain_point: primaryPain,
-      required_skills_top3: skillsArray.slice(0, 3).join(', ') || 'distributed systems, cloud pipelines',
-      required_skill_1: skillsArray[0] || 'high-throughput architectures',
-      required_skill_2: skillsArray[1] || 'cloud infrastructure',
-      project_title: proj[2] || 'Distributed Architecture Engine',
-      architecture_summary: proj[6] || 'built a resilient distributed event caching pipeline',
-      quantified_business_impact: proj[7] || 'shaved latency by 45% and reduced cloud infrastructure overhead',
+      required_skills_top3: skillsArray.slice(0, 3).join(', ') || 'plant-hr, ir, statutory-compliance',
+      required_skill_1: skillsArray[0] || 'plant HR governance',
+      required_skill_2: skillsArray[1] || 'statutory compliance',
+      project_title: proj[2] || 'Integrated Safety, PMS & LMS Digital Workforce Platform',
+      architecture_summary: proj[6] || 'architected an in-house integrated employee workforce platform combining Safety reporting, KRA/KPI performance appraisals, and TNI-driven training workflows',
+      quantified_business_impact: proj[7] || 'rolled out PMS to 100 senior leaders in 6 months and scaled coverage to 200 managers across 3,850 personnel',
       github_repo_url: appendUtm_(proj[8], comp[1], c[0]),
       case_study_url_utm: appendUtm_(proj[9], comp[1], c[0]),
-      exp_company_name: primaryExp[2] || 'prior engineering leadership',
-      exp_role_title: primaryExp[3] || 'Lead Engineer',
-      exp_roi_statement: primaryExp[7] || 'scaled core pipeline to 99.99% availability',
-      custom_roi_hypothesis: opp[9] || 'applying these patterns can de-risk Q1 roadmap milestones by 4-6 weeks',
+      exp_company_name: primaryExp[2] || 'Bihar Foundry & Castings Ltd (GMG Group)',
+      exp_role_title: primaryExp[3] || 'Head - Human Resources & Industrial Relations',
+      exp_roi_statement: primaryExp[7] || 'governed 3,850 plant personnel with 0-strike industrial peace and in-house digitized workforce platforms',
+      custom_roi_hypothesis: opp[9] || 'applying my 3,850-worker workforce governance and digital Safety/PMS framework can eliminate overtime leakage and optimize shopfloor productivity',
       candidate_full_name: profile[1] || 'Ankit Choudhary',
       candidate_headline: profile[2] || 'Manufacturing HR Leader | Plant HR, Industrial Relations, Workforce Strategy & Performance Transformation',
       years_experience: profile[3] || 15,
@@ -160,81 +160,89 @@ function renderPersonaTemplate_(persona, t) {
 
   switch (p) {
     case 'FOUNDER':
-      subject = 'De-risking ' + t.company_name + '\'s ' + t.primary_pain_point + ' velocity in Q1';
+      subject = 'Building institutional Plant HR & workforce systems at ' + t.company_name;
       body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>Congrats on ' + t.recent_trigger_event_short + '. At ' + t.funding_stage_headcount + ', shipping fast without bloating infrastructure burn is usually the #1 bottleneck.</p>' +
-        '<p>I recently architected and open-sourced <a href="' + t.github_repo_url + '">' + t.project_title + '</a>, which ' + t.quantified_business_impact + '. Previously at ' + t.exp_company_name + ', I led the architecture that ' + t.exp_roi_statement + '.</p>' +
+        '<p>As manufacturing organizations scale across ' + t.funding_stage_headcount + ', ad-hoc shopfloor management, uncontrolled contract-labour absenteeism, and manual time-office loopholes often start directly eroding plant EBITDA and creating promoter bottlenecks.</p>' +
+        '<p>At Bihar Foundry & Castings Ltd (GMG Group), I engineered the complete workforce governance turnaround from scratch across a <strong>3,850-personnel plant workforce</strong> (2,350 on-roll + 1,500 contract workers):</p>' +
+        '<ul>' +
+        '<li><strong>Attendance & Overtime Turnaround:</strong> Restructured biometric attendance governance and introduced a production-linked increment policy, drastically curbing shopfloor absenteeism and overtime leakage (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</li>' +
+        '<li><strong>0-to-1 PMS Implementation:</strong> Rolled out structured KRA/KPI appraisals to 100 senior leaders in 6 months, expanding coverage to 200 managers in 9 months.</li>' +
+        '<li><strong>In-House Digital Platform:</strong> Architected a custom full-stack Safety, Appraisal & LMS platform without expensive multi-crore enterprise ERP bloat.</li>' +
+        '<li><strong>Statutory & IR De-risking:</strong> 100% labour compliance (Factory Act, CLRA, BOCW) and maintained zero-strike industrial peace.</li>' +
+        '</ul>' +
         '<p><strong>Why this matters for ' + t.company_name + ':</strong> ' + t.custom_roi_hypothesis + '</p>' +
-        '<p>Full case study & live benchmarks: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>.</p>' +
-        '<p>Worth a quick 10-minute founder-to-builder chat this week to see if I can take this off your plate?</p>' +
-        '<p>Best regards,<br>' + t.candidate_full_name + '<br>' + t.candidate_headline + '</p>';
+        '<p>Full background & career portfolio: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>.</p>' +
+        '<p>Would you be open to a 15-minute introductory discussion this week to explore how this systems playbook can institutionalize ' + t.company_name + '\'s plant operations as you scale?</p>' +
+        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '<br><a href="' + t.calendar_booking_url + '">Schedule a 15-min call</a></p>';
       break;
 
     case 'TECH_LEAD':
     case 'CTO':
-      subject = 'Architecture note on ' + t.company_name + '\'s ' + t.primary_pain_point + ' pipeline (GitHub inside)';
+      subject = 'Curtailed shopfloor absenteeism & overtime across 3,850 plant personnel (case study)';
       body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>Followed ' + t.company_name + '\'s work on ' + t.recent_trigger_event_short + '. Noticed from your ' + t.role_title_opp + ' opening that your platform team is tackling ' + t.primary_pain_point + ' across ' + t.required_skills_top3 + '.</p>' +
-        '<p>When tackling that same concurrency and latency tradeoff, I built <a href="' + t.github_repo_url + '">' + t.project_title + '</a>:</p>' +
+        '<p>Managing multi-shift plant operations and expanding production capacity always comes down to shopfloor discipline: shift deployment adherence, contractor compliance, and supervisory capability.</p>' +
+        '<p>In my recent role heading Plant HR & IR across a <strong>3,850-personnel manufacturing workforce</strong>, I resolved these exact operational bottlenecks:</p>' +
         '<ul>' +
-        '<li><strong>Technical Approach:</strong> ' + t.architecture_summary + '</li>' +
-        '<li><strong>Production Benchmark:</strong> ' + t.quantified_business_impact + '</li>' +
-        '<li><strong>System Design Breakdown:</strong> <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a></li>' +
+        '<li><strong>Shopfloor Discipline:</strong> Restructured time-office biometric governance across 3 production shifts, curbing absenteeism and eliminating overtime leakage (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</li>' +
+        '<li><strong>Digital Safety & Workforce Platform:</strong> Architected an in-house Safety incident reporting and KRA/KPI platform adopted plant-wide.</li>' +
+        '<li><strong>Zero-Strike IR Governance:</strong> De-risked union friction, labour contractor compliance, and local administrative liaison.</li>' +
         '</ul>' +
-        '<p>I\'m exploring my next senior engineering move and would love to bring this architectural playbook to ' + t.company_name + '.</p>' +
-        '<p>Would love your technical feedback on the repo design — and if it aligns with what you need, open to a 12-minute technical chat this Thursday?</p>' +
-        '<p>Best regards,<br>' + t.candidate_full_name + '<br>' + t.candidate_headline + '</p>';
+        '<p>I am exploring my next manufacturing leadership role and would welcome the opportunity to bring this proven systems playbook to ' + t.company_name + '.</p>' +
+        '<p>Open to a brief 12-minute operational discussion this Thursday to share what worked across our heavy manufacturing plants?</p>' +
+        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '</p>';
       break;
 
     case 'HIRING_MGR':
-      subject = 'Your ' + t.role_title_opp + ' search — shipped this exact stack in production';
+      subject = '0-to-1 PMS & Digital Safety rollout across plant operations — Ankit Choudhary';
       body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>I reviewed your specification for the ' + t.role_title_opp + ' role — specifically the requirement around ' + t.primary_pain_point + ' and ' + t.required_skills_top3 + '.</p>' +
-        '<p>Over the past ' + t.years_experience + ' years, I\'ve solved this exact bottleneck in production:</p>' +
+        '<p>I reviewed ' + t.company_name + '\'s growth in manufacturing operations and wanted to connect regarding your HR leadership and workforce governance roadmap.</p>' +
+        '<p>Over 15 years leading Plant HR & Industrial Relations, I specialize in taking growing manufacturing organizations from ad-hoc processes to institutionalized, tech-enabled systems:</p>' +
         '<ol>' +
-        '<li><a href="' + t.github_repo_url + '">' + t.project_title + '</a>: ' + t.architecture_summary + ' &rarr; ' + t.quantified_business_impact + '</li>' +
-        '<li>' + t.exp_company_name + ' (' + t.exp_role_title + '): ' + t.exp_roi_statement + '</li>' +
+        '<li><strong>0-to-1 PMS Architecture:</strong> Built and deployed structured KRA/KPI performance appraisals for 100 leaders in 6 months, scaling to 200 managers across 3,850 personnel.</li>' +
+        '<li><strong>Attendance & Absenteeism Overhaul:</strong> Formulated production-linked increment policies and biometric time-office governance to curb shopfloor absenteeism (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</li>' +
+        '<li><strong>L&D Division Setup:</strong> Established training architecture driven by real-time Training Need Identification (TNI) matrices.</li>' +
         '</ol>' +
-        '<p>Because I\'ve already built and battle-tested these modules, my ramp-up time on your team\'s Q1 backlog would be near zero. Full architecture case study: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>.</p>' +
-        '<p>Do you have 15 minutes early next week to discuss how my prior work aligns with your roadmap?</p>' +
-        '<p>Best regards,<br>' + t.candidate_full_name + '<br>' + t.candidate_headline + '</p>';
+        '<p>Full portfolio & leadership credentials: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>' + (t.resume_drive_url ? ' | <a href="' + t.resume_drive_url + '">Resume PDF</a>' : '') + '.</p>' +
+        '<p>Do you have 15 minutes early next week to discuss your workforce roadmap and how my systems-implementation background aligns?</p>' +
+        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '</p>';
       break;
 
     case 'RECRUITER':
-      subject = t.role_title_opp + ' candidate — ' + t.years_experience + ' yrs ' + t.required_skill_1 + ' + live production proof';
+      subject = 'Candidate: ' + t.role_title_opp + ' — 15 yrs Manufacturing HR Leadership + Plant Systems Turnaround';
       body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>Saw you\'re leading talent acquisition for ' + t.company_name + '\'s engineering team and wanted to make evaluating my background for the ' + t.role_title_opp + ' role effortless.</p>' +
-        '<p>Quick 30-second fit checklist against your requirements:</p>' +
+        '<p>I noticed you are leading talent acquisition for ' + t.company_name + ' and wanted to share my background for leadership opportunities in Plant HR, Industrial Relations, and Workforce Strategy.</p>' +
+        '<p><strong>Quick Fit Overview:</strong></p>' +
         '<ul>' +
-        '<li><strong>Core Stack (' + t.required_skills_top3 + '):</strong> ' + t.years_experience + ' years production experience at ' + t.exp_company_name + '.</li>' +
-        '<li><strong>Verified Business Impact:</strong> ' + t.exp_roi_statement + '.</li>' +
-        '<li><strong>Live Proof-of-Work:</strong> Built <a href="' + t.github_repo_url + '">' + t.project_title + '</a>, which ' + t.quantified_business_impact + '.</li>' +
-        '<li><strong>Portfolio & Deep Dives:</strong> <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>' + (t.resume_drive_url ? ' | <a href="' + t.resume_drive_url + '">Resume PDF</a>' : '') + '.</li>' +
+        '<li><strong>Experience:</strong> 15 years leading Plant HR, IR, and workforce governance across heavy manufacturing, steel, and foundry plants.</li>' +
+        '<li><strong>Workforce Scale:</strong> Governed 3,850 personnel (2,350 on-roll + 1,500 contract workers) across 3 production shifts.</li>' +
+        '<li><strong>Systems Implementation:</strong> Built 0-to-1 PMS (200 managers), digital Safety/LMS platform, and production-linked attendance policy (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</li>' +
+        '<li><strong>Compliance & IR:</strong> 100% statutory compliance (Factory Act, CLRA, BOCW) and zero-strike industrial harmony.</li>' +
+        '<li><strong>Portfolio & CV:</strong> <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>' + (t.resume_drive_url ? ' | <a href="' + t.resume_drive_url + '">Resume PDF</a>' : '') + '.</li>' +
         '</ul>' +
-        '<p>I\'ve submitted my formal application via your portal — do you have 10 minutes this week for an initial screen?</p>' +
-        '<p>Best regards,<br>' + t.candidate_full_name + '<br>' + t.candidate_headline + '</p>';
+        '<p>Are you open to a brief 10-minute screening call this week?</p>' +
+        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '</p>';
       break;
 
     case 'PEER':
-      subject = 'Quick question on ' + t.company_name + '\'s engineering culture (+ ' + t.project_title + ' repo)';
+      subject = 'Quick question on ' + t.company_name + '\'s manufacturing plant culture';
       body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>Came across your profile while researching ' + t.company_name + '\'s work around ' + t.recent_trigger_event_short + '.</p>' +
-        '<p>I\'m preparing to apply for the ' + t.role_title_opp + ' opening. Since my recent open-source work on <a href="' + t.github_repo_url + '">' + t.project_title + '</a> (' + t.quantified_business_impact + ') maps closely to what your team is building, I wanted to ask: how have you found the engineering autonomy and technical velocity at ' + t.company_name + '?</p>' +
-        '<p>If my portfolio (<a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>) looks like a strong fit, would you be open to dropping a quick internal referral link? Either way, appreciate any insights!</p>' +
-        '<p>Best regards,<br>' + t.candidate_full_name + '</p>';
+        '<p>Came across your profile while researching ' + t.company_name + '\'s manufacturing operations around ' + t.recent_trigger_event_short + '.</p>' +
+        '<p>I have led Plant HR and workforce governance across large industrial setups (most recently 3,850 personnel at Bihar Foundry & Castings Ltd), implementing digital workforce systems and attendance turnarounds (<a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>).</p>' +
+        '<p>I am exploring senior HR leadership opportunities with growing manufacturing firms and wanted to ask: how have you found the operational leadership and growth culture at ' + t.company_name + '?</p>' +
+        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong></p>';
       break;
 
-    default: // General Problem-First Proof-of-Work Pitch
-      subject = 'Reducing ' + t.company_name + '\'s ' + t.primary_pain_point + ' bottleneck (GitHub repo inside)';
+    default: // General Problem-First Systems Implementation Pitch
+      subject = 'Building institutional Plant HR & PMS governance at ' + t.company_name;
       body = '<p>Hi ' + t.first_name + ',</p>' +
-        '<p>Noticed your team at ' + t.company_name + ' is hiring for the <strong>' + t.role_title_opp + '</strong> role to tackle ' + t.primary_pain_point + ' across ' + t.required_skills_top3 + '.</p>' +
-        '<p>Instead of just sending a static resume, I wanted to share a production system I built for this exact challenge:</p>' +
+        '<p>As manufacturing organizations scale across ' + t.funding_stage_headcount + ', building structured HR processes, curbing shopfloor absenteeism, and de-risking contract-labour compliance are critical to sustaining operating margins.</p>' +
+        '<p>Over 15 years, I have architected and deployed these exact systems in heavy manufacturing:</p>' +
         '<ul>' +
-        '<li><strong><a href="' + t.github_repo_url + '">' + t.project_title + '</a>:</strong> ' + t.architecture_summary + '</li>' +
-        '<li><strong>Measured ROI:</strong> ' + t.quantified_business_impact + '</li>' +
+        '<li><strong><a href="' + t.case_study_url_utm + '">' + t.project_title + '</a>:</strong> ' + t.architecture_summary + '</li>' +
+        '<li><strong>Verified Business Impact:</strong> ' + t.quantified_business_impact + '</li>' +
         '</ul>' +
-        '<p>Full architecture breakdown: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>. Open to a 12-minute technical chat this Thursday, or feel free to grab a slot at <a href="' + t.calendar_booking_url + '">my calendar link</a>?</p>' +
-        '<p>Best regards,<br>' + t.candidate_full_name + '<br>' + t.candidate_headline + '</p>';
+        '<p>Full case study & credentials: <a href="' + t.case_study_url_utm + '">' + t.case_study_url_utm + '</a>. Open to a 15-minute discussion this week, or feel free to grab a slot at <a href="' + t.calendar_booking_url + '">my calendar link</a>.</p>' +
+        '<p>Best regards,<br><strong>' + t.candidate_full_name + '</strong><br>' + t.candidate_headline + '</p>';
   }
 
   return { subject: subject, htmlBody: body };

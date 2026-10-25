@@ -84,9 +84,9 @@ runTest('Generic role & administrative accounts are blocked', () => {
 console.log('\n--- Suite 2: 100-Point Deterministic Lead Scoring ---');
 
 runTest('High-match Tech Lead scores qualified (>=65)', () => {
-  // Persona: TECH_LEAD (16), Overlap: 3 tags (15), Urgency: (15), Verified: (10), Base: (15) = 71
+  // Persona: TECH_LEAD (18), Overlap: 3 tags (15), Urgency: (15), Verified: (10), Base: (15) = 73
   const score = calculateLeadScore_('TECH_LEAD', 3, true);
-  assert.strictEqual(score, 71);
+  assert.strictEqual(score, 73);
   assert.ok(score >= ANTIGRAVITY_CONFIG.LEAD_SCORE_QUALIFY_THRESHOLD);
 });
 
@@ -245,6 +245,8 @@ runTest('Classifies executive personas accurately from Apollo job titles', () =>
   assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Executive VP - Plant Operations'), 'TECH_LEAD');
   assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Plant Head & Works Director'), 'TECH_LEAD');
   assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Co-Founder & Chief Executive Officer'), 'FOUNDER');
+  assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Managing Director & Promoter'), 'FOUNDER');
+  assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Chief Operating Officer (COO)'), 'TECH_LEAD');
   assert.strictEqual(ANTIGRAVITY_APOLLO.classifyPersonaFromTitle('Head of Executive Talent Acquisition'), 'RECRUITER');
 });
 
@@ -257,6 +259,24 @@ runTest('Maps role titles to relevant manufacturing HR/Operations tags', () => {
   const opsTags = ANTIGRAVITY_APOLLO.getOpportunityTagsForRole('Vice President - Manufacturing & Plant Operations');
   assert.ok(opsTags.includes('plant-operations'));
   assert.ok(opsTags.includes('workforce-productivity'));
+
+  const mdTags = ANTIGRAVITY_APOLLO.getOpportunityTagsForRole('Managing Director & Promoter');
+  assert.ok(mdTags.includes('systems-implementation'));
+  assert.ok(mdTags.includes('attendance-governance'));
+});
+
+runTest('Verifies Manufacturing HR systems copy in templates', () => {
+  const founderTpl = renderPersonaTemplate_('FOUNDER', sampleTokenPayload);
+  assert.ok(founderTpl.subject.includes('Plant HR & workforce systems'));
+  assert.ok(founderTpl.htmlBody.includes('3,850-personnel plant workforce'));
+  assert.ok(founderTpl.htmlBody.includes('Bihar Foundry & Castings Ltd'));
+
+  const opsTpl = renderPersonaTemplate_('TECH_LEAD', sampleTokenPayload);
+  assert.ok(opsTpl.subject.includes('absenteeism & overtime'));
+  assert.ok(opsTpl.htmlBody.includes('3,850-personnel manufacturing workforce'));
+
+  const hrTpl = renderPersonaTemplate_('HIRING_MGR', sampleTokenPayload);
+  assert.ok(hrTpl.subject.includes('0-to-1 PMS & Digital Safety rollout'));
 });
 
 runTest('Validates CSV text input requirements', () => {

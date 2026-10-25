@@ -176,9 +176,9 @@ var ANTIGRAVITY_CONFIG = {
   // Scoring Weights & Allocation Rules
   SCORING: {
     PERSONA_WEIGHTS: {
-      FOUNDER: 20,
-      HIRING_MGR: 18,
-      TECH_LEAD: 16,
+      FOUNDER: 20,    // Promoter, Managing Director, Owner (Decision-maker in mid-market)
+      HIRING_MGR: 20, // CHRO, VP HR, Head HR (First institutional HR leadership)
+      TECH_LEAD: 18,  // COO, Plant Head, Works Director (Shopfloor operations leader)
       RECRUITER: 12,
       PEER: 10
     },
